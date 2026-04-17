@@ -98,6 +98,24 @@
             background-size: 20px;
             padding-left: 40px;
         }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .chart-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .chart-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -154,6 +172,11 @@
                 </div>
                 
                 <div class="flex items-center gap-3">
+                    <button onclick="resetFilters()" 
+                            class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm font-medium">
+                        <i class="fas fa-undo"></i>
+                        <span class="hidden sm:inline">Reset Filter</span>
+                    </button>
                     <button onclick="openSettings()" 
                             class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm font-medium">
                         <i class="fas fa-cog"></i>
@@ -190,7 +213,7 @@
         <!-- Dashboard Content -->
         <div id="dashboardContent" class="hidden space-y-6">
             
-            <!-- KPI Cards -->
+            <!-- KPI Cards - DYNAMIC -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-indigo-500">
                     <div class="flex justify-between items-start">
@@ -202,6 +225,7 @@
                             <i class="fas fa-cubes text-indigo-600"></i>
                         </div>
                     </div>
+                    <p class="text-xs text-gray-400 mt-2" id="kpiTotalLabel">Semua aset</p>
                 </div>
                 
                 <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-emerald-500">
@@ -214,19 +238,20 @@
                             <i class="fas fa-check-circle text-emerald-600"></i>
                         </div>
                     </div>
+                    <p class="text-xs text-gray-400 mt-2" id="kpiActivePercent">0% dari total</p>
                 </div>
                 
                 <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-blue-500">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Divisi</p>
+                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
                             <h3 class="text-2xl font-bold text-gray-800 mt-1" id="kpiDivisions">0</h3>
                         </div>
                         <div class="bg-blue-100 p-2 rounded-lg">
                             <i class="fas fa-building text-blue-600"></i>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2">Host Live, KREATIF, etc.</p>
+                    <p class="text-xs text-gray-400 mt-2">Dalam hasil filter</p>
                 </div>
                 
                 <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-amber-500">
@@ -239,11 +264,12 @@
                             <i class="fas fa-money-bill-wave text-amber-600"></i>
                         </div>
                     </div>
+                    <p class="text-xs text-gray-400 mt-2" id="kpiValueLabel">Harga beli total</p>
                 </div>
             </div>
 
-            <!-- Charts Section -->
-            <div class="grid md:grid-cols-2 gap-6">
+            <!-- Charts Section - DYNAMIC -->
+            <div class="chart-grid">
                 <div class="glass-panel rounded-xl p-5 shadow-sm">
                     <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
                         <i class="fas fa-chart-pie text-indigo-500"></i>
@@ -261,6 +287,46 @@
                     </h3>
                     <div class="h-64">
                         <canvas id="locationChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-panel rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-laptop text-indigo-500"></i>
+                        Tipe Aset
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-panel rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-indigo-500"></i>
+                        Status Aset
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-panel rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-heartbeat text-indigo-500"></i>
+                        Kondisi Aset
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="conditionChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-panel rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-tags text-indigo-500"></i>
+                        Top 10 Merk
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="merkChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -286,6 +352,10 @@
                                 class="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
                             <option value="">Semua Divisi</option>
                         </select>
+                        <select id="filterType" onchange="filterTable()" 
+                                class="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+                            <option value="">Semua Tipe</option>
+                        </select>
                     </div>
                 </div>
                 <div class="mt-3 text-sm text-gray-500 flex justify-between items-center">
@@ -309,6 +379,7 @@
                                 <th class="px-4 py-3 border-b">Karyawan</th>
                                 <th class="px-4 py-3 border-b">Divisi</th>
                                 <th class="px-4 py-3 border-b">Status</th>
+                                <th class="px-4 py-3 border-b">Kondisi</th>
                                 <th class="px-4 py-3 border-b">Harga Beli</th>
                                 <th class="px-4 py-3 border-b">Aksi</th>
                             </tr>
@@ -368,7 +439,7 @@
         // CONFIGURATION & STATE
         // ============================================
         
-        let API_URL = localStorage.getItem('assetApiUrl') || 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec';
+        let API_URL = localStorage.getItem('assetApiUrl') || 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricl0eomH-djqRwUXJFDKyN6zcUIf0SAO1cBGLp7FdZiKSr1rCw/exec';
         let allData = [];
         let filteredData = [];
         let currentPage = 1;
@@ -464,7 +535,7 @@
         }
 
         // ============================================
-        // DATA LOADING - FIXED VERSION
+        // DATA LOADING
         // ============================================
         
         async function loadData() {
@@ -499,12 +570,9 @@
                 filteredData = [...allData];
                 
                 updateLastUpdated(result.lastUpdated);
-                updateKPIs();
                 updateFilters();
-                renderTable();
-                renderCharts();
+                filterTable(); // This will update KPIs, charts, and table
                 
-                // FIXED: Properly show dashboard after successful load
                 showLoading(false);
                 showDashboard(true);
                 
@@ -514,7 +582,6 @@
             }
         }
 
-        // FIXED: Separate functions for showing/hiding states
         function showLoading(show) {
             const loadingEl = document.getElementById('loadingState');
             const errorEl = document.getElementById('errorState');
@@ -522,13 +589,11 @@
             const refreshIcon = document.getElementById('refreshIcon');
             
             if (show) {
-                // Loading state: show spinner, hide others
                 loadingEl.classList.remove('hidden');
                 errorEl.classList.add('hidden');
                 dashboardEl.classList.add('hidden');
                 refreshIcon.classList.add('fa-spin');
             } else {
-                // Done loading: hide spinner (dashboard will be shown separately)
                 loadingEl.classList.add('hidden');
                 refreshIcon.classList.remove('fa-spin');
             }
@@ -564,26 +629,44 @@
         }
 
         // ============================================
-        // KPI CALCULATIONS
+        // DYNAMIC KPI CALCULATIONS (BASED ON FILTERED DATA)
         // ============================================
         
         function updateKPIs() {
-            const total = allData.length;
-            const active = allData.filter(d => 
+            const total = filteredData.length;
+            const active = filteredData.filter(d => 
                 (d['Status Aset'] || '').toLowerCase().includes('terpakai')
             ).length;
             
-            const divisions = new Set(allData.map(d => d['Divisi Karyawan']).filter(Boolean)).size;
+            const divisions = new Set(filteredData.map(d => d['Divisi Karyawan']).filter(Boolean)).size;
             
-            const totalValue = allData.reduce((sum, d) => {
+            const totalValue = filteredData.reduce((sum, d) => {
                 const price = parseFloat(d['Harga Beli']) || 0;
                 return sum + price;
             }, 0);
             
+            // Update main numbers
             document.getElementById('kpiTotal').textContent = total.toLocaleString('id-ID');
             document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
             document.getElementById('kpiDivisions').textContent = divisions;
             document.getElementById('kpiValue').textContent = formatCurrency(totalValue);
+            
+            // Update labels to show this is filtered data
+            const hasActiveFilters = document.getElementById('searchInput').value || 
+                                    document.getElementById('filterStatus').value ||
+                                    document.getElementById('filterLocation').value ||
+                                    document.getElementById('filterDivision').value ||
+                                    document.getElementById('filterType').value;
+            
+            if (hasActiveFilters) {
+                document.getElementById('kpiTotalLabel').textContent = 'Hasil filter';
+                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active/total)*100).toFixed(1) + '% terpakai' : '0% terpakai';
+                document.getElementById('kpiValueLabel').textContent = 'Nilai filter';
+            } else {
+                document.getElementById('kpiTotalLabel').textContent = 'Semua aset';
+                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active/total)*100).toFixed(1) + '% dari total' : '0% dari total';
+                document.getElementById('kpiValueLabel').textContent = 'Harga beli total';
+            }
         }
 
         // ============================================
@@ -594,16 +677,19 @@
             const statuses = [...new Set(allData.map(d => d['Status Aset']).filter(Boolean))].sort();
             const locations = [...new Set(allData.map(d => d['Lokasi Aset']).filter(Boolean))].sort();
             const divisions = [...new Set(allData.map(d => d['Divisi Karyawan']).filter(Boolean))].sort();
+            const types = [...new Set(allData.map(d => d['Tipe Aset']).filter(Boolean))].sort();
             
             populateSelect('filterStatus', statuses);
             populateSelect('filterLocation', locations);
             populateSelect('filterDivision', divisions);
+            populateSelect('filterType', types);
         }
 
         function populateSelect(id, values) {
             const select = document.getElementById(id);
             const currentVal = select.value;
-            select.innerHTML = '<option value="">' + select.options[0].text + '</option>';
+            const label = select.options[0].text;
+            select.innerHTML = `<option value="">${label}</option>`;
             
             values.forEach(val => {
                 const option = document.createElement('option');
@@ -620,6 +706,7 @@
             const status = document.getElementById('filterStatus').value;
             const location = document.getElementById('filterLocation').value;
             const division = document.getElementById('filterDivision').value;
+            const type = document.getElementById('filterType').value;
             
             filteredData = allData.filter(row => {
                 const matchesSearch = !search || 
@@ -630,11 +717,32 @@
                 const matchesStatus = !status || row['Status Aset'] === status;
                 const matchesLocation = !location || row['Lokasi Aset'] === location;
                 const matchesDivision = !division || row['Divisi Karyawan'] === division;
+                const matchesType = !type || row['Tipe Aset'] === type;
                 
-                return matchesSearch && matchesStatus && matchesLocation && matchesDivision;
+                return matchesSearch && matchesStatus && matchesLocation && matchesDivision && matchesType;
             });
             
             currentPage = 1;
+            
+            // Update everything based on filtered data
+            updateKPIs();
+            renderCharts(); // Charts now use filteredData
+            renderTable();
+            updateShowingText();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterLocation').value = '';
+            document.getElementById('filterDivision').value = '';
+            document.getElementById('filterType').value = '';
+            
+            filteredData = [...allData];
+            currentPage = 1;
+            
+            updateKPIs();
+            renderCharts();
             renderTable();
             updateShowingText();
         }
@@ -667,6 +775,7 @@
                 
                 const status = row['Status Aset'] || '';
                 const statusClass = getStatusClass(status);
+                const condition = row['Kondisi Aset'] || '';
                 
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-medium text-gray-900">${row['No'] || ''}</td>
@@ -696,6 +805,9 @@
                     <td class="px-4 py-3">
                         <span class="status-badge ${statusClass}">${status || '-'}</span>
                     </td>
+                    <td class="px-4 py-3">
+                        <span class="text-xs ${getConditionColor(condition)}">${condition || '-'}</span>
+                    </td>
                     <td class="px-4 py-3 font-medium text-gray-700">${formatCurrency(row['Harga Beli'])}</td>
                     <td class="px-4 py-3">
                         <button onclick="showDetail(${start + idx})" 
@@ -720,6 +832,14 @@
             return 'bg-gray-100 text-gray-600';
         }
 
+        function getConditionColor(condition) {
+            const c = (condition || '').toLowerCase();
+            if (c.includes('baik')) return 'text-emerald-600 font-medium';
+            if (c.includes('rusak')) return 'text-red-600 font-medium';
+            if (c.includes('perbaikan')) return 'text-amber-600 font-medium';
+            return 'text-gray-600';
+        }
+
         function getDivisionBadge(division) {
             const d = (division || '').toLowerCase();
             if (d.includes('host live')) return 'bg-pink-100 text-pink-700';
@@ -734,6 +854,7 @@
             if (t.includes('pc')) return '<i class="fas fa-desktop text-gray-500"></i>';
             if (t.includes('monitor')) return '<i class="fas fa-tv text-green-500"></i>';
             if (t.includes('ups')) return '<i class="fas fa-battery-full text-yellow-500"></i>';
+            if (t.includes('headphone')) return '<i class="fas fa-headphones text-pink-500"></i>';
             return '<i class="fas fa-box text-gray-400"></i>';
         }
 
@@ -776,19 +897,23 @@
         }
 
         // ============================================
-        // CHARTS
+        // DYNAMIC CHARTS (BASED ON FILTERED DATA)
         // ============================================
         
         function renderCharts() {
             renderCategoryChart();
             renderLocationChart();
+            renderTypeChart();
+            renderStatusChart();
+            renderConditionChart();
+            renderMerkChart();
         }
 
         function renderCategoryChart() {
             const ctx = document.getElementById('categoryChart').getContext('2d');
             
             const categories = {};
-            allData.forEach(d => {
+            filteredData.forEach(d => {
                 const cat = d['Kategori Aset'] || 'Lainnya';
                 categories[cat] = (categories[cat] || 0) + 1;
             });
@@ -825,7 +950,7 @@
             const ctx = document.getElementById('locationChart').getContext('2d');
             
             const locations = {};
-            allData.forEach(d => {
+            filteredData.forEach(d => {
                 const loc = d['Lokasi Aset'] || 'Unknown';
                 locations[loc] = (locations[loc] || 0) + 1;
             });
@@ -852,6 +977,172 @@
                     scales: {
                         y: { beginAtZero: true, ticks: { stepSize: 1 } },
                         x: { ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function renderTypeChart() {
+            const ctx = document.getElementById('typeChart').getContext('2d');
+            
+            const types = {};
+            filteredData.forEach(d => {
+                const type = d['Tipe Aset'] || 'Lainnya';
+                types[type] = (types[type] || 0) + 1;
+            });
+            
+            if (charts.type) charts.type.destroy();
+            
+            charts.type = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(types),
+                    datasets: [{
+                        data: Object.values(types),
+                        backgroundColor: [
+                            '#f093fb', '#f5576c', '#4facfe', '#00f2fe', 
+                            '#43e97b', '#38f9d7', '#fa709a', '#fee140'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { boxWidth: 12, font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderStatusChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            const statuses = {};
+            filteredData.forEach(d => {
+                const status = d['Status Aset'] || 'Unknown';
+                statuses[status] = (statuses[status] || 0) + 1;
+            });
+            
+            if (charts.status) charts.status.destroy();
+            
+            const statusColors = {
+                'Terpakai': '#10b981',
+                'Tersedia': '#3b82f6',
+                'Rusak': '#ef4444',
+                'Dijual': '#f59e0b',
+                'Unknown': '#6b7280'
+            };
+            
+            const bgColors = Object.keys(statuses).map(s => statusColors[s] || '#6b7280');
+            
+            charts.status = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statuses),
+                    datasets: [{
+                        data: Object.values(statuses),
+                        backgroundColor: bgColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderConditionChart() {
+            const ctx = document.getElementById('conditionChart').getContext('2d');
+            
+            const conditions = {};
+            filteredData.forEach(d => {
+                const cond = d['Kondisi Aset'] || 'Unknown';
+                conditions[cond] = (conditions[cond] || 0) + 1;
+            });
+            
+            if (charts.condition) charts.condition.destroy();
+            
+            const condColors = {
+                'Baik': '#10b981',
+                'Rusak': '#ef4444',
+                'Perbaikan': '#f59e0b',
+                'Unknown': '#6b7280'
+            };
+            
+            const bgColors = Object.keys(conditions).map(c => condColors[c] || '#6b7280');
+            
+            charts.condition = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(conditions),
+                    datasets: [{
+                        label: 'Jumlah',
+                        data: Object.values(conditions),
+                        backgroundColor: bgColors,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+        }
+
+        function renderMerkChart() {
+            const ctx = document.getElementById('merkChart').getContext('2d');
+            
+            const merks = {};
+            filteredData.forEach(d => {
+                const merk = d['Merk'] || 'Lainnya';
+                merks[merk] = (merks[merk] || 0) + 1;
+            });
+            
+            // Sort by count and take top 10
+            const sortedMerks = Object.entries(merks)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            if (charts.merk) charts.merk.destroy();
+            
+            charts.merk = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedMerks.map(m => m[0]),
+                    datasets: [{
+                        label: 'Jumlah Aset',
+                        data: sortedMerks.map(m => m[1]),
+                        backgroundColor: '#764ba2',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { stepSize: 1 } }
                     }
                 }
             });
