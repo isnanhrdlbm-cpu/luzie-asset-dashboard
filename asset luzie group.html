@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luzie Group - Asset Management Dashboard 2026</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .gradient-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .kpi-card {
+            transition: all 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-terpakai { background: #d1fae5; color: #065f46; }
+        .status-tersedia { background: #dbeafe; color: #1e40af; }
+        .status-rusak { background: #fee2e2; color: #991b1b; }
+        
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .search-input {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+            background-size: 20px;
+            padding-left: 40px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">⚙️ Pengaturan API</h3>
+                <button onclick="closeSettings()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Google Apps Script Web App URL
+                    </label>
+                    <input type="url" id="apiUrlInput" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                           placeholder="https://script.google.com/macros/s/.../exec">
+                    <p class="text-xs text-gray-500 mt-1">URL dari deployment Web App Code.gs</p>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button onclick="saveSettings()" 
+                            class="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition font-medium">
+                        <i class="fas fa-save mr-2"></i>Simpan
+                    </button>
+                    <button onclick="testConnection()" 
+                            class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition font-medium">
+                        <i class="fas fa-plug mr-2"></i>Test
+                    </button>
+                </div>
+                
+                <div id="testResult" class="hidden p-3 rounded-lg text-sm"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="gradient-header text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                        <i class="fas fa-boxes-stacked text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Luzie Group</h1>
+                        <p class="text-indigo-100 text-sm">Asset Management Dashboard 2026</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button onclick="openSettings()" 
+                            class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm font-medium">
+                        <i class="fas fa-cog"></i>
+                        <span class="hidden sm:inline">API Settings</span>
+                    </button>
+                    <button onclick="loadData()" 
+                            class="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition flex items-center gap-2 text-sm font-medium shadow-md">
+                        <i class="fas fa-sync-alt" id="refreshIcon"></i>
+                        <span class="hidden sm:inline">Refresh</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Error/Loading State -->
+        <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
+            <div class="loading-spinner mb-4"></div>
+            <p class="text-gray-500">Memuat data aset...</p>
+        </div>
+        
+        <div id="errorState" class="hidden bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-3"></i>
+            <h3 class="text-lg font-semibold text-red-800 mb-2">Gagal Memuat Data</h3>
+            <p class="text-red-600 text-sm mb-4" id="errorMessage">Periksa URL API di pengaturan</p>
+            <button onclick="openSettings()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                Buka Pengaturan
+            </button>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" class="hidden space-y-6">
+            
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-indigo-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Total Aset</p>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="kpiTotal">0</h3>
+                        </div>
+                        <div class="bg-indigo-100 p-2 rounded-lg">
+                            <i class="fas fa-cubes text-indigo-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-emerald-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Terpakai</p>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="kpiActive">0</h3>
+                        </div>
+                        <div class="bg-emerald-100 p-2 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Divisi</p>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="kpiDivisions">0</h3>
+                        </div>
+                        <div class="bg-blue-100 p-2 rounded-lg">
+                            <i class="fas fa-building text-blue-600"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">Host Live, KREATIF, etc.</p>
+                </div>
+                
+                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-amber-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="kpiValue">Rp0</h3>
+                        </div>
+                        <div class="bg-amber-100 p-2 rounded-lg">
+                            <i class="fas fa-money-bill-wave text-amber-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-panel rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-indigo-500"></i>
+                        Kategori Aset
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-panel rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-bar text-indigo-500"></i>
+                        Aset per Lokasi
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="locationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="glass-panel rounded-xl p-4 shadow-sm">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="flex-1">
+                        <input type="text" id="searchInput" placeholder="Cari aset, merk, model, atau karyawan..." 
+                               class="search-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                               oninput="filterTable()">
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        <select id="filterStatus" onchange="filterTable()" 
+                                class="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+                            <option value="">Semua Status</option>
+                        </select>
+                        <select id="filterLocation" onchange="filterTable()" 
+                                class="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+                            <option value="">Semua Lokasi</option>
+                        </select>
+                        <select id="filterDivision" onchange="filterTable()" 
+                                class="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+                            <option value="">Semua Divisi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-3 text-sm text-gray-500 flex justify-between items-center">
+                    <span id="showingText">Menampilkan 0 dari 0 aset</span>
+                    <span id="lastUpdated" class="text-xs text-gray-400"></span>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="glass-panel rounded-xl shadow-sm overflow-hidden">
+                <div class="table-container">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 text-gray-600 font-semibold text-xs uppercase sticky top-0">
+                            <tr>
+                                <th class="px-4 py-3 border-b">No</th>
+                                <th class="px-4 py-3 border-b">Inventory</th>
+                                <th class="px-4 py-3 border-b">Tipe</th>
+                                <th class="px-4 py-3 border-b">Merk/Model</th>
+                                <th class="px-4 py-3 border-b">Spesifikasi</th>
+                                <th class="px-4 py-3 border-b">Lokasi</th>
+                                <th class="px-4 py-3 border-b">Karyawan</th>
+                                <th class="px-4 py-3 border-b">Divisi</th>
+                                <th class="px-4 py-3 border-b">Status</th>
+                                <th class="px-4 py-3 border-b">Harga Beli</th>
+                                <th class="px-4 py-3 border-b">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="divide-y divide-gray-100">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="bg-gray-50 px-4 py-3 border-t flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <button onclick="changePage(-1)" id="prevBtn" 
+                                class="px-3 py-1 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 text-sm">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="text-sm text-gray-600">
+                            Halaman <span id="currentPage" class="font-semibold">1</span> dari <span id="totalPages">1</span>
+                        </span>
+                        <button onclick="changePage(1)" id="nextBtn" 
+                                class="px-3 py-1 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 text-sm">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500">Baris per halaman:</span>
+                        <select id="rowsPerPage" onchange="changeRowsPerPage()" 
+                                class="text-sm border border-gray-300 rounded-lg px-2 py-1 bg-white">
+                            <option value="30" selected>30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Asset Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Detail Aset</h3>
+                <button onclick="closeDetail()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="detailContent" class="p-6">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION & STATE
+        // ============================================
+        
+        let API_URL = localStorage.getItem('assetApiUrl') || '';
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        let rowsPerPage = 30;
+        let charts = {};
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!API_URL) {
+                openSettings();
+            } else {
+                loadData();
+            }
+            
+            document.getElementById('apiUrlInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') saveSettings();
+            });
+        });
+
+        // ============================================
+        // SETTINGS MANAGEMENT
+        // ============================================
+        
+        function openSettings() {
+            document.getElementById('apiUrlInput').value = API_URL;
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('testResult').classList.add('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function saveSettings() {
+            const url = document.getElementById('apiUrlInput').value.trim();
+            if (!url) {
+                showTestResult('URL tidak boleh kosong', 'error');
+                return;
+            }
+            
+            API_URL = url;
+            localStorage.setItem('assetApiUrl', url);
+            closeSettings();
+            loadData();
+        }
+
+        async function testConnection() {
+            const url = document.getElementById('apiUrlInput').value.trim();
+            if (!url) {
+                showTestResult('Masukkan URL terlebih dahulu', 'error');
+                return;
+            }
+            
+            showTestResult('Testing connection...', 'loading');
+            
+            try {
+                const response = await fetch(url + '?t=' + Date.now(), {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showTestResult(`✅ Connected! Found ${data.totalRecords} records`, 'success');
+                } else {
+                    showTestResult('⚠️ Connected but got error: ' + data.message, 'warning');
+                }
+            } catch (error) {
+                showTestResult('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function showTestResult(message, type) {
+            const el = document.getElementById('testResult');
+            el.textContent = message;
+            el.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700', 'bg-yellow-100', 'text-yellow-700', 'bg-gray-100', 'text-gray-700');
+            
+            const styles = {
+                success: 'bg-green-100 text-green-700',
+                error: 'bg-red-100 text-red-700',
+                warning: 'bg-yellow-100 text-yellow-700',
+                loading: 'bg-gray-100 text-gray-700'
+            };
+            
+            el.classList.add(...styles[type].split(' '));
+        }
+
+        // ============================================
+        // DATA LOADING - FIXED VERSION
+        // ============================================
+        
+        async function loadData() {
+            if (!API_URL) {
+                openSettings();
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const url = API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status !== 'success') {
+                    throw new Error(result.message || 'Unknown error from API');
+                }
+                
+                allData = result.data || [];
+                filteredData = [...allData];
+                
+                updateLastUpdated(result.lastUpdated);
+                updateKPIs();
+                updateFilters();
+                renderTable();
+                renderCharts();
+                
+                // FIXED: Properly show dashboard after successful load
+                showLoading(false);
+                showDashboard(true);
+                
+            } catch (error) {
+                console.error('Load error:', error);
+                showError('Gagal memuat data: ' + error.message + '. Periksa URL API dan pastikan deployment Web App sudah benar.');
+            }
+        }
+
+        // FIXED: Separate functions for showing/hiding states
+        function showLoading(show) {
+            const loadingEl = document.getElementById('loadingState');
+            const errorEl = document.getElementById('errorState');
+            const dashboardEl = document.getElementById('dashboardContent');
+            const refreshIcon = document.getElementById('refreshIcon');
+            
+            if (show) {
+                // Loading state: show spinner, hide others
+                loadingEl.classList.remove('hidden');
+                errorEl.classList.add('hidden');
+                dashboardEl.classList.add('hidden');
+                refreshIcon.classList.add('fa-spin');
+            } else {
+                // Done loading: hide spinner (dashboard will be shown separately)
+                loadingEl.classList.add('hidden');
+                refreshIcon.classList.remove('fa-spin');
+            }
+        }
+
+        function showDashboard(show) {
+            const dashboardEl = document.getElementById('dashboardContent');
+            if (show) {
+                dashboardEl.classList.remove('hidden');
+            } else {
+                dashboardEl.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('dashboardContent').classList.add('hidden');
+            document.getElementById('refreshIcon').classList.remove('fa-spin');
+        }
+
+        function updateLastUpdated(isoString) {
+            const date = new Date(isoString);
+            const formatted = date.toLocaleString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('lastUpdated').textContent = 'Diperbarui: ' + formatted;
+        }
+
+        // ============================================
+        // KPI CALCULATIONS
+        // ============================================
+        
+        function updateKPIs() {
+            const total = allData.length;
+            const active = allData.filter(d => 
+                (d['Status Aset'] || '').toLowerCase().includes('terpakai')
+            ).length;
+            
+            const divisions = new Set(allData.map(d => d['Divisi Karyawan']).filter(Boolean)).size;
+            
+            const totalValue = allData.reduce((sum, d) => {
+                const price = parseFloat(d['Harga Beli']) || 0;
+                return sum + price;
+            }, 0);
+            
+            document.getElementById('kpiTotal').textContent = total.toLocaleString('id-ID');
+            document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
+            document.getElementById('kpiDivisions').textContent = divisions;
+            document.getElementById('kpiValue').textContent = formatCurrency(totalValue);
+        }
+
+        // ============================================
+        // FILTERS
+        // ============================================
+        
+        function updateFilters() {
+            const statuses = [...new Set(allData.map(d => d['Status Aset']).filter(Boolean))].sort();
+            const locations = [...new Set(allData.map(d => d['Lokasi Aset']).filter(Boolean))].sort();
+            const divisions = [...new Set(allData.map(d => d['Divisi Karyawan']).filter(Boolean))].sort();
+            
+            populateSelect('filterStatus', statuses);
+            populateSelect('filterLocation', locations);
+            populateSelect('filterDivision', divisions);
+        }
+
+        function populateSelect(id, values) {
+            const select = document.getElementById(id);
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">' + select.options[0].text + '</option>';
+            
+            values.forEach(val => {
+                const option = document.createElement('option');
+                option.value = val;
+                option.textContent = val;
+                select.appendChild(option);
+            });
+            
+            select.value = currentVal;
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const location = document.getElementById('filterLocation').value;
+            const division = document.getElementById('filterDivision').value;
+            
+            filteredData = allData.filter(row => {
+                const matchesSearch = !search || 
+                    Object.values(row).some(val => 
+                        String(val).toLowerCase().includes(search)
+                    );
+                
+                const matchesStatus = !status || row['Status Aset'] === status;
+                const matchesLocation = !location || row['Lokasi Aset'] === location;
+                const matchesDivision = !division || row['Divisi Karyawan'] === division;
+                
+                return matchesSearch && matchesStatus && matchesLocation && matchesDivision;
+            });
+            
+            currentPage = 1;
+            renderTable();
+            updateShowingText();
+        }
+
+        function updateShowingText() {
+            const start = (currentPage - 1) * rowsPerPage + 1;
+            const end = Math.min(currentPage * rowsPerPage, filteredData.length);
+            const total = filteredData.length;
+            
+            document.getElementById('showingText').textContent = 
+                `Menampilkan ${total > 0 ? start : 0}-${end} dari ${total} aset`;
+        }
+
+        // ============================================
+        // TABLE RENDERING
+        // ============================================
+        
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = filteredData.slice(start, end);
+            
+            pageData.forEach((row, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition border-b border-gray-100 fade-in';
+                tr.style.animationDelay = (idx * 0.05) + 's';
+                
+                const status = row['Status Aset'] || '';
+                const statusClass = getStatusClass(status);
+                
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-gray-900">${row['No'] || ''}</td>
+                    <td class="px-4 py-3 text-gray-600 font-mono text-xs">${row['NO Inventory'] || ''}</td>
+                    <td class="px-4 py-3">
+                        <span class="inline-flex items-center gap-1">
+                            ${getTypeIcon(row['Tipe Aset'])}
+                            <span class="text-gray-700">${row['Tipe Aset'] || ''}</span>
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-800">${row['Merk'] || ''}</div>
+                        <div class="text-xs text-gray-500">${row['Model Tipe Aset'] || ''}</div>
+                    </td>
+                    <td class="px-4 py-3 text-xs text-gray-600 max-w-xs truncate" title="${row['Seri/Spesifikasi'] || ''}">
+                        ${row['Seri/Spesifikasi'] || ''}
+                    </td>
+                    <td class="px-4 py-3 text-gray-600">${row['Lokasi Aset'] || ''}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-800">${row['Nama Karyawan'] || '-'}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDivisionBadge(row['Divisi Karyawan'])}">
+                            ${row['Divisi Karyawan'] || '-'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="status-badge ${statusClass}">${status || '-'}</span>
+                    </td>
+                    <td class="px-4 py-3 font-medium text-gray-700">${formatCurrency(row['Harga Beli'])}</td>
+                    <td class="px-4 py-3">
+                        <button onclick="showDetail(${start + idx})" 
+                                class="text-indigo-600 hover:text-indigo-800 p-2 hover:bg-indigo-50 rounded-lg transition">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+            
+            updatePagination();
+            updateShowingText();
+        }
+
+        function getStatusClass(status) {
+            const s = (status || '').toLowerCase();
+            if (s.includes('terpakai')) return 'status-terpakai';
+            if (s.includes('tersedia')) return 'status-tersedia';
+            if (s.includes('rusak')) return 'status-rusak';
+            return 'bg-gray-100 text-gray-600';
+        }
+
+        function getDivisionBadge(division) {
+            const d = (division || '').toLowerCase();
+            if (d.includes('host live')) return 'bg-pink-100 text-pink-700';
+            if (d.includes('kreatif')) return 'bg-purple-100 text-purple-700';
+            return 'bg-gray-100 text-gray-600';
+        }
+
+        function getTypeIcon(type) {
+            const t = (type || '').toLowerCase();
+            if (t.includes('hp') || t.includes('phone')) return '<i class="fas fa-mobile-alt text-blue-500"></i>';
+            if (t.includes('laptop')) return '<i class="fas fa-laptop text-indigo-500"></i>';
+            if (t.includes('pc')) return '<i class="fas fa-desktop text-gray-500"></i>';
+            if (t.includes('monitor')) return '<i class="fas fa-tv text-green-500"></i>';
+            if (t.includes('ups')) return '<i class="fas fa-battery-full text-yellow-500"></i>';
+            return '<i class="fas fa-box text-gray-400"></i>';
+        }
+
+        function formatCurrency(value) {
+            if (!value || value === '') return '-';
+            const num = parseFloat(value);
+            if (isNaN(num)) return value;
+            return 'Rp' + num.toLocaleString('id-ID');
+        }
+
+        // ============================================
+        // PAGINATION
+        // ============================================
+        
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
+            
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+            
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        }
+
+        function changePage(delta) {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
+            const newPage = currentPage + delta;
+            
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderTable();
+                document.querySelector('.table-container').scrollTop = 0;
+            }
+        }
+
+        function changeRowsPerPage() {
+            rowsPerPage = parseInt(document.getElementById('rowsPerPage').value);
+            currentPage = 1;
+            renderTable();
+        }
+
+        // ============================================
+        // CHARTS
+        // ============================================
+        
+        function renderCharts() {
+            renderCategoryChart();
+            renderLocationChart();
+        }
+
+        function renderCategoryChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            
+            const categories = {};
+            allData.forEach(d => {
+                const cat = d['Kategori Aset'] || 'Lainnya';
+                categories[cat] = (categories[cat] || 0) + 1;
+            });
+            
+            if (charts.category) charts.category.destroy();
+            
+            charts.category = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: [
+                            '#667eea', '#764ba2', '#f093fb', '#f5576c',
+                            '#4facfe', '#00f2fe', '#43e97b', '#38f9d7'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderLocationChart() {
+            const ctx = document.getElementById('locationChart').getContext('2d');
+            
+            const locations = {};
+            allData.forEach(d => {
+                const loc = d['Lokasi Aset'] || 'Unknown';
+                locations[loc] = (locations[loc] || 0) + 1;
+            });
+            
+            if (charts.location) charts.location.destroy();
+            
+            charts.location = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(locations),
+                    datasets: [{
+                        label: 'Jumlah Aset',
+                        data: Object.values(locations),
+                        backgroundColor: '#667eea',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                        x: { ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // DETAIL MODAL
+        // ============================================
+        
+        function showDetail(index) {
+            const data = filteredData[index];
+            if (!data) return;
+            
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('detailContent');
+            
+            const fields = [
+                ['NO Inventory', 'No. Inventory'],
+                ['Tipe Aset', 'Tipe Aset'],
+                ['Merk', 'Merk'],
+                ['Model Tipe Aset', 'Model'],
+                ['Seri/Spesifikasi', 'Spesifikasi'],
+                ['IMEI', 'IMEI'],
+                ['Kategori Aset', 'Kategori'],
+                ['Lokasi Aset', 'Lokasi'],
+                ['Nama Karyawan', 'Karyawan'],
+                ['Divisi Karyawan', 'Divisi'],
+                ['Lini Bisnis', 'Lini Bisnis'],
+                ['Tanggal Pembelian Aset', 'Tanggal Pembelian'],
+                ['Harga Beli', 'Harga Beli', formatCurrency],
+                ['Prakiraan Penyusutan (dalam bulan)', 'Penyusutan'],
+                ['Harga Jual', 'Harga Jual', formatCurrency],
+                ['Status Aset', 'Status'],
+                ['Kondisi Aset', 'Kondisi'],
+                ['Garansi Aset (satuan bulan)', 'Garansi (bulan)'],
+                ['Tanggal Peminjaman Aset', 'Tanggal Peminjaman'],
+                ['Tanggal Pengembalian an Aset', 'Tanggal Pengembalian'],
+                ['Tanggal Penjualan Aset', 'Tanggal Penjualan']
+            ];
+            
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+            
+            fields.forEach(([key, label, formatter]) => {
+                const value = data[key];
+                if (value !== '' && value !== null && value !== undefined) {
+                    const displayValue = formatter ? formatter(value) : value;
+                    html += `
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <label class="text-xs font-medium text-gray-500 uppercase">${label}</label>
+                            <div class="text-sm font-medium text-gray-800 mt-1">${displayValue}</div>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            
+            if (data['Link']) {
+                html += `
+                    <div class="mt-4">
+                        <a href="${data['Link']}" target="_blank" 
+                           class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium">
+                            <i class="fas fa-external-link-alt"></i>
+                            Lihat Dokumen/Link Terkait
+                        </a>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+        }
+
+        function closeDetail() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        window.onclick = function(event) {
+            const settingsModal = document.getElementById('settingsModal');
+            const detailModal = document.getElementById('detailModal');
+            
+            if (event.target === settingsModal) closeSettings();
+            if (event.target === detailModal) closeDetail();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSettings();
+                closeDetail();
+            }
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                loadData();
+            }
+        });
+    </script>
+</body>
+</html>
