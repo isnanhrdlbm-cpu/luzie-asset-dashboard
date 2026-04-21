@@ -640,6 +640,76 @@
             renderTable();
         }
 
+        // ─── TOOLTIP HELPERS ────────────────────────────────────────────────────────
+
+        /**
+         * Shared tooltip styling used across all charts.
+         * Dark glass look that matches the dashboard theme.
+         */
+        const tooltipDefaults = {
+            backgroundColor: 'rgba(15, 23, 42, 0.92)',
+            titleColor: '#e2e8f0',
+            bodyColor: '#94a3b8',
+            borderColor: 'rgba(139, 92, 246, 0.4)',
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 10,
+            titleFont: { size: 12, weight: '600', family: 'Inter' },
+            bodyFont: { size: 12, family: 'Inter' },
+            displayColors: true,
+            boxWidth: 10,
+            boxHeight: 10,
+            boxPadding: 4,
+            usePointStyle: true,
+        };
+
+        /**
+         * Tooltip callback for PIE / DOUGHNUT charts.
+         * Shows:  Label — 42 aset (35.5%)
+         */
+        function pieTooltipCallbacks() {
+            return {
+                label: function(context) {
+                    const dataset = context.dataset;
+                    const total = dataset.data.reduce((a, b) => a + b, 0);
+                    const value = dataset.data[context.dataIndex];
+                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                    return `  ${context.label} — ${value.toLocaleString('id-ID')} aset (${pct}%)`;
+                }
+            };
+        }
+
+        /**
+         * Tooltip callback for BAR charts (vertical & horizontal).
+         * Shows:  42 aset (35.5% dari total)
+         */
+        function barTooltipCallbacks() {
+            return {
+                label: function(context) {
+                    const allValues = context.dataset.data;
+                    const total = allValues.reduce((a, b) => a + b, 0);
+                    const value = context.parsed.y !== undefined ? context.parsed.y : context.parsed.x;
+                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                    return `  ${value.toLocaleString('id-ID')} aset (${pct}% dari total)`;
+                }
+            };
+        }
+
+        // ─── BASE OPTIONS ────────────────────────────────────────────────────────────
+
+        function getChartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+                    tooltip: tooltipDefaults
+                }
+            };
+        }
+
+        // ─── CHART RENDERERS ─────────────────────────────────────────────────────────
+
         function renderCharts() {
             renderCategoryChart();
             renderLocationChart();
@@ -647,14 +717,6 @@
             renderStatusChart();
             renderConditionChart();
             renderMerkChart();
-        }
-
-        function getChartOptions() {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } }
-            };
         }
 
         function renderCategoryChart() {
@@ -665,7 +727,14 @@
             charts.category = new Chart(ctx, {
                 type: 'doughnut',
                 data: { labels: Object.keys(categories), datasets: [{ data: Object.values(categories), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
-                options: { ...getChartOptions(), plugins: { legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } } } } }
+                options: {
+                    ...getChartOptions(),
+                    plugins: {
+                        ...getChartOptions().plugins,
+                        legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } } },
+                        tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
+                    }
+                }
             });
         }
 
@@ -677,7 +746,17 @@
             charts.location = new Chart(ctx, {
                 type: 'bar',
                 data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset', data: Object.values(locations), backgroundColor: '#8b5cf6', borderRadius: 6 }] },
-                options: { ...getChartOptions(), plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } } } }
+                options: {
+                    ...getChartOptions(),
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+                    }
+                }
             });
         }
 
@@ -689,7 +768,14 @@
             charts.type = new Chart(ctx, {
                 type: 'pie',
                 data: { labels: Object.keys(types), datasets: [{ data: Object.values(types), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
-                options: { ...getChartOptions(), plugins: { legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 10 } } } } }
+                options: {
+                    ...getChartOptions(),
+                    plugins: {
+                        ...getChartOptions().plugins,
+                        legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 10 } } },
+                        tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
+                    }
+                }
             });
         }
 
@@ -703,7 +789,14 @@
             charts.status = new Chart(ctx, {
                 type: 'doughnut',
                 data: { labels: Object.keys(statuses), datasets: [{ data: Object.values(statuses), backgroundColor: bgColors, borderWidth: 0 }] },
-                options: { ...getChartOptions(), plugins: { legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } } } } }
+                options: {
+                    ...getChartOptions(),
+                    plugins: {
+                        ...getChartOptions().plugins,
+                        legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } } },
+                        tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
+                    }
+                }
             });
         }
 
@@ -717,7 +810,17 @@
             charts.condition = new Chart(ctx, {
                 type: 'bar',
                 data: { labels: Object.keys(conditions), datasets: [{ label: 'Jumlah', data: Object.values(conditions), backgroundColor: bgColors, borderRadius: 6 }] },
-                options: { ...getChartOptions(), plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } } }
+                options: {
+                    ...getChartOptions(),
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    }
+                }
             });
         }
 
@@ -727,10 +830,33 @@
             filteredData.forEach(d => { const merk = d['Merk'] || 'Lainnya'; merks[merk] = (merks[merk] || 0) + 1; });
             const sortedMerks = Object.entries(merks).sort((a, b) => b[1] - a[1]).slice(0, 10);
             if (charts.merk) charts.merk.destroy();
+
+            // Horizontal bar needs a different callback because parsed axis is .x not .y
+            const horizontalBarCallbacks = {
+                label: function(context) {
+                    const allValues = context.dataset.data;
+                    const total = allValues.reduce((a, b) => a + b, 0);
+                    const value = context.parsed.x;
+                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                    return `  ${value.toLocaleString('id-ID')} aset (${pct}% dari total)`;
+                }
+            };
+
             charts.merk = new Chart(ctx, {
                 type: 'bar',
                 data: { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: '#06b6d4', borderRadius: 6 }] },
-                options: { ...getChartOptions(), indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#94a3b8' }, grid: { display: false } } } }
+                options: {
+                    ...getChartOptions(),
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { ...tooltipDefaults, callbacks: horizontalBarCallbacks }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    }
+                }
             });
         }
 
