@@ -743,9 +743,17 @@
             const locations = {};
             filteredData.forEach(d => { const loc = d['Lokasi Aset'] || 'Unknown'; locations[loc] = (locations[loc] || 0) + 1; });
             if (charts.location) charts.location.destroy();
+            const BAR_COLORS = [
+                '#8b5cf6', '#06b6d4', '#ec4899', '#10b981',
+                '#f59e0b', '#3b82f6', '#f97316', '#84cc16',
+                '#a78bfa', '#22d3ee', '#fb7185', '#34d399',
+                '#fbbf24', '#60a5fa', '#fb923c', '#a3e635'
+            ];
+            const barCount = Object.keys(locations).length;
+            const bgColors = Array.from({ length: barCount }, (_, i) => BAR_COLORS[i % BAR_COLORS.length]);
             charts.location = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset', data: Object.values(locations), backgroundColor: '#8b5cf6', borderRadius: 6 }] },
+                data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset', data: Object.values(locations), backgroundColor: bgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
                     plugins: {
@@ -831,6 +839,13 @@
             const sortedMerks = Object.entries(merks).sort((a, b) => b[1] - a[1]).slice(0, 10);
             if (charts.merk) charts.merk.destroy();
 
+            const MERK_COLORS = [
+                '#8b5cf6', '#06b6d4', '#ec4899', '#10b981',
+                '#f59e0b', '#3b82f6', '#f97316', '#84cc16',
+                '#a78bfa', '#22d3ee'
+            ];
+            const merkBgColors = sortedMerks.map((_, i) => MERK_COLORS[i % MERK_COLORS.length]);
+
             // Horizontal bar needs a different callback because parsed axis is .x not .y
             const horizontalBarCallbacks = {
                 label: function(context) {
@@ -844,7 +859,7 @@
 
             charts.merk = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: '#06b6d4', borderRadius: 6 }] },
+                data: { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: merkBgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
                     indexAxis: 'y',
