@@ -46,12 +46,60 @@
         ::-webkit-scrollbar-track { background: #1e293b; }
         ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #6d28d9; }
-        .search-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 12px center; background-size: 20px; padding-left: 40px; background-color: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #e2e8f0; }
-        .search-input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+        .search-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 12px center; background-size: 18px; padding-left: 38px; background-color: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); color: #e2e8f0; border-radius: 10px; width: 100%; }
+        .search-input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); outline: none; }
         .search-input::placeholder { color: #64748b; }
-        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        @media (min-width: 1024px) { .chart-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1280px) { .chart-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* ── Sidebar layout ── */
+        .page-layout { display: flex; gap: 0; align-items: flex-start; }
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            position: sticky;
+            top: 73px;
+            max-height: calc(100vh - 73px);
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(14px);
+            border-right: 1px solid rgba(139, 92, 246, 0.15);
+            padding: 1.25rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            z-index: 30;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); border-radius: 4px; }
+        .main-content { flex: 1; min-width: 0; padding: 1.5rem; }
+
+        .filter-group label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 6px; }
+        .filter-group select {
+            width: 100%; padding: 9px 12px; border-radius: 10px;
+            background-color: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #e2e8f0; font-size: 13px;
+            transition: border-color 0.2s;
+        }
+        .filter-group select:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 0 3px rgba(139,92,246,0.15); }
+        .sidebar-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0; }
+
+        .active-chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(139,92,246,0.18); border: 1px solid rgba(139,92,246,0.35);
+            color: #c4b5fd; font-size: 11px; padding: 3px 9px; border-radius: 9999px;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .active-chip:hover { background: rgba(139,92,246,0.3); }
+
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+        @media (min-width: 900px)  { .chart-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1300px) { .chart-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        @media (max-width: 768px) {
+            .page-layout { flex-direction: column; }
+            .sidebar { width: 100%; min-width: unset; position: relative; top: 0; max-height: none; border-right: none; border-bottom: 1px solid rgba(139,92,246,0.15); }
+            .main-content { padding: 1rem; }
+        }
         .btn-primary { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); transition: all 0.3s ease; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3); }
         .btn-secondary { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
@@ -105,163 +153,211 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="resetFilters()" class="btn-secondary px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium"><i class="fas fa-undo"></i><span class="hidden sm:inline">Reset Filter</span></button>
                     <button onclick="loadData()" class="btn-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium shadow-lg"><i class="fas fa-sync-alt" id="refreshIcon"></i><span class="hidden sm:inline">Refresh</span></button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        
-        <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
-            <div class="loading-spinner mb-4"></div>
-            <p class="text-gray-400">Memuat data aset...</p>
-        </div>
-        
-        <div id="errorState" class="hidden glass-panel rounded-xl p-6 text-center border-red-500/30">
-            <i class="fas fa-exclamation-triangle text-red-400 text-4xl mb-3"></i>
-            <h3 class="text-lg font-semibold text-white mb-2">Gagal Memuat Data</h3>
-            <p class="text-gray-400 text-sm mb-4" id="errorMessage">Periksa koneksi internet atau hubungi admin.</p>
-            <button onclick="retryLoad()" class="btn-primary text-white px-4 py-2 rounded-lg mr-2"><i class="fas fa-redo mr-2"></i>Coba Lagi</button>
-            <button onclick="openSettings()" class="btn-secondary text-white px-4 py-2 rounded-lg hidden" id="adminErrorBtn"><i class="fas fa-cog mr-2"></i>Admin</button>
-        </div>
+    <!-- Page body: sidebar + main -->
+    <div class="page-layout" style="min-height: calc(100vh - 73px);">
 
-        <div id="dashboardContent" class="hidden space-y-6">
-            
-            <!-- KPI Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-purple-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Total Aset</p>
-                            <h3 class="text-3xl font-bold text-white mt-1" id="kpiTotal">0</h3>
-                        </div>
-                        <div class="bg-purple-500/20 p-2 rounded-lg"><i class="fas fa-cubes text-purple-400"></i></div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2" id="kpiTotalLabel">Semua aset</p>
-                </div>
-                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-emerald-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Terpakai</p>
-                            <h3 class="text-3xl font-bold text-white mt-1" id="kpiActive">0</h3>
-                        </div>
-                        <div class="bg-emerald-500/20 p-2 rounded-lg"><i class="fas fa-check-circle text-emerald-400"></i></div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2" id="kpiActivePercent">0% dari total</p>
-                </div>
-                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-blue-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
-                            <h3 class="text-3xl font-bold text-white mt-1" id="kpiDivisions">0</h3>
-                        </div>
-                        <div class="bg-blue-500/20 p-2 rounded-lg"><i class="fas fa-building text-blue-400"></i></div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2">Dalam hasil filter</p>
-                </div>
-                <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-amber-500">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
-                            <h3 class="text-2xl font-bold text-white mt-1" id="kpiValue">Rp0</h3>
-                        </div>
-                        <div class="bg-amber-500/20 p-2 rounded-lg"><i class="fas fa-money-bill-wave text-amber-400"></i></div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2" id="kpiValueLabel">Harga beli total</p>
+        <!-- ── LEFT SIDEBAR ── -->
+        <aside class="sidebar" id="filterSidebar">
+
+            <!-- Sidebar header -->
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-1 flex items-center gap-2">
+                    <i class="fas fa-sliders-h"></i> Filter & Cari
+                </p>
+                <p class="text-xs text-gray-500" id="lastUpdated">Diperbarui: -</p>
+            </div>
+
+            <hr class="sidebar-divider">
+
+            <!-- Search -->
+            <div class="filter-group">
+                <label><i class="fas fa-search mr-1"></i>Pencarian</label>
+                <div style="position:relative;">
+                    <input type="text" id="searchInput"
+                        placeholder="Aset, merk, karyawan..."
+                        class="search-input py-2.5 text-sm"
+                        oninput="filterTable()">
                 </div>
             </div>
 
-            <!-- Charts -->
-            <div class="chart-grid">
-                <div class="glass-panel rounded-xl p-5 shadow-lg">
-                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-chart-pie text-purple-400"></i>Kategori Aset</h3>
-                    <div class="h-64"><canvas id="categoryChart"></canvas></div>
-                </div>
-                <div class="glass-panel rounded-xl p-5 shadow-lg">
-                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-chart-bar text-purple-400"></i>Aset per Lokasi</h3>
-                    <div class="h-64"><canvas id="locationChart"></canvas></div>
-                </div>
-                <div class="glass-panel rounded-xl p-5 shadow-lg">
-                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-laptop text-purple-400"></i>Tipe Aset</h3>
-                    <div class="h-64"><canvas id="typeChart"></canvas></div>
-                </div>
-                <div class="glass-panel rounded-xl p-5 shadow-lg">
-                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-info-circle text-purple-400"></i>Status Aset</h3>
-                    <div class="h-64"><canvas id="statusChart"></canvas></div>
-                </div>
-                <div class="glass-panel rounded-xl p-5 shadow-lg">
-                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-heartbeat text-purple-400"></i>Kondisi Aset</h3>
-                    <div class="h-64"><canvas id="conditionChart"></canvas></div>
-                </div>
-                <div class="glass-panel rounded-xl p-5 shadow-lg">
-                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-tags text-purple-400"></i>Top 10 Merk</h3>
-                    <div class="h-64"><canvas id="merkChart"></canvas></div>
-                </div>
-            </div>
+            <hr class="sidebar-divider">
 
             <!-- Filters -->
-            <div class="glass-panel rounded-xl p-4 shadow-lg">
-                <div class="flex flex-col md:flex-row gap-3">
-                    <div class="flex-1">
-                        <input type="text" id="searchInput" placeholder="Cari aset, merk, model, atau karyawan..." class="search-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" oninput="filterTable()">
-                    </div>
-                    <div class="flex gap-2 flex-wrap">
-                        <select id="filterStatus" onchange="filterTable()" class="px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"><option value="">Semua Status</option></select>
-                        <select id="filterLocation" onchange="filterTable()" class="px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"><option value="">Semua Lokasi</option></select>
-                        <select id="filterDivision" onchange="filterTable()" class="px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"><option value="">Semua Divisi</option></select>
-                        <select id="filterType" onchange="filterTable()" class="px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"><option value="">Semua Tipe</option></select>
-                    </div>
-                </div>
-                <div class="mt-3 text-sm flex justify-between items-center">
-                    <span class="text-gray-400" id="showingText">Menampilkan 0 dari 0 aset</span>
-                    <span class="text-xs text-purple-400" id="lastUpdated">Diperbarui: -</span>
-                </div>
+            <div class="filter-group">
+                <label><i class="fas fa-info-circle mr-1"></i>Status</label>
+                <select id="filterStatus" onchange="filterTable()"><option value="">Semua Status</option></select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-map-marker-alt mr-1"></i>Lokasi</label>
+                <select id="filterLocation" onchange="filterTable()"><option value="">Semua Lokasi</option></select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-building mr-1"></i>Divisi</label>
+                <select id="filterDivision" onchange="filterTable()"><option value="">Semua Divisi</option></select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-laptop mr-1"></i>Tipe</label>
+                <select id="filterType" onchange="filterTable()"><option value="">Semua Tipe</option></select>
             </div>
 
-            <!-- Data Table -->
-            <div class="glass-panel rounded-xl shadow-lg overflow-hidden">
-                <div class="table-container">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-gray-400 font-semibold text-xs uppercase sticky top-0">
-                            <tr>
-                                <th class="px-4 py-3 border-b border-gray-700">No</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Inventory</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Tipe</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Merk/Model</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Spesifikasi</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Lokasi</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Karyawan</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Divisi</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Status</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Kondisi</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Harga Beli</th>
-                                <th class="px-4 py-3 border-b border-gray-700">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody" class="divide-y divide-gray-700/50"></tbody>
-                    </table>
-                </div>
-                <div class="bg-gray-800/50 px-4 py-3 border-t border-gray-700 flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <button onclick="changePage(-1)" id="prevBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm"><i class="fas fa-chevron-left"></i></button>
-                        <span class="text-sm text-gray-400">Halaman <span id="currentPage" class="font-semibold text-white">1</span> dari <span id="totalPages" class="text-white">1</span></span>
-                        <button onclick="changePage(1)" id="nextBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-gray-500">Baris per halaman:</span>
-                        <select id="rowsPerPage" onchange="changeRowsPerPage()" class="text-sm rounded-lg px-2 py-1 bg-gray-800 border border-gray-600 text-white">
-                            <option value="30" selected>30</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                    </div>
-                </div>
+            <hr class="sidebar-divider">
+
+            <!-- Active filter chips -->
+            <div id="activeFiltersWrap" class="hidden">
+                <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide font-semibold">Filter aktif</p>
+                <div id="activeChips" class="flex flex-wrap gap-2"></div>
             </div>
-        </div>
-    </main>
+
+            <!-- Reset button -->
+            <button onclick="resetFilters()"
+                class="btn-secondary w-full py-2 rounded-xl text-sm flex items-center justify-center gap-2 mt-auto">
+                <i class="fas fa-undo text-xs"></i> Reset Semua Filter
+            </button>
+
+            <!-- Result count -->
+            <p class="text-xs text-center text-gray-500" id="showingText">Menampilkan 0 dari 0 aset</p>
+
+        </aside>
+
+        <!-- ── MAIN CONTENT ── -->
+        <main class="main-content">
+
+            <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
+                <div class="loading-spinner mb-4"></div>
+                <p class="text-gray-400">Memuat data aset...</p>
+            </div>
+
+            <div id="errorState" class="hidden glass-panel rounded-xl p-6 text-center border-red-500/30">
+                <i class="fas fa-exclamation-triangle text-red-400 text-4xl mb-3"></i>
+                <h3 class="text-lg font-semibold text-white mb-2">Gagal Memuat Data</h3>
+                <p class="text-gray-400 text-sm mb-4" id="errorMessage">Periksa koneksi internet atau hubungi admin.</p>
+                <button onclick="retryLoad()" class="btn-primary text-white px-4 py-2 rounded-lg mr-2"><i class="fas fa-redo mr-2"></i>Coba Lagi</button>
+                <button onclick="openSettings()" class="btn-secondary text-white px-4 py-2 rounded-lg hidden" id="adminErrorBtn"><i class="fas fa-cog mr-2"></i>Admin</button>
+            </div>
+
+            <div id="dashboardContent" class="hidden space-y-5">
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-purple-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Total Aset</p>
+                                <h3 class="text-3xl font-bold text-white mt-1" id="kpiTotal">0</h3>
+                            </div>
+                            <div class="bg-purple-500/20 p-2 rounded-lg"><i class="fas fa-cubes text-purple-400"></i></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2" id="kpiTotalLabel">Semua aset</p>
+                    </div>
+                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-emerald-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Terpakai</p>
+                                <h3 class="text-3xl font-bold text-white mt-1" id="kpiActive">0</h3>
+                            </div>
+                            <div class="bg-emerald-500/20 p-2 rounded-lg"><i class="fas fa-check-circle text-emerald-400"></i></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2" id="kpiActivePercent">0% dari total</p>
+                    </div>
+                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
+                                <h3 class="text-3xl font-bold text-white mt-1" id="kpiDivisions">0</h3>
+                            </div>
+                            <div class="bg-blue-500/20 p-2 rounded-lg"><i class="fas fa-building text-blue-400"></i></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Dalam hasil filter</p>
+                    </div>
+                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-amber-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
+                                <h3 class="text-2xl font-bold text-white mt-1" id="kpiValue">Rp0</h3>
+                            </div>
+                            <div class="bg-amber-500/20 p-2 rounded-lg"><i class="fas fa-money-bill-wave text-amber-400"></i></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2" id="kpiValueLabel">Harga beli total</p>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-grid">
+                    <div class="glass-panel rounded-xl p-5 shadow-lg">
+                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-chart-pie text-purple-400"></i>Kategori Aset</h3>
+                        <div class="h-64"><canvas id="categoryChart"></canvas></div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 shadow-lg">
+                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-chart-bar text-purple-400"></i>Aset per Lokasi</h3>
+                        <div class="h-64"><canvas id="locationChart"></canvas></div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 shadow-lg">
+                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-laptop text-purple-400"></i>Tipe Aset</h3>
+                        <div class="h-64"><canvas id="typeChart"></canvas></div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 shadow-lg">
+                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-info-circle text-purple-400"></i>Status Aset</h3>
+                        <div class="h-64"><canvas id="statusChart"></canvas></div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 shadow-lg">
+                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-heartbeat text-purple-400"></i>Kondisi Aset</h3>
+                        <div class="h-64"><canvas id="conditionChart"></canvas></div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 shadow-lg">
+                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i class="fas fa-tags text-purple-400"></i>Top 10 Merk</h3>
+                        <div class="h-64"><canvas id="merkChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="glass-panel rounded-xl shadow-lg overflow-hidden">
+                    <div class="table-container">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-gray-400 font-semibold text-xs uppercase sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-3 border-b border-gray-700">No</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Inventory</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Tipe</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Merk/Model</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Spesifikasi</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Lokasi</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Karyawan</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Divisi</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Status</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Kondisi</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Harga Beli</th>
+                                    <th class="px-4 py-3 border-b border-gray-700">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-gray-700/50"></tbody>
+                        </table>
+                    </div>
+                    <div class="bg-gray-800/50 px-4 py-3 border-t border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <button onclick="changePage(-1)" id="prevBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm"><i class="fas fa-chevron-left"></i></button>
+                            <span class="text-sm text-gray-400">Halaman <span id="currentPage" class="font-semibold text-white">1</span> dari <span id="totalPages" class="text-white">1</span></span>
+                            <button onclick="changePage(1)" id="nextBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500">Baris per halaman:</span>
+                            <select id="rowsPerPage" onchange="changeRowsPerPage()" class="text-sm rounded-lg px-2 py-1 bg-gray-800 border border-gray-600 text-white">
+                                <option value="30" selected>30</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /dashboardContent -->
+        </main><!-- /main-content -->
+    </div><!-- /page-layout -->
 
     <!-- Asset Detail Modal -->
     <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
@@ -500,6 +596,37 @@
             select.value = currentVal;
         }
 
+        function updateActiveChips() {
+            const chips = [];
+            const search = document.getElementById('searchInput').value;
+            const status = document.getElementById('filterStatus').value;
+            const location = document.getElementById('filterLocation').value;
+            const division = document.getElementById('filterDivision').value;
+            const type = document.getElementById('filterType').value;
+
+            if (search) chips.push({ label: `"${search}"`, clear: () => { document.getElementById('searchInput').value = ''; filterTable(); } });
+            if (status) chips.push({ label: status, clear: () => { document.getElementById('filterStatus').value = ''; filterTable(); } });
+            if (location) chips.push({ label: location, clear: () => { document.getElementById('filterLocation').value = ''; filterTable(); } });
+            if (division) chips.push({ label: division, clear: () => { document.getElementById('filterDivision').value = ''; filterTable(); } });
+            if (type) chips.push({ label: type, clear: () => { document.getElementById('filterType').value = ''; filterTable(); } });
+
+            const wrap = document.getElementById('activeFiltersWrap');
+            const container = document.getElementById('activeChips');
+            container.innerHTML = '';
+            if (chips.length > 0) {
+                wrap.classList.remove('hidden');
+                chips.forEach((chip, i) => {
+                    const el = document.createElement('span');
+                    el.className = 'active-chip';
+                    el.innerHTML = `${chip.label} <i class="fas fa-times text-xs"></i>`;
+                    el.addEventListener('click', chip.clear);
+                    container.appendChild(el);
+                });
+            } else {
+                wrap.classList.add('hidden');
+            }
+        }
+
         function filterTable() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const status = document.getElementById('filterStatus').value;
@@ -518,9 +645,8 @@
             renderCharts();
             renderTable();
             updateShowingText();
+            updateActiveChips();
         }
-
-        function resetFilters() {
             document.getElementById('searchInput').value = '';
             document.getElementById('filterStatus').value = '';
             document.getElementById('filterLocation').value = '';
@@ -532,9 +658,8 @@
             renderCharts();
             renderTable();
             updateShowingText();
+            updateActiveChips();
         }
-
-        function updateShowingText() {
             const start = (currentPage - 1) * rowsPerPage + 1;
             const end = Math.min(currentPage * rowsPerPage, filteredData.length);
             document.getElementById('showingText').textContent = `Menampilkan ${filteredData.length > 0 ? start : 0}-${end} dari ${filteredData.length} aset`;
