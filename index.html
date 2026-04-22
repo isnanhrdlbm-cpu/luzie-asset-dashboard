@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,12 +12,14 @@
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        dark: { 900: '#0a0f1c', 800: '#111827', 700: '#1e293b', 600: '#334155' },
-                        accent: { purple: '#8b5cf6', blue: '#3b82f6', cyan: '#06b6d4', pink: '#ec4899' }
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        surface: '#ffffff',
+                        background: '#f8fafc',
+                        border: '#e2e8f0',
+                        text: { primary: '#0f172a', secondary: '#64748b', muted: '#94a3b8' }
                     }
                 }
             }
@@ -26,86 +28,233 @@
     
     <style>
         * { font-family: 'Inter', sans-serif; }
-        body { background: linear-gradient(135deg, #0a0f1c 0%, #111827 50%, #1e1b4b 100%); min-height: 100vh; }
-        .glass-panel { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
-        .glass-panel:hover { border-color: rgba(139, 92, 246, 0.3); box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15); }
-        .gradient-header { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%); border-bottom: 1px solid rgba(139, 92, 246, 0.2); }
-        .kpi-card { transition: all 0.3s ease; background: linear-gradient(145deg, rgba(30, 41, 59, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%); }
-        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2); border-color: rgba(139, 92, 246, 0.4); }
-        .kpi-icon { background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); }
-        .status-badge { padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-        .status-terpakai { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .status-tersedia { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .status-rusak { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .loading-spinner { border: 3px solid rgba(139, 92, 246, 0.2); border-top: 3px solid #8b5cf6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #6d28d9; }
-        .search-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 12px center; background-size: 20px; padding-left: 40px; background-color: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #e2e8f0; }
-        .search-input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
-        .search-input::placeholder { color: #64748b; }
-        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        @media (min-width: 1024px) { .chart-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1280px) { .chart-grid { grid-template-columns: repeat(3, 1fr); } }
-        .btn-primary { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); transition: all 0.3s ease; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3); }
-        .btn-secondary { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(139, 92, 246, 0.5); }
-        .modal-dark { background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(139, 92, 246, 0.2); }
-        select { background-color: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #e2e8f0; }
-        select:focus { border-color: #8b5cf6; }
-        select option { background-color: #1e293b; color: #e2e8f0; }
-        table { color: #cbd5e1; }
-        thead { background: rgba(30, 41, 59, 0.9); color: #94a3b8; }
-        tbody tr:hover { background: rgba(139, 92, 246, 0.05); }
-        .pagination-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #cbd5e1; }
-        .pagination-btn:hover:not(:disabled) { background: rgba(139, 92, 246, 0.2); border-color: rgba(139, 92, 246, 0.4); }
-        .pagination-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .admin-hint { position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.1); pointer-events: none; }
-         /* ===== ADD THIS NEW CSS HERE ===== */
-    /* Sidebar sticky on desktop */
-    @media (min-width: 1024px) {
-        aside {
-            position: sticky;
-            top: 100px;
-            align-self: flex-start;
+        body { 
+            background: #f8fafc; 
+            min-height: 100vh; 
+            color: #0f172a;
         }
-    }
-
-    /* Smooth transitions for filter dropdowns */
-    select {
-        transition: all 0.2s ease;
-    }
-
-    select:focus {
-        transform: translateY(-1px);
-    }
-    /* ===== END NEW CSS ===== */
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); 
+        }
+        .glass-panel:hover { 
+            border-color: rgba(59, 130, 246, 0.3); 
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.12); 
+        }
+        .gradient-header { 
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
+            border-bottom: 1px solid #e2e8f0; 
+        }
+        .kpi-card { 
+            transition: all 0.3s ease; 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0;
+        }
+        .kpi-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15); 
+            border-color: rgba(59, 130, 246, 0.4); 
+        }
+        .kpi-icon { 
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+        }
+        .status-badge { 
+            padding: 4px 12px; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+        }
+        .status-terpakai { 
+            background: rgba(16, 185, 129, 0.15); 
+            color: #059669; 
+            border: 1px solid rgba(16, 185, 129, 0.3); 
+        }
+        .status-tersedia { 
+            background: rgba(59, 130, 246, 0.15); 
+            color: #2563eb; 
+            border: 1px solid rgba(59, 130, 246, 0.3); 
+        }
+        .status-rusak { 
+            background: rgba(244, 63, 94, 0.15); 
+            color: #e11d48; 
+            border: 1px solid rgba(244, 63, 94, 0.3); 
+        }
+        .table-container { 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; 
+        }
+        .loading-spinner { 
+            border: 3px solid rgba(59, 130, 246, 0.2); 
+            border-top: 3px solid #3b82f6; 
+            border-radius: 50%; 
+            width: 40px; 
+            height: 40px; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+        .fade-in { 
+            animation: fadeIn 0.5s ease-in; 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        ::-webkit-scrollbar { 
+            width: 8px; 
+            height: 8px; 
+        }
+        ::-webkit-scrollbar-track { 
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: #94a3b8; 
+            border-radius: 4px; 
+        }
+        ::-webkit-scrollbar-thumb:hover { 
+            background: #64748b; 
+        }
+        .search-input { 
+            background-image: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E"); 
+            background-repeat: no-repeat; 
+            background-position: 12px center; 
+            background-size: 20px; 
+            padding-left: 40px; 
+            background-color: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            color: #0f172a; 
+        }
+        .search-input:focus { 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); 
+            outline: none;
+        }
+        .search-input::placeholder { 
+            color: #94a3b8; 
+        }
+        .chart-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 1.5rem; 
+        }
+        @media (min-width: 1024px) { 
+            .chart-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+            } 
+        }
+        @media (min-width: 1280px) { 
+            .chart-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+            } 
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+            transition: all 0.3s ease; 
+            color: white;
+        }
+        .btn-primary:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); 
+        }
+        .btn-secondary { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            color: #475569;
+            transition: all 0.3s ease; 
+        }
+        .btn-secondary:hover { 
+            background: #f8fafc; 
+            border-color: #3b82f6; 
+            color: #3b82f6;
+        }
+        .modal-light { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+        }
+        select { 
+            background-color: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            color: #0f172a; 
+        }
+        select:focus { 
+            border-color: #3b82f6; 
+            outline: none;
+        }
+        select option { 
+            background-color: #ffffff; 
+            color: #0f172a; 
+        }
+        table { 
+            color: #0f172a; 
+        }
+        thead { 
+            background: #f8fafc; 
+            color: #64748b; 
+        }
+        tbody tr:hover { 
+            background: #f1f5f9; 
+        }
+        .pagination-btn { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            color: #475569; 
+        }
+        .pagination-btn:hover:not(:disabled) { 
+            background: #f8fafc; 
+            border-color: #3b82f6; 
+            color: #3b82f6;
+        }
+        .pagination-btn:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+        }
+        .admin-hint { 
+            position: fixed; 
+            bottom: 10px; 
+            right: 10px; 
+            font-size: 10px; 
+            color: rgba(0,0,0,0.1); 
+            pointer-events: none; 
+        }
+        /* Sidebar sticky on desktop */
+        @media (min-width: 1024px) {
+            aside {
+                position: sticky;
+                top: 100px;
+                align-self: flex-start;
+            }
+        }
+        /* Smooth transitions for filter dropdowns */
+        select {
+            transition: all 0.2s ease;
+        }
+        select:focus {
+            transform: translateY(-1px);
+        }
     </style>
 </head>
-<body class="text-gray-100">
+<body>
 
     <!-- Settings Modal -->
-    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="modal-dark rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="modal-light rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-white">⚙️ Admin - Pengaturan API</h3>
-                <button onclick="closeSettings()" class="text-gray-400 hover:text-white transition"><i class="fas fa-times text-xl"></i></button>
+                <h3 class="text-xl font-bold text-slate-900">⚙️ Admin - Pengaturan API</h3>
+                <button onclick="closeSettings()" class="text-gray-400 hover:text-slate-700 transition"><i class="fas fa-times text-xl"></i></button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Google Apps Script Web App URL</label>
-                    <input type="url" id="apiUrlInput" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm text-white placeholder-gray-500" placeholder="https://script.google.com/macros/s/.../exec">
-                    <p class="text-xs text-gray-500 mt-1">Hanya untuk admin. URL deployment Web App Code.gs</p>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Google Apps Script Web App URL</label>
+                    <input type="url" id="apiUrlInput" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-slate-900 placeholder-slate-400" placeholder="https://script.google.com/macros/s/.../exec">
+                    <p class="text-xs text-slate-500 mt-1">Hanya untuk admin. URL deployment Web App Code.gs</p>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="saveSettings()" class="flex-1 btn-primary text-white py-2 rounded-lg font-medium"><i class="fas fa-save mr-2"></i>Simpan</button>
-                    <button onclick="testConnection()" class="flex-1 btn-secondary text-white py-2 rounded-lg font-medium"><i class="fas fa-plug mr-2"></i>Test</button>
+                    <button onclick="testConnection()" class="flex-1 btn-secondary text-slate-700 py-2 rounded-lg font-medium"><i class="fas fa-plug mr-2"></i>Test</button>
                 </div>
                 <div id="testResult" class="hidden p-3 rounded-lg text-sm"></div>
             </div>
@@ -113,14 +262,14 @@
     </div>
 
     <!-- Header -->
-    <header class="gradient-header text-white shadow-lg z-40 backdrop-blur-md">
+    <header class="gradient-header shadow-sm z-40 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-3">
                     <div class="kpi-icon p-3 rounded-xl"><i class="fas fa-boxes-stacked text-2xl text-white"></i></div>
                     <div>
-                        <h1 class="text-2xl font-bold text-white">Luzie Group</h1>
-                        <p class="text-purple-200 text-sm">Asset Management Dashboard 2026</p>
+                        <h1 class="text-2xl font-bold text-slate-900">Luzie Group</h1>
+                        <p class="text-slate-600 text-sm">Asset Management Dashboard 2026</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -132,284 +281,284 @@
     </header>
 
     <!-- Main Content -->
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    
-    <div class="flex flex-col lg:flex-row gap-6">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
-        <!-- LEFT SIDEBAR - Filters & Search -->
-        <aside class="lg:w-80 flex-shrink-0 space-y-4 -ml-4 sm:-ml-6 lg:-ml-8 lg:sticky lg:top-24 z-30">
+        <div class="flex flex-col lg:flex-row gap-6">
             
-            <!-- Search Box -->
-            <div class="glass-panel rounded-xl p-4 shadow-lg">
-                <label class="block text-sm font-medium text-gray-300 mb-2">
-                    <i class="fas fa-search mr-2"></i>Pencarian
-                </label>
-                <input type="text" id="searchInput" 
-                    placeholder="Cari aset, merk, model, atau karyawan..." 
-                    class="search-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                    oninput="filterTable()">
-            </div>
+            <!-- LEFT SIDEBAR - Filters & Search -->
+            <aside class="lg:w-80 flex-shrink-0 space-y-4 -ml-4 sm:-ml-6 lg:-ml-8 lg:sticky lg:top-24 z-30">
+                
+                <!-- Search Box -->
+                <div class="glass-panel rounded-xl p-4 shadow-lg">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                        <i class="fas fa-search mr-2"></i>Pencarian
+                    </label>
+                    <input type="text" id="searchInput" 
+                        placeholder="Cari aset, merk, model, atau karyawan..." 
+                        class="search-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                        oninput="filterTable()">
+                </div>
 
-            <!-- Filters -->
-            <div class="glass-panel rounded-xl p-4 shadow-lg space-y-3">
-                <div class="flex items-center justify-between border-b border-gray-700 pb-2 mb-3">
-                    <h3 class="font-semibold text-white">
-                        <i class="fas fa-filter mr-2 text-purple-400"></i>Filter
+                <!-- Filters -->
+                <div class="glass-panel rounded-xl p-4 shadow-lg space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
+                        <h3 class="font-semibold text-slate-900">
+                            <i class="fas fa-filter mr-2 text-blue-600"></i>Filter
+                        </h3>
+                        <button onclick="resetFilters()" class="text-xs text-blue-600 hover:text-blue-700 transition">
+                            <i class="fas fa-undo mr-1"></i>Reset
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Status Aset</label>
+                        <select id="filterStatus" onchange="filterTable()" 
+                            class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Status</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Lokasi</label>
+                        <select id="filterLocation" onchange="filterTable()" 
+                            class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Lokasi</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Divisi</label>
+                        <select id="filterDivision" onchange="filterTable()" 
+                            class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Divisi</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Tipe Aset</label>
+                        <select id="filterType" onchange="filterTable()" 
+                            class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Tipe</option>
+                        </select>
+                    </div>
+
+                    <!-- Active Filters Info -->
+                    <div class="pt-3 border-t border-slate-200">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-600">Menampilkan</span>
+                            <span class="text-slate-900 font-semibold" id="showingText">0 aset</span>
+                        </div>
+                        <div class="text-xs text-blue-600 mt-1" id="lastUpdated">Diperbarui: -</div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats (Optional) -->
+                <div class="glass-panel rounded-xl p-4 shadow-lg">
+                    <h3 class="text-sm font-semibold text-slate-700 mb-3">
+                        <i class="fas fa-chart-pie mr-2 text-blue-600"></i>Ringkasan
                     </h3>
-                    <button onclick="resetFilters()" class="text-xs text-purple-400 hover:text-purple-300 transition">
-                        <i class="fas fa-undo mr-1"></i>Reset
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Terpakai</span>
+                            <span class="text-emerald-600 font-medium" id="sidebarActiveCount">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Tersedia</span>
+                            <span class="text-blue-600 font-medium" id="sidebarAvailableCount">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Rusak</span>
+                            <span class="text-rose-600 font-medium" id="sidebarDamagedCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- RIGHT CONTENT - KPIs, Charts, Table -->
+            <div class="flex-1 space-y-6">
+                
+                <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
+                    <div class="loading-spinner mb-4"></div>
+                    <p class="text-slate-600">Memuat data aset...</p>
+                </div>
+                
+                <div id="errorState" class="hidden glass-panel rounded-xl p-6 text-center border-rose-300">
+                    <i class="fas fa-exclamation-triangle text-rose-500 text-4xl mb-3"></i>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Gagal Memuat Data</h3>
+                    <p class="text-slate-600 text-sm mb-4" id="errorMessage">Periksa koneksi internet atau hubungi admin.</p>
+                    <button onclick="retryLoad()" class="btn-primary text-white px-4 py-2 rounded-lg mr-2">
+                        <i class="fas fa-redo mr-2"></i>Coba Lagi
+                    </button>
+                    <button onclick="openSettings()" class="btn-secondary text-slate-700 px-4 py-2 rounded-lg hidden" id="adminErrorBtn">
+                        <i class="fas fa-cog mr-2"></i>Admin
                     </button>
                 </div>
-                
-                <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Status Aset</label>
-                    <select id="filterStatus" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
-                        <option value="">Semua Status</option>
-                    </select>
-                </div>
 
-                <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Lokasi</label>
-                    <select id="filterLocation" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
-                        <option value="">Semua Lokasi</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Divisi</label>
-                    <select id="filterDivision" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
-                        <option value="">Semua Divisi</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Tipe Aset</label>
-                    <select id="filterType" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
-                        <option value="">Semua Tipe</option>
-                    </select>
-                </div>
-
-                <!-- Active Filters Info -->
-                <div class="pt-3 border-t border-gray-700">
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-gray-400">Menampilkan</span>
-                        <span class="text-white font-semibold" id="showingText">0 aset</span>
-                    </div>
-                    <div class="text-xs text-purple-400 mt-1" id="lastUpdated">Diperbarui: -</div>
-                </div>
-            </div>
-
-            <!-- Quick Stats (Optional) -->
-            <div class="glass-panel rounded-xl p-4 shadow-lg">
-                <h3 class="text-sm font-semibold text-gray-300 mb-3">
-                    <i class="fas fa-chart-pie mr-2 text-purple-400"></i>Ringkasan
-                </h3>
-                <div class="space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Terpakai</span>
-                        <span class="text-emerald-400 font-medium" id="sidebarActiveCount">0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Tersedia</span>
-                        <span class="text-blue-400 font-medium" id="sidebarAvailableCount">0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Rusak</span>
-                        <span class="text-red-400 font-medium" id="sidebarDamagedCount">0</span>
-                    </div>
-                </div>
-            </div>
-
-        </aside>
-
-        <!-- RIGHT CONTENT - KPIs, Charts, Table -->
-        <div class="flex-1 space-y-6">
-            
-            <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
-                <div class="loading-spinner mb-4"></div>
-                <p class="text-gray-400">Memuat data aset...</p>
-            </div>
-            
-            <div id="errorState" class="hidden glass-panel rounded-xl p-6 text-center border-red-500/30">
-                <i class="fas fa-exclamation-triangle text-red-400 text-4xl mb-3"></i>
-                <h3 class="text-lg font-semibold text-white mb-2">Gagal Memuat Data</h3>
-                <p class="text-gray-400 text-sm mb-4" id="errorMessage">Periksa koneksi internet atau hubungi admin.</p>
-                <button onclick="retryLoad()" class="btn-primary text-white px-4 py-2 rounded-lg mr-2">
-                    <i class="fas fa-redo mr-2"></i>Coba Lagi
-                </button>
-                <button onclick="openSettings()" class="btn-secondary text-white px-4 py-2 rounded-lg hidden" id="adminErrorBtn">
-                    <i class="fas fa-cog mr-2"></i>Admin
-                </button>
-            </div>
-
-            <div id="dashboardContent" class="hidden space-y-6">
-                
-                <!-- KPI Cards -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-purple-500">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Total Aset</p>
-                                <h3 class="text-3xl font-bold text-white mt-1" id="kpiTotal">0</h3>
+                <div id="dashboardContent" class="hidden space-y-6">
+                    
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Aset</p>
+                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiTotal">0</h3>
+                                </div>
+                                <div class="bg-blue-100 p-2 rounded-lg">
+                                    <i class="fas fa-cubes text-blue-600"></i>
+                                </div>
                             </div>
-                            <div class="bg-purple-500/20 p-2 rounded-lg">
-                                <i class="fas fa-cubes text-purple-400"></i>
+                            <p class="text-xs text-slate-500 mt-2" id="kpiTotalLabel">Semua aset</p>
+                        </div>
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-emerald-600">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Terpakai</p>
+                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiActive">0</h3>
+                                </div>
+                                <div class="bg-emerald-100 p-2 rounded-lg">
+                                    <i class="fas fa-check-circle text-emerald-600"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2" id="kpiActivePercent">0% dari total</p>
+                        </div>
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
+                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiDivisions">0</h3>
+                                </div>
+                                <div class="bg-blue-100 p-2 rounded-lg">
+                                    <i class="fas fa-building text-blue-600"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2">Dalam hasil filter</p>
+                        </div>
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-amber-500">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
+                                    <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpiValue">Rp0</h3>
+                                </div>
+                                <div class="bg-amber-100 p-2 rounded-lg">
+                                    <i class="fas fa-money-bill-wave text-amber-600"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2" id="kpiValueLabel">Harga beli total</p>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="chart-grid">
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-chart-pie text-blue-600"></i>Kategori Aset
+                            </h3>
+                            <div class="h-64">
+                                <canvas id="categoryChart"></canvas>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2" id="kpiTotalLabel">Semua aset</p>
-                    </div>
-                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-emerald-500">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Terpakai</p>
-                                <h3 class="text-3xl font-bold text-white mt-1" id="kpiActive">0</h3>
-                            </div>
-                            <div class="bg-emerald-500/20 p-2 rounded-lg">
-                                <i class="fas fa-check-circle text-emerald-400"></i>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-chart-bar text-blue-600"></i>Aset per Lokasi
+                            </h3>
+                            <div class="h-64">
+                                <canvas id="locationChart"></canvas>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2" id="kpiActivePercent">0% dari total</p>
-                    </div>
-                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-blue-500">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
-                                <h3 class="text-3xl font-bold text-white mt-1" id="kpiDivisions">0</h3>
-                            </div>
-                            <div class="bg-blue-500/20 p-2 rounded-lg">
-                                <i class="fas fa-building text-blue-400"></i>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-laptop text-blue-600"></i>Tipe Aset
+                            </h3>
+                            <div class="h-64">
+                                <canvas id="typeChart"></canvas>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Dalam hasil filter</p>
-                    </div>
-                    <div class="kpi-card glass-panel rounded-xl p-5 border-l-4 border-amber-500">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-gray-400 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
-                                <h3 class="text-2xl font-bold text-white mt-1" id="kpiValue">Rp0</h3>
-                            </div>
-                            <div class="bg-amber-500/20 p-2 rounded-lg">
-                                <i class="fas fa-money-bill-wave text-amber-400"></i>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-info-circle text-blue-600"></i>Status Aset
+                            </h3>
+                            <div class="h-64">
+                                <canvas id="statusChart"></canvas>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2" id="kpiValueLabel">Harga beli total</p>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-heartbeat text-blue-600"></i>Kondisi Aset
+                            </h3>
+                            <div class="h-64">
+                                <canvas id="conditionChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-tags text-blue-600"></i>Top 10 Merk
+                            </h3>
+                            <div class="h-64">
+                                <canvas id="merkChart"></canvas>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Charts -->
-                <div class="chart-grid">
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-chart-pie text-purple-400"></i>Kategori Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="categoryChart"></canvas>
+                    <!-- Data Table -->
+                    <div class="glass-panel rounded-xl shadow-lg overflow-hidden">
+                        <div class="table-container">
+                            <table class="w-full text-sm text-left">
+                                <thead class="font-semibold text-xs uppercase sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-3 border-b border-slate-200">No</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Inventory</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Tipe</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Merk/Model</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Spesifikasi</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Lokasi</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Karyawan</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Divisi</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Status</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Kondisi</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Harga Beli</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody" class="divide-y divide-slate-200"></tbody>
+                            </table>
                         </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-chart-bar text-purple-400"></i>Aset per Lokasi
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="locationChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-laptop text-purple-400"></i>Tipe Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="typeChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-info-circle text-purple-400"></i>Status Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="statusChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-heartbeat text-purple-400"></i>Kondisi Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="conditionChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-tags text-purple-400"></i>Top 10 Merk
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="merkChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Data Table -->
-                <div class="glass-panel rounded-xl shadow-lg overflow-hidden">
-                    <div class="table-container">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-gray-400 font-semibold text-xs uppercase sticky top-0">
-                                <tr>
-                                    <th class="px-4 py-3 border-b border-gray-700">No</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Inventory</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Tipe</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Merk/Model</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Spesifikasi</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Lokasi</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Karyawan</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Divisi</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Status</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Kondisi</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Harga Beli</th>
-                                    <th class="px-4 py-3 border-b border-gray-700">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody" class="divide-y divide-gray-700/50"></tbody>
-                        </table>
-                    </div>
-                    <div class="bg-gray-800/50 px-4 py-3 border-t border-gray-700 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <button onclick="changePage(-1)" id="prevBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <span class="text-sm text-gray-400">
-                                Halaman <span id="currentPage" class="font-semibold text-white">1</span> dari 
-                                <span id="totalPages" class="text-white">1</span>
-                            </span>
-                            <button onclick="changePage(1)" id="nextBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-gray-500">Baris per halaman:</span>
-                            <select id="rowsPerPage" onchange="changeRowsPerPage()" 
-                                class="text-sm rounded-lg px-2 py-1 bg-gray-800 border border-gray-600 text-white">
-                                <option value="30" selected>30</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
+                        <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <button onclick="changePage(-1)" id="prevBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="text-sm text-slate-600">
+                                    Halaman <span id="currentPage" class="font-semibold text-slate-900">1</span> dari 
+                                    <span id="totalPages" class="text-slate-900">1</span>
+                                </span>
+                                <button onclick="changePage(1)" id="nextBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-slate-500">Baris per halaman:</span>
+                                <select id="rowsPerPage" onchange="changeRowsPerPage()" 
+                                    class="text-sm rounded-lg px-2 py-1 bg-white border border-slate-300 text-slate-900">
+                                    <option value="30" selected>30</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
     <!-- Asset Detail Modal -->
-    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="modal-dark rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all">
-            <div class="sticky top-0 border-b border-gray-700 px-6 py-4 flex justify-between items-center bg-gray-800/50">
-                <h3 class="text-xl font-bold text-white">Detail Aset</h3>
-                <button onclick="closeDetail()" class="text-gray-400 hover:text-white transition"><i class="fas fa-times text-xl"></i></button>
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="modal-light rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all">
+            <div class="sticky top-0 border-b border-slate-200 px-6 py-4 flex justify-between items-center bg-slate-50">
+                <h3 class="text-xl font-bold text-slate-900">Detail Aset</h3>
+                <button onclick="closeDetail()" class="text-gray-400 hover:text-slate-700 transition"><i class="fas fa-times text-xl"></i></button>
             </div>
             <div id="detailContent" class="p-6"></div>
         </div>
@@ -428,7 +577,7 @@
         let retryCount = 0;
         const MAX_RETRIES = 3;
 
-        const CHART_COLORS = ['#8b5cf6', '#06b6d4', '#ec4899', '#10b981', '#f59e0b', '#3b82f6', '#f97316', '#84cc16'];
+        const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!API_URL || API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
@@ -502,8 +651,13 @@
         function showTestResult(message, type) {
             const el = document.getElementById('testResult');
             el.textContent = message;
-            el.classList.remove('hidden', 'bg-green-900/50', 'text-green-400', 'bg-red-900/50', 'text-red-400', 'bg-yellow-900/50', 'text-yellow-400', 'bg-gray-800', 'text-gray-400');
-            const styles = { success: 'bg-green-900/50 text-green-400 border border-green-500/30', error: 'bg-red-900/50 text-red-400 border border-red-500/30', warning: 'bg-yellow-900/50 text-yellow-400 border border-yellow-500/30', loading: 'bg-gray-800 text-gray-400 border border-gray-600' };
+            el.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800', 'bg-amber-100', 'text-amber-800', 'bg-slate-100', 'text-slate-600');
+            const styles = { 
+                success: 'bg-emerald-100 text-emerald-800 border border-emerald-300', 
+                error: 'bg-rose-100 text-rose-800 border border-rose-300', 
+                warning: 'bg-amber-100 text-amber-800 border border-amber-300', 
+                loading: 'bg-slate-100 text-slate-600 border border-slate-300' 
+            };
             el.classList.add(...styles[type].split(' '));
         }
 
@@ -602,6 +756,8 @@
         function updateKPIs() {
             const total = filteredData.length;
             const active = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('terpakai')).length;
+            const available = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('tersedia')).length;
+            const damaged = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('rusak')).length;
             const divisions = new Set(filteredData.map(d => d['Divisi Karyawan']).filter(Boolean)).size;
             const totalValue = filteredData.reduce((sum, d) => sum + (parseFloat(d['Harga Beli']) || 0), 0);
             
@@ -609,6 +765,11 @@
             document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
             document.getElementById('kpiDivisions').textContent = divisions;
             document.getElementById('kpiValue').textContent = formatCurrency(totalValue);
+            
+            // Update sidebar stats
+            document.getElementById('sidebarActiveCount').textContent = active;
+            document.getElementById('sidebarAvailableCount').textContent = available;
+            document.getElementById('sidebarDamagedCount').textContent = damaged;
             
             const hasFilters = document.getElementById('searchInput').value || document.getElementById('filterStatus').value ||
                              document.getElementById('filterLocation').value || document.getElementById('filterDivision').value ||
@@ -678,7 +839,10 @@
         function updateShowingText() {
             const start = (currentPage - 1) * rowsPerPage + 1;
             const end = Math.min(currentPage * rowsPerPage, filteredData.length);
-            document.getElementById('showingText').textContent = `Menampilkan ${filteredData.length > 0 ? start : 0}-${end} dari ${filteredData.length} aset`;
+            const showingText = filteredData.length > 0 ? `${start}-${end} dari ${filteredData.length}` : '0';
+            
+            // Update both locations (sidebar and table footer if needed)
+            document.getElementById('showingText').textContent = `${showingText} aset`;
         }
 
         function renderTable() {
@@ -689,25 +853,25 @@
             
             pageData.forEach((row, idx) => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-purple-500/5 transition border-b border-gray-700/50 fade-in';
+                tr.className = 'hover:bg-blue-50 transition border-b border-slate-200 fade-in';
                 tr.style.animationDelay = (idx * 0.05) + 's';
                 
                 const status = row['Status Aset'] || '';
                 const condition = row['Kondisi Aset'] || '';
                 
                 tr.innerHTML = `
-                    <td class="px-4 py-3 font-medium text-white">${row['No'] || ''}</td>
-                    <td class="px-4 py-3 text-gray-400 font-mono text-xs">${row['NO Inventory'] || ''}</td>
-                    <td class="px-4 py-3"><span class="inline-flex items-center gap-1">${getTypeIcon(row['Tipe Aset'])}<span class="text-gray-300">${row['Tipe Aset'] || ''}</span></span></td>
-                    <td class="px-4 py-3"><div class="font-medium text-white">${row['Merk'] || ''}</div><div class="text-xs text-gray-500">${row['Model Tipe Aset'] || ''}</div></td>
-                    <td class="px-4 py-3 text-xs text-gray-400 max-w-xs truncate" title="${row['Seri/Spesifikasi'] || ''}">${row['Seri/Spesifikasi'] || ''}</td>
-                    <td class="px-4 py-3 text-gray-300">${row['Lokasi Aset'] || ''}</td>
-                    <td class="px-4 py-3"><div class="font-medium text-white">${row['Nama Karyawan'] || '-'}</div></td>
+                    <td class="px-4 py-3 font-medium text-slate-900">${row['No'] || ''}</td>
+                    <td class="px-4 py-3 text-slate-600 font-mono text-xs">${row['NO Inventory'] || ''}</td>
+                    <td class="px-4 py-3"><span class="inline-flex items-center gap-1">${getTypeIcon(row['Tipe Aset'])}<span class="text-slate-700">${row['Tipe Aset'] || ''}</span></span></td>
+                    <td class="px-4 py-3"><div class="font-medium text-slate-900">${row['Merk'] || ''}</div><div class="text-xs text-slate-500">${row['Model Tipe Aset'] || ''}</div></td>
+                    <td class="px-4 py-3 text-xs text-slate-600 max-w-xs truncate" title="${row['Seri/Spesifikasi'] || ''}">${row['Seri/Spesifikasi'] || ''}</td>
+                    <td class="px-4 py-3 text-slate-700">${row['Lokasi Aset'] || ''}</td>
+                    <td class="px-4 py-3"><div class="font-medium text-slate-900">${row['Nama Karyawan'] || '-'}</div></td>
                     <td class="px-4 py-3"><span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDivisionBadge(row['Divisi Karyawan'])}">${row['Divisi Karyawan'] || '-'}</span></td>
                     <td class="px-4 py-3"><span class="status-badge ${getStatusClass(status)}">${status || '-'}</span></td>
                     <td class="px-4 py-3"><span class="text-xs ${getConditionColor(condition)}">${condition || '-'}</span></td>
-                    <td class="px-4 py-3 font-medium text-gray-300">${formatCurrency(row['Harga Beli'])}</td>
-                    <td class="px-4 py-3"><button onclick="showDetail(${start + idx})" class="text-purple-400 hover:text-purple-300 p-2 hover:bg-purple-500/10 rounded-lg transition"><i class="fas fa-eye"></i></button></td>
+                    <td class="px-4 py-3 font-medium text-slate-700">${formatCurrency(row['Harga Beli'])}</td>
+                    <td class="px-4 py-3"><button onclick="showDetail(${start + idx})" class="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-100 rounded-lg transition"><i class="fas fa-eye"></i></button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -721,33 +885,33 @@
             if (s.includes('terpakai')) return 'status-terpakai';
             if (s.includes('tersedia')) return 'status-tersedia';
             if (s.includes('rusak')) return 'status-rusak';
-            return 'bg-gray-700 text-gray-400 border border-gray-600';
+            return 'bg-slate-200 text-slate-600 border border-slate-300';
         }
 
         function getConditionColor(condition) {
             const c = (condition || '').toLowerCase();
-            if (c.includes('baik')) return 'text-emerald-400 font-medium';
-            if (c.includes('rusak')) return 'text-red-400 font-medium';
-            if (c.includes('perbaikan')) return 'text-amber-400 font-medium';
-            return 'text-gray-500';
+            if (c.includes('baik')) return 'text-emerald-600 font-medium';
+            if (c.includes('rusak')) return 'text-rose-600 font-medium';
+            if (c.includes('perbaikan')) return 'text-amber-600 font-medium';
+            return 'text-slate-500';
         }
 
         function getDivisionBadge(division) {
             const d = (division || '').toLowerCase();
-            if (d.includes('host live')) return 'bg-pink-500/20 text-pink-400 border border-pink-500/30';
-            if (d.includes('kreatif')) return 'bg-purple-500/20 text-purple-400 border border-purple-500/30';
-            return 'bg-gray-700 text-gray-400 border border-gray-600';
+            if (d.includes('host live')) return 'bg-pink-100 text-pink-700 border border-pink-300';
+            if (d.includes('kreatif')) return 'bg-purple-100 text-purple-700 border border-purple-300';
+            return 'bg-slate-200 text-slate-600 border border-slate-300';
         }
 
         function getTypeIcon(type) {
             const t = (type || '').toLowerCase();
-            if (t.includes('hp') || t.includes('phone')) return '<i class="fas fa-mobile-alt text-blue-400"></i>';
-            if (t.includes('laptop')) return '<i class="fas fa-laptop text-purple-400"></i>';
-            if (t.includes('pc')) return '<i class="fas fa-desktop text-gray-400"></i>';
-            if (t.includes('monitor')) return '<i class="fas fa-tv text-green-400"></i>';
-            if (t.includes('ups')) return '<i class="fas fa-battery-full text-yellow-400"></i>';
-            if (t.includes('headphone')) return '<i class="fas fa-headphones text-pink-400"></i>';
-            return '<i class="fas fa-box text-gray-500"></i>';
+            if (t.includes('hp') || t.includes('phone')) return '<i class="fas fa-mobile-alt text-blue-600"></i>';
+            if (t.includes('laptop')) return '<i class="fas fa-laptop text-blue-600"></i>';
+            if (t.includes('pc')) return '<i class="fas fa-desktop text-slate-600"></i>';
+            if (t.includes('monitor')) return '<i class="fas fa-tv text-emerald-600"></i>';
+            if (t.includes('ups')) return '<i class="fas fa-battery-full text-amber-600"></i>';
+            if (t.includes('headphone')) return '<i class="fas fa-headphones text-pink-600"></i>';
+            return '<i class="fas fa-box text-slate-500"></i>';
         }
 
         function formatCurrency(value) {
@@ -783,15 +947,11 @@
 
         // ─── TOOLTIP HELPERS ────────────────────────────────────────────────────────
 
-        /**
-         * Shared tooltip styling used across all charts.
-         * Dark glass look that matches the dashboard theme.
-         */
         const tooltipDefaults = {
-            backgroundColor: 'rgba(15, 23, 42, 0.92)',
-            titleColor: '#e2e8f0',
-            bodyColor: '#94a3b8',
-            borderColor: 'rgba(139, 92, 246, 0.4)',
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#e2e8f0',
+            borderColor: 'rgba(59, 130, 246, 0.3)',
             borderWidth: 1,
             padding: 12,
             cornerRadius: 10,
@@ -804,10 +964,6 @@
             usePointStyle: true,
         };
 
-        /**
-         * Tooltip callback for PIE / DOUGHNUT charts.
-         * Shows:  Label — 42 aset (35.5%)
-         */
         function pieTooltipCallbacks() {
             return {
                 label: function(context) {
@@ -820,10 +976,6 @@
             };
         }
 
-        /**
-         * Tooltip callback for BAR charts (vertical & horizontal).
-         * Shows:  42 aset (35.5% dari total)
-         */
         function barTooltipCallbacks() {
             return {
                 label: function(context) {
@@ -836,20 +988,16 @@
             };
         }
 
-        // ─── BASE OPTIONS ────────────────────────────────────────────────────────────
-
         function getChartOptions() {
             return {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+                    legend: { labels: { color: '#64748b', font: { size: 11 } } },
                     tooltip: tooltipDefaults
                 }
             };
         }
-
-        // ─── CHART RENDERERS ─────────────────────────────────────────────────────────
 
         function renderCharts() {
             renderCategoryChart();
@@ -872,7 +1020,7 @@
                     ...getChartOptions(),
                     plugins: {
                         ...getChartOptions().plugins,
-                        legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } } },
+                        legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } },
                         tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
                     }
                 }
@@ -885,8 +1033,8 @@
             filteredData.forEach(d => { const loc = d['Lokasi Aset'] || 'Unknown'; locations[loc] = (locations[loc] || 0) + 1; });
             if (charts.location) charts.location.destroy();
             const BAR_COLORS = [
-                '#8b5cf6', '#06b6d4', '#ec4899', '#10b981',
-                '#f59e0b', '#3b82f6', '#f97316', '#84cc16',
+                '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+                '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1',
                 '#a78bfa', '#22d3ee', '#fb7185', '#34d399',
                 '#fbbf24', '#60a5fa', '#fb923c', '#a3e635'
             ];
@@ -894,7 +1042,7 @@
             const bgColors = Array.from({ length: barCount }, (_, i) => BAR_COLORS[i % BAR_COLORS.length]);
             charts.location = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset', data: Object.values(locations), backgroundColor: bgColors, borderRadius: 6 }] },
+                data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset',  Object.values(locations), backgroundColor: bgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
                     plugins: {
@@ -902,8 +1050,8 @@
                         tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() }
                     },
                     scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } }
                     }
                 }
             });
@@ -916,12 +1064,12 @@
             if (charts.type) charts.type.destroy();
             charts.type = new Chart(ctx, {
                 type: 'pie',
-                data: { labels: Object.keys(types), datasets: [{ data: Object.values(types), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
+                 { labels: Object.keys(types), datasets: [{  Object.values(types), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
                 options: {
                     ...getChartOptions(),
                     plugins: {
                         ...getChartOptions().plugins,
-                        legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 10 } } },
+                        legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 10 } } },
                         tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
                     }
                 }
@@ -937,12 +1085,12 @@
             const bgColors = Object.keys(statuses).map(s => statusColors[s] || '#6b7280');
             charts.status = new Chart(ctx, {
                 type: 'doughnut',
-                data: { labels: Object.keys(statuses), datasets: [{ data: Object.values(statuses), backgroundColor: bgColors, borderWidth: 0 }] },
+                data: { labels: Object.keys(statuses), datasets: [{  Object.values(statuses), backgroundColor: bgColors, borderWidth: 0 }] },
                 options: {
                     ...getChartOptions(),
                     plugins: {
                         ...getChartOptions().plugins,
-                        legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } } },
+                        legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } },
                         tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
                     }
                 }
@@ -958,7 +1106,7 @@
             const bgColors = Object.keys(conditions).map(c => condColors[c] || '#6b7280');
             charts.condition = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: Object.keys(conditions), datasets: [{ label: 'Jumlah', data: Object.values(conditions), backgroundColor: bgColors, borderRadius: 6 }] },
+                 { labels: Object.keys(conditions), datasets: [{ label: 'Jumlah',  Object.values(conditions), backgroundColor: bgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
                     plugins: {
@@ -966,8 +1114,8 @@
                         tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() }
                     },
                     scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        x: { ticks: { color: '#64748b' }, grid: { display: false } }
                     }
                 }
             });
@@ -981,13 +1129,12 @@
             if (charts.merk) charts.merk.destroy();
 
             const MERK_COLORS = [
-                '#8b5cf6', '#06b6d4', '#ec4899', '#10b981',
-                '#f59e0b', '#3b82f6', '#f97316', '#84cc16',
+                '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+                '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1',
                 '#a78bfa', '#22d3ee'
             ];
             const merkBgColors = sortedMerks.map((_, i) => MERK_COLORS[i % MERK_COLORS.length]);
 
-            // Horizontal bar needs a different callback because parsed axis is .x not .y
             const horizontalBarCallbacks = {
                 label: function(context) {
                     const allValues = context.dataset.data;
@@ -1000,7 +1147,7 @@
 
             charts.merk = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: merkBgColors, borderRadius: 6 }] },
+                 { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset',  sortedMerks.map(m => m[1]), backgroundColor: merkBgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
                     indexAxis: 'y',
@@ -1009,8 +1156,8 @@
                         tooltip: { ...tooltipDefaults, callbacks: horizontalBarCallbacks }
                     },
                     scales: {
-                        x: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        y: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                        x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y: { ticks: { color: '#64748b' }, grid: { display: false } }
                     }
                 }
             });
@@ -1037,13 +1184,13 @@
             fields.forEach(([key, label, formatter]) => {
                 const value = data[key];
                 if (value !== '' && value !== null && value !== undefined) {
-                    html += `<div class="bg-gray-800/50 rounded-lg p-3 border border-gray-700"><label class="text-xs font-medium text-gray-500 uppercase">${label}</label><div class="text-sm font-medium text-white mt-1">${formatter ? formatter(value) : value}</div></div>`;
+                    html += `<div class="bg-slate-50 rounded-lg p-3 border border-slate-200"><label class="text-xs font-medium text-slate-500 uppercase">${label}</label><div class="text-sm font-medium text-slate-900 mt-1">${formatter ? formatter(value) : value}</div></div>`;
                 }
             });
             html += '</div>';
             
             if (data['Link']) {
-                html += `<div class="mt-4"><a href="${data['Link']}" target="_blank" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium"><i class="fas fa-external-link-alt"></i>Lihat Dokumen/Link Terkait</a></div>`;
+                html += `<div class="mt-4"><a href="${data['Link']}" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"><i class="fas fa-external-link-alt"></i>Lihat Dokumen/Link Terkait</a></div>`;
             }
             
             content.innerHTML = html;
