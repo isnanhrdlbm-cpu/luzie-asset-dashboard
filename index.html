@@ -568,7 +568,7 @@
     <div class="admin-hint">Ctrl+Shift+A for Admin</div>
 
     <script>
-        let API_URL = localStorage.getItem('assetApiUrl') || 'YOUR_APPS_SCRIPT_URL_HERE';
+        let API_URL = localStorage.getItem('assetApiUrl') || 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec';
         let allData = [];
         let filteredData = [];
         let currentPage = 1;
@@ -580,7 +580,7 @@
         const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (!API_URL || API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+            if (!API_URL || API_URL === 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec') {
                 openSettings();
             } else {
                 loadData();
@@ -591,7 +591,6 @@
             });
         });
 
-        // SECRET ADMIN SHORTCUT: Ctrl+Shift+A
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.shiftKey && e.key === 'A') {
                 e.preventDefault();
@@ -662,7 +661,7 @@
         }
 
         async function loadData() {
-            if (!API_URL || API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { openSettings(); return; }
+            if (!API_URL || API_URL === 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec') { openSettings(); return; }
             showLoading(true);
             
             try {
@@ -706,7 +705,7 @@
                 }
                 
                 showError('Gagal memuat data setelah ' + MAX_RETRIES + ' percobaan. Error: ' + error.message + 
-                         '. Pastikan: 1) Koneksi internet aktif, 2) URL API benar, 3) Deployment Apps Script "Anyone" (bukan "Anyone with Google account")');
+                         '. Pastikan: 1) Koneksi internet aktif, 2) URL API benar, 3) Deployment Apps Script "Anyone"');
                 document.getElementById('adminErrorBtn').classList.remove('hidden');
             }
         }
@@ -766,7 +765,6 @@
             document.getElementById('kpiDivisions').textContent = divisions;
             document.getElementById('kpiValue').textContent = formatCurrency(totalValue);
             
-            // Update sidebar stats
             document.getElementById('sidebarActiveCount').textContent = active;
             document.getElementById('sidebarAvailableCount').textContent = available;
             document.getElementById('sidebarDamagedCount').textContent = damaged;
@@ -840,8 +838,6 @@
             const start = (currentPage - 1) * rowsPerPage + 1;
             const end = Math.min(currentPage * rowsPerPage, filteredData.length);
             const showingText = filteredData.length > 0 ? `${start}-${end} dari ${filteredData.length}` : '0';
-            
-            // Update both locations (sidebar and table footer if needed)
             document.getElementById('showingText').textContent = `${showingText} aset`;
         }
 
@@ -945,8 +941,6 @@
             renderTable();
         }
 
-        // ─── TOOLTIP HELPERS ────────────────────────────────────────────────────────
-
         const tooltipDefaults = {
             backgroundColor: 'rgba(15, 23, 42, 0.95)',
             titleColor: '#ffffff',
@@ -1015,7 +1009,7 @@
             if (charts.category) charts.category.destroy();
             charts.category = new Chart(ctx, {
                 type: 'doughnut',
-                data: { labels: Object.keys(categories), datasets: [{ data: Object.values(categories), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
+                 { labels: Object.keys(categories), datasets: [{  Object.values(categories), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
                 options: {
                     ...getChartOptions(),
                     plugins: {
@@ -1032,23 +1026,15 @@
             const locations = {};
             filteredData.forEach(d => { const loc = d['Lokasi Aset'] || 'Unknown'; locations[loc] = (locations[loc] || 0) + 1; });
             if (charts.location) charts.location.destroy();
-            const BAR_COLORS = [
-                '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
-                '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1',
-                '#a78bfa', '#22d3ee', '#fb7185', '#34d399',
-                '#fbbf24', '#60a5fa', '#fb923c', '#a3e635'
-            ];
+            const BAR_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
             const barCount = Object.keys(locations).length;
             const bgColors = Array.from({ length: barCount }, (_, i) => BAR_COLORS[i % BAR_COLORS.length]);
             charts.location = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset',  Object.values(locations), backgroundColor: bgColors, borderRadius: 6 }] },
+                data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset', data: Object.values(locations), backgroundColor: bgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() }
-                    },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } },
                     scales: {
                         y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } }
@@ -1085,7 +1071,7 @@
             const bgColors = Object.keys(statuses).map(s => statusColors[s] || '#6b7280');
             charts.status = new Chart(ctx, {
                 type: 'doughnut',
-                data: { labels: Object.keys(statuses), datasets: [{  Object.values(statuses), backgroundColor: bgColors, borderWidth: 0 }] },
+                 { labels: Object.keys(statuses), datasets: [{ data: Object.values(statuses), backgroundColor: bgColors, borderWidth: 0 }] },
                 options: {
                     ...getChartOptions(),
                     plugins: {
@@ -1106,13 +1092,10 @@
             const bgColors = Object.keys(conditions).map(c => condColors[c] || '#6b7280');
             charts.condition = new Chart(ctx, {
                 type: 'bar',
-                 { labels: Object.keys(conditions), datasets: [{ label: 'Jumlah',  Object.values(conditions), backgroundColor: bgColors, borderRadius: 6 }] },
+                 { labels: Object.keys(conditions), datasets: [{ label: 'Jumlah', data: Object.values(conditions), backgroundColor: bgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() }
-                    },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } },
                     scales: {
                         y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         x: { ticks: { color: '#64748b' }, grid: { display: false } }
@@ -1128,11 +1111,7 @@
             const sortedMerks = Object.entries(merks).sort((a, b) => b[1] - a[1]).slice(0, 10);
             if (charts.merk) charts.merk.destroy();
 
-            const MERK_COLORS = [
-                '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
-                '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1',
-                '#a78bfa', '#22d3ee'
-            ];
+            const MERK_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
             const merkBgColors = sortedMerks.map((_, i) => MERK_COLORS[i % MERK_COLORS.length]);
 
             const horizontalBarCallbacks = {
@@ -1147,14 +1126,11 @@
 
             charts.merk = new Chart(ctx, {
                 type: 'bar',
-                 { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset',  sortedMerks.map(m => m[1]), backgroundColor: merkBgColors, borderRadius: 6 }] },
+                 { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: merkBgColors, borderRadius: 6 }] },
                 options: {
                     ...getChartOptions(),
                     indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { ...tooltipDefaults, callbacks: horizontalBarCallbacks }
-                    },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: horizontalBarCallbacks } },
                     scales: {
                         x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         y: { ticks: { color: '#64748b' }, grid: { display: false } }
