@@ -81,6 +81,15 @@
             color: #e11d48; 
             border: 1px solid rgba(244, 63, 94, 0.3); 
         }
+        .holding-badge {
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(139, 92, 246, 0.12);
+            color: #7c3aed;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
         .table-container { 
             overflow-x: auto; 
             -webkit-overflow-scrolling: touch; 
@@ -142,14 +151,10 @@
             gap: 1.5rem; 
         }
         @media (min-width: 1024px) { 
-            .chart-grid { 
-                grid-template-columns: repeat(2, 1fr); 
-            } 
+            .chart-grid { grid-template-columns: repeat(2, 1fr); } 
         }
         @media (min-width: 1280px) { 
-            .chart-grid { 
-                grid-template-columns: repeat(3, 1fr); 
-            } 
+            .chart-grid { grid-template-columns: repeat(3, 1fr); } 
         }
         .btn-primary { 
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
@@ -220,7 +225,6 @@
             color: rgba(0,0,0,0.1); 
             pointer-events: none; 
         }
-        /* Sidebar sticky on desktop */
         @media (min-width: 1024px) {
             aside {
                 position: sticky;
@@ -228,7 +232,6 @@
                 align-self: flex-start;
             }
         }
-        /* Smooth transitions for filter dropdowns */
         select {
             transition: all 0.2s ease;
         }
@@ -281,277 +284,244 @@
     </header>
 
     <!-- Main Content -->
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    
-    <div class="flex flex-col lg:flex-row gap-6">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
         
-        <!-- LEFT SIDEBAR - Filters & Search -->
-        <aside class="lg:w-80 flex-shrink-0 space-y-4 -ml-4 sm:-ml-6 lg:-ml-8 lg:sticky lg:top-24 z-30">
-            
-            <!-- Search Box -->
-            <div class="glass-panel rounded-xl p-4 shadow-lg">
-                <label class="block text-sm font-medium text-slate-700 mb-2">
-                    <i class="fas fa-search mr-2"></i>Pencarian
-                </label>
-                <input type="text" id="searchInput" 
-                    placeholder="Cari aset, merk, model, atau karyawan..." 
-                    class="search-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                    oninput="filterTable()">
-            </div>
+            <!-- LEFT SIDEBAR - Filters & Search -->
+            <aside class="lg:w-80 flex-shrink-0 space-y-4 -ml-4 sm:-ml-6 lg:-ml-8 lg:sticky lg:top-24 z-30">
+                
+                <!-- Search Box -->
+                <div class="glass-panel rounded-xl p-4 shadow-lg">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                        <i class="fas fa-search mr-2"></i>Pencarian
+                    </label>
+                    <input type="text" id="searchInput" 
+                        placeholder="Cari aset, merk, model, atau karyawan..." 
+                        class="search-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                        oninput="filterTable()">
+                </div>
 
-            <!-- Filters -->
-            <div class="glass-panel rounded-xl p-4 shadow-lg space-y-3">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
-                    <h3 class="font-semibold text-slate-900">
-                        <i class="fas fa-filter mr-2 text-blue-600"></i>Filter
+                <!-- Filters -->
+                <div class="glass-panel rounded-xl p-4 shadow-lg space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
+                        <h3 class="font-semibold text-slate-900">
+                            <i class="fas fa-filter mr-2 text-blue-600"></i>Filter
+                        </h3>
+                        <button onclick="resetFilters()" class="text-xs text-blue-600 hover:text-blue-700 transition">
+                            <i class="fas fa-undo mr-1"></i>Reset
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Status Aset</label>
+                        <select id="filterStatus" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Status</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Lokasi</label>
+                        <select id="filterLocation" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Lokasi</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Divisi</label>
+                        <select id="filterDivision" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Divisi</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Tipe Aset</label>
+                        <select id="filterType" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Tipe</option>
+                        </select>
+                    </div>
+
+                    <!-- ✅ NEW: Holding filter -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">
+                            <i class="fas fa-building-columns mr-1 text-violet-500"></i>Holding
+                        </label>
+                        <select id="filterHolding" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Semua Holding</option>
+                        </select>
+                    </div>
+
+                    <!-- Active Filters Info -->
+                    <div class="pt-3 border-t border-slate-200">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-600">Menampilkan</span>
+                            <span class="text-slate-900 font-semibold" id="showingText">0 aset</span>
+                        </div>
+                        <div class="text-xs text-blue-600 mt-1" id="lastUpdated">Diperbarui: -</div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="glass-panel rounded-xl p-4 shadow-lg">
+                    <h3 class="text-sm font-semibold text-slate-700 mb-3">
+                        <i class="fas fa-chart-pie mr-2 text-blue-600"></i>Ringkasan
                     </h3>
-                    <button onclick="resetFilters()" class="text-xs text-blue-600 hover:text-blue-700 transition">
-                        <i class="fas fa-undo mr-1"></i>Reset
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Terpakai</span>
+                            <span class="text-emerald-600 font-medium" id="sidebarActiveCount">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Tersedia</span>
+                            <span class="text-blue-600 font-medium" id="sidebarAvailableCount">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Rusak</span>
+                            <span class="text-rose-600 font-medium" id="sidebarDamagedCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- RIGHT CONTENT - KPIs, Charts, Table -->
+            <div class="flex-1 space-y-6">
+                
+                <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
+                    <div class="loading-spinner mb-4"></div>
+                    <p class="text-slate-600">Memuat data aset...</p>
+                </div>
+                
+                <div id="errorState" class="hidden glass-panel rounded-xl p-6 text-center border-rose-300">
+                    <i class="fas fa-exclamation-triangle text-rose-500 text-4xl mb-3"></i>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Gagal Memuat Data</h3>
+                    <p class="text-slate-600 text-sm mb-4" id="errorMessage">Periksa koneksi internet atau hubungi admin.</p>
+                    <button onclick="retryLoad()" class="btn-primary text-white px-4 py-2 rounded-lg mr-2">
+                        <i class="fas fa-redo mr-2"></i>Coba Lagi
+                    </button>
+                    <button onclick="openSettings()" class="btn-secondary text-slate-700 px-4 py-2 rounded-lg hidden" id="adminErrorBtn">
+                        <i class="fas fa-cog mr-2"></i>Admin
                     </button>
                 </div>
-                
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Status Aset</label>
-                    <select id="filterStatus" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                        <option value="">Semua Status</option>
-                    </select>
-                </div>
 
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Lokasi</label>
-                    <select id="filterLocation" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                        <option value="">Semua Lokasi</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Divisi</label>
-                    <select id="filterDivision" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                        <option value="">Semua Divisi</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Tipe Aset</label>
-                    <select id="filterType" onchange="filterTable()" 
-                        class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                        <option value="">Semua Tipe</option>
-                    </select>
-                </div>
-
-                <!-- Active Filters Info -->
-                <div class="pt-3 border-t border-slate-200">
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-600">Menampilkan</span>
-                        <span class="text-slate-900 font-semibold" id="showingText">0 aset</span>
-                    </div>
-                    <div class="text-xs text-blue-600 mt-1" id="lastUpdated">Diperbarui: -</div>
-                </div>
-            </div>
-
-            <!-- Quick Stats (Optional) -->
-            <div class="glass-panel rounded-xl p-4 shadow-lg">
-                <h3 class="text-sm font-semibold text-slate-700 mb-3">
-                    <i class="fas fa-chart-pie mr-2 text-blue-600"></i>Ringkasan
-                </h3>
-                <div class="space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-slate-600">Terpakai</span>
-                        <span class="text-emerald-600 font-medium" id="sidebarActiveCount">0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-600">Tersedia</span>
-                        <span class="text-blue-600 font-medium" id="sidebarAvailableCount">0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-600">Rusak</span>
-                        <span class="text-rose-600 font-medium" id="sidebarDamagedCount">0</span>
-                    </div>
-                </div>
-            </div>
-
-        </aside>
-
-        <!-- RIGHT CONTENT - KPIs, Charts, Table -->
-        <div class="flex-1 space-y-6">
-            
-            <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
-                <div class="loading-spinner mb-4"></div>
-                <p class="text-slate-600">Memuat data aset...</p>
-            </div>
-            
-            <div id="errorState" class="hidden glass-panel rounded-xl p-6 text-center border-rose-300">
-                <i class="fas fa-exclamation-triangle text-rose-500 text-4xl mb-3"></i>
-                <h3 class="text-lg font-semibold text-slate-900 mb-2">Gagal Memuat Data</h3>
-                <p class="text-slate-600 text-sm mb-4" id="errorMessage">Periksa koneksi internet atau hubungi admin.</p>
-                <button onclick="retryLoad()" class="btn-primary text-white px-4 py-2 rounded-lg mr-2">
-                    <i class="fas fa-redo mr-2"></i>Coba Lagi
-                </button>
-                <button onclick="openSettings()" class="btn-secondary text-slate-700 px-4 py-2 rounded-lg hidden" id="adminErrorBtn">
-                    <i class="fas fa-cog mr-2"></i>Admin
-                </button>
-            </div>
-
-            <div id="dashboardContent" class="hidden space-y-6">
-                
-                <!-- KPI Cards -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Aset</p>
-                                <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiTotal">0</h3>
+                <div id="dashboardContent" class="hidden space-y-6">
+                    
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Aset</p>
+                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiTotal">0</h3>
+                                </div>
+                                <div class="bg-blue-100 p-2 rounded-lg"><i class="fas fa-cubes text-blue-600"></i></div>
                             </div>
-                            <div class="bg-blue-100 p-2 rounded-lg">
-                                <i class="fas fa-cubes text-blue-600"></i>
-                            </div>
+                            <p class="text-xs text-slate-500 mt-2" id="kpiTotalLabel">Semua aset</p>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2" id="kpiTotalLabel">Semua aset</p>
-                    </div>
-                    <div class="kpi-card rounded-xl p-5 border-l-4 border-emerald-600">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Terpakai</p>
-                                <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiActive">0</h3>
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-emerald-600">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Terpakai</p>
+                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiActive">0</h3>
+                                </div>
+                                <div class="bg-emerald-100 p-2 rounded-lg"><i class="fas fa-check-circle text-emerald-600"></i></div>
                             </div>
-                            <div class="bg-emerald-100 p-2 rounded-lg">
-                                <i class="fas fa-check-circle text-emerald-600"></i>
-                            </div>
+                            <p class="text-xs text-slate-500 mt-2" id="kpiActivePercent">0% dari total</p>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2" id="kpiActivePercent">0% dari total</p>
-                    </div>
-                    <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
-                                <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiDivisions">0</h3>
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
+                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiDivisions">0</h3>
+                                </div>
+                                <div class="bg-blue-100 p-2 rounded-lg"><i class="fas fa-building text-blue-600"></i></div>
                             </div>
-                            <div class="bg-blue-100 p-2 rounded-lg">
-                                <i class="fas fa-building text-blue-600"></i>
-                            </div>
+                            <p class="text-xs text-slate-500 mt-2">Dalam hasil filter</p>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2">Dalam hasil filter</p>
-                    </div>
-                    <div class="kpi-card rounded-xl p-5 border-l-4 border-amber-500">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
-                                <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpiValue">Rp0</h3>
+                        <div class="kpi-card rounded-xl p-5 border-l-4 border-amber-500">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
+                                    <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpiValue">Rp0</h3>
+                                </div>
+                                <div class="bg-amber-100 p-2 rounded-lg"><i class="fas fa-money-bill-wave text-amber-600"></i></div>
                             </div>
-                            <div class="bg-amber-100 p-2 rounded-lg">
-                                <i class="fas fa-money-bill-wave text-amber-600"></i>
-                            </div>
+                            <p class="text-xs text-slate-500 mt-2" id="kpiValueLabel">Harga beli total</p>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2" id="kpiValueLabel">Harga beli total</p>
                     </div>
-                </div>
 
-                <!-- Charts -->
-                <div class="chart-grid">
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                            <i class="fas fa-chart-pie text-blue-600"></i>Kategori Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="categoryChart"></canvas>
+                    <!-- Charts -->
+                    <div class="chart-grid">
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-chart-pie text-blue-600"></i>Kategori Aset</h3>
+                            <div class="h-64"><canvas id="categoryChart"></canvas></div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-chart-bar text-blue-600"></i>Aset per Lokasi</h3>
+                            <div class="h-64"><canvas id="locationChart"></canvas></div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-laptop text-blue-600"></i>Tipe Aset</h3>
+                            <div class="h-64"><canvas id="typeChart"></canvas></div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-info-circle text-blue-600"></i>Status Aset</h3>
+                            <div class="h-64"><canvas id="statusChart"></canvas></div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-heartbeat text-blue-600"></i>Kondisi Aset</h3>
+                            <div class="h-64"><canvas id="conditionChart"></canvas></div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg">
+                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-tags text-blue-600"></i>Top 10 Merk</h3>
+                            <div class="h-64"><canvas id="merkChart"></canvas></div>
                         </div>
                     </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                            <i class="fas fa-chart-bar text-blue-600"></i>Aset per Lokasi
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="locationChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                            <i class="fas fa-laptop text-blue-600"></i>Tipe Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="typeChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                            <i class="fas fa-info-circle text-blue-600"></i>Status Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="statusChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                            <i class="fas fa-heartbeat text-blue-600"></i>Kondisi Aset
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="conditionChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel rounded-xl p-5 shadow-lg">
-                        <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                            <i class="fas fa-tags text-blue-600"></i>Top 10 Merk
-                        </h3>
-                        <div class="h-64">
-                            <canvas id="merkChart"></canvas>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Data Table -->
-                <div class="glass-panel rounded-xl shadow-lg overflow-hidden">
-                    <div class="table-container">
-                        <table class="w-full text-sm text-left">
-                            <thead class="font-semibold text-xs uppercase sticky top-0">
-                                <tr>
-                                    <th class="px-4 py-3 border-b border-slate-200">No</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Inventory</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Tipe</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Merk/Model</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Spesifikasi</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Lokasi</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Karyawan</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Divisi</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Status</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Kondisi</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Harga Beli</th>
-                                    <th class="px-4 py-3 border-b border-slate-200">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody" class="divide-y divide-slate-200"></tbody>
-                        </table>
-                    </div>
-                    <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <button onclick="changePage(-1)" id="prevBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <span class="text-sm text-slate-600">
-                                Halaman <span id="currentPage" class="font-semibold text-slate-900">1</span> dari 
-                                <span id="totalPages" class="text-slate-900">1</span>
-                            </span>
-                            <button onclick="changePage(1)" id="nextBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
+                    <!-- Data Table -->
+                    <div class="glass-panel rounded-xl shadow-lg overflow-hidden">
+                        <div class="table-container">
+                            <table class="w-full text-sm text-left">
+                                <thead class="font-semibold text-xs uppercase sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-3 border-b border-slate-200">No</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Inventory</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Tipe</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Merk/Model</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Spesifikasi</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Lokasi</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Karyawan</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Divisi</th>
+                                        <!-- ✅ NEW column -->
+                                        <th class="px-4 py-3 border-b border-slate-200">Holding</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Status</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Kondisi</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Harga Beli</th>
+                                        <th class="px-4 py-3 border-b border-slate-200">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody" class="divide-y divide-slate-200"></tbody>
+                            </table>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-500">Baris per halaman:</span>
-                            <select id="rowsPerPage" onchange="changeRowsPerPage()" 
-                                class="text-sm rounded-lg px-2 py-1 bg-white border border-slate-300 text-slate-900">
-                                <option value="30" selected>30</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
+                        <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <button onclick="changePage(-1)" id="prevBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm"><i class="fas fa-chevron-left"></i></button>
+                                <span class="text-sm text-slate-600">Halaman <span id="currentPage" class="font-semibold text-slate-900">1</span> dari <span id="totalPages" class="text-slate-900">1</span></span>
+                                <button onclick="changePage(1)" id="nextBtn" class="pagination-btn px-3 py-1 rounded-lg text-sm"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-slate-500">Baris per halaman:</span>
+                                <select id="rowsPerPage" onchange="changeRowsPerPage()" class="text-sm rounded-lg px-2 py-1 bg-white border border-slate-300 text-slate-900">
+                                    <option value="30" selected>30</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
     <!-- Asset Detail Modal -->
     <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
@@ -564,7 +534,6 @@
         </div>
     </div>
 
-    <!-- Admin hint (barely visible) -->
     <div class="admin-hint">Ctrl+Shift+A for Admin</div>
 
     <script>
@@ -585,25 +554,15 @@
             } else {
                 loadData();
             }
-            
             document.getElementById('apiUrlInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') saveSettings();
             });
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                e.preventDefault();
-                openSettings();
-            }
-            if (e.key === 'Escape') {
-                closeSettings();
-                closeDetail();
-            }
-            if (e.ctrlKey && e.key === 'r') {
-                e.preventDefault();
-                loadData();
-            }
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openSettings(); }
+            if (e.key === 'Escape') { closeSettings(); closeDetail(); }
+            if (e.ctrlKey && e.key === 'r') { e.preventDefault(); loadData(); }
         });
 
         function openSettings() {
@@ -611,17 +570,11 @@
             document.getElementById('settingsModal').classList.remove('hidden');
             document.getElementById('testResult').classList.add('hidden');
         }
-
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
+        function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
 
         function saveSettings() {
             const url = document.getElementById('apiUrlInput').value.trim();
-            if (!url) {
-                showTestResult('URL tidak boleh kosong', 'error');
-                return;
-            }
+            if (!url) { showTestResult('URL tidak boleh kosong', 'error'); return; }
             API_URL = url;
             localStorage.setItem('assetApiUrl', url);
             closeSettings();
@@ -651,11 +604,11 @@
             const el = document.getElementById('testResult');
             el.textContent = message;
             el.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800', 'bg-amber-100', 'text-amber-800', 'bg-slate-100', 'text-slate-600');
-            const styles = { 
-                success: 'bg-emerald-100 text-emerald-800 border border-emerald-300', 
-                error: 'bg-rose-100 text-rose-800 border border-rose-300', 
-                warning: 'bg-amber-100 text-amber-800 border border-amber-300', 
-                loading: 'bg-slate-100 text-slate-600 border border-slate-300' 
+            const styles = {
+                success: 'bg-emerald-100 text-emerald-800 border border-emerald-300',
+                error: 'bg-rose-100 text-rose-800 border border-rose-300',
+                warning: 'bg-amber-100 text-amber-800 border border-amber-300',
+                loading: 'bg-slate-100 text-slate-600 border border-slate-300'
             };
             el.classList.add(...styles[type].split(' '));
         }
@@ -663,64 +616,40 @@
         async function loadData() {
             if (!API_URL || API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { openSettings(); return; }
             showLoading(true);
-            
             try {
                 const url = API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
-                
                 const response = await fetch(url, {
-                    method: 'GET',
-                    mode: 'cors',
-                    cache: 'no-cache',
-                    redirect: 'follow',
+                    method: 'GET', mode: 'cors', cache: 'no-cache', redirect: 'follow',
                     headers: { 'Accept': 'application/json' }
                 });
-                
                 if (!response.ok) throw new Error('HTTP ' + response.status);
-                
                 const result = await response.json();
-                
-                if (result.status !== 'success') {
-                    throw new Error(result.message || 'API returned error status');
-                }
-                
+                if (result.status !== 'success') throw new Error(result.message || 'API returned error status');
                 allData = result.data || [];
                 filteredData = [...allData];
                 retryCount = 0;
-                
                 updateLastUpdated(result.lastUpdated);
                 updateFilters();
                 filterTable();
-                
                 showLoading(false);
                 showDashboard(true);
-                
             } catch (error) {
                 console.error('Load error:', error);
                 retryCount++;
-                
-                if (retryCount < MAX_RETRIES) {
-                    console.log(`Retrying... (${retryCount}/${MAX_RETRIES})`);
-                    setTimeout(() => loadData(), 2000);
-                    return;
-                }
-                
-                showError('Gagal memuat data setelah ' + MAX_RETRIES + ' percobaan. Error: ' + error.message + 
-                         '. Pastikan: 1) Koneksi internet aktif, 2) URL API benar, 3) Deployment Apps Script "Anyone"');
+                if (retryCount < MAX_RETRIES) { setTimeout(() => loadData(), 2000); return; }
+                showError('Gagal memuat data setelah ' + MAX_RETRIES + ' percobaan. Error: ' + error.message +
+                    '. Pastikan: 1) Koneksi internet aktif, 2) URL API benar, 3) Deployment Apps Script "Anyone"');
                 document.getElementById('adminErrorBtn').classList.remove('hidden');
             }
         }
 
-        function retryLoad() {
-            retryCount = 0;
-            loadData();
-        }
+        function retryLoad() { retryCount = 0; loadData(); }
 
         function showLoading(show) {
             const loadingEl = document.getElementById('loadingState');
             const errorEl = document.getElementById('errorState');
             const dashboardEl = document.getElementById('dashboardContent');
             const refreshIcon = document.getElementById('refreshIcon');
-            
             if (show) {
                 loadingEl.classList.remove('hidden');
                 errorEl.classList.add('hidden');
@@ -733,9 +662,7 @@
         }
 
         function showDashboard(show) {
-            const dashboardEl = document.getElementById('dashboardContent');
-            if (show) dashboardEl.classList.remove('hidden');
-            else dashboardEl.classList.add('hidden');
+            document.getElementById('dashboardContent').classList.toggle('hidden', !show);
         }
 
         function showError(message) {
@@ -755,25 +682,35 @@
         function updateKPIs() {
             const total = filteredData.length;
             const active = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('terpakai')).length;
+            const available = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('tersedia')).length;
+            const damaged = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('rusak')).length;
             const divisions = new Set(filteredData.map(d => d['Divisi Karyawan']).filter(Boolean)).size;
             const totalValue = filteredData.reduce((sum, d) => sum + (parseFloat(d['Harga Beli']) || 0), 0);
-            
+
             document.getElementById('kpiTotal').textContent = total.toLocaleString('id-ID');
             document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
             document.getElementById('kpiDivisions').textContent = divisions;
             document.getElementById('kpiValue').textContent = formatCurrency(totalValue);
-            
-            const hasFilters = document.getElementById('searchInput').value || document.getElementById('filterStatus').value ||
-                             document.getElementById('filterLocation').value || document.getElementById('filterDivision').value ||
-                             document.getElementById('filterType').value;
-            
+
+            // Sidebar quick stats
+            document.getElementById('sidebarActiveCount').textContent = active.toLocaleString('id-ID');
+            document.getElementById('sidebarAvailableCount').textContent = available.toLocaleString('id-ID');
+            document.getElementById('sidebarDamagedCount').textContent = damaged.toLocaleString('id-ID');
+
+            const hasFilters = document.getElementById('searchInput').value ||
+                document.getElementById('filterStatus').value ||
+                document.getElementById('filterLocation').value ||
+                document.getElementById('filterDivision').value ||
+                document.getElementById('filterType').value ||
+                document.getElementById('filterHolding').value; // ✅ included
+
             if (hasFilters) {
                 document.getElementById('kpiTotalLabel').textContent = 'Hasil filter';
-                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active/total)*100).toFixed(1) + '% terpakai' : '0%';
+                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active / total) * 100).toFixed(1) + '% terpakai' : '0%';
                 document.getElementById('kpiValueLabel').textContent = 'Nilai filter';
             } else {
                 document.getElementById('kpiTotalLabel').textContent = 'Semua aset';
-                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active/total)*100).toFixed(1) + '% dari total' : '0%';
+                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active / total) * 100).toFixed(1) + '% dari total' : '0%';
                 document.getElementById('kpiValueLabel').textContent = 'Harga beli total';
             }
         }
@@ -783,6 +720,8 @@
             populateSelect('filterLocation', [...new Set(allData.map(d => d['Lokasi Aset']).filter(Boolean))].sort());
             populateSelect('filterDivision', [...new Set(allData.map(d => d['Divisi Karyawan']).filter(Boolean))].sort());
             populateSelect('filterType', [...new Set(allData.map(d => d['Tipe Aset']).filter(Boolean))].sort());
+            // ✅ NEW: populate Holding filter
+            populateSelect('filterHolding', [...new Set(allData.map(d => d['Holding']).filter(Boolean))].sort());
         }
 
         function populateSelect(id, values) {
@@ -790,7 +729,12 @@
             const currentVal = select.value;
             const label = select.options[0].text;
             select.innerHTML = `<option value="">${label}</option>`;
-            values.forEach(val => { const opt = document.createElement('option'); opt.value = val; opt.textContent = val; select.appendChild(opt); });
+            values.forEach(val => {
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = val;
+                select.appendChild(opt);
+            });
             select.value = currentVal;
         }
 
@@ -800,13 +744,18 @@
             const location = document.getElementById('filterLocation').value;
             const division = document.getElementById('filterDivision').value;
             const type = document.getElementById('filterType').value;
-            
+            const holding = document.getElementById('filterHolding').value; // ✅ NEW
+
             filteredData = allData.filter(row => {
                 const matchesSearch = !search || Object.values(row).some(val => String(val).toLowerCase().includes(search));
-                return matchesSearch && (!status || row['Status Aset'] === status) && (!location || row['Lokasi Aset'] === location) &&
-                       (!division || row['Divisi Karyawan'] === division) && (!type || row['Tipe Aset'] === type);
+                return matchesSearch &&
+                    (!status   || row['Status Aset']    === status)   &&
+                    (!location || row['Lokasi Aset']    === location) &&
+                    (!division || row['Divisi Karyawan'] === division) &&
+                    (!type     || row['Tipe Aset']      === type)     &&
+                    (!holding  || row['Holding']        === holding); // ✅ NEW
             });
-            
+
             currentPage = 1;
             updateKPIs();
             renderCharts();
@@ -820,6 +769,7 @@
             document.getElementById('filterLocation').value = '';
             document.getElementById('filterDivision').value = '';
             document.getElementById('filterType').value = '';
+            document.getElementById('filterHolding').value = ''; // ✅ NEW
             filteredData = [...allData];
             currentPage = 1;
             updateKPIs();
@@ -839,15 +789,15 @@
             tbody.innerHTML = '';
             const start = (currentPage - 1) * rowsPerPage;
             const pageData = filteredData.slice(start, start + rowsPerPage);
-            
+
             pageData.forEach((row, idx) => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-blue-50 transition border-b border-slate-200 fade-in';
                 tr.style.animationDelay = (idx * 0.05) + 's';
-                
                 const status = row['Status Aset'] || '';
                 const condition = row['Kondisi Aset'] || '';
-                
+                const holding = row['Holding'] || '-'; // ✅ NEW
+
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-medium text-slate-900">${row['No'] || ''}</td>
                     <td class="px-4 py-3 text-slate-600 font-mono text-xs">${row['NO Inventory'] || ''}</td>
@@ -857,6 +807,7 @@
                     <td class="px-4 py-3 text-slate-700">${row['Lokasi Aset'] || ''}</td>
                     <td class="px-4 py-3"><div class="font-medium text-slate-900">${row['Nama Karyawan'] || '-'}</div></td>
                     <td class="px-4 py-3"><span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDivisionBadge(row['Divisi Karyawan'])}">${row['Divisi Karyawan'] || '-'}</span></td>
+                    <td class="px-4 py-3"><span class="holding-badge">${holding}</span></td>
                     <td class="px-4 py-3"><span class="status-badge ${getStatusClass(status)}">${status || '-'}</span></td>
                     <td class="px-4 py-3"><span class="text-xs ${getConditionColor(condition)}">${condition || '-'}</span></td>
                     <td class="px-4 py-3 font-medium text-slate-700">${formatCurrency(row['Harga Beli'])}</td>
@@ -864,7 +815,7 @@
                 `;
                 tbody.appendChild(tr);
             });
-            
+
             updatePagination();
             updateShowingText();
         }
@@ -934,6 +885,7 @@
             renderTable();
         }
 
+        // ── CHART CONFIG ──────────────────────────────────────────────────────────────
         const tooltipDefaults = {
             backgroundColor: 'rgba(15, 23, 42, 0.95)',
             titleColor: '#ffffff',
@@ -945,18 +897,15 @@
             titleFont: { size: 12, weight: '600', family: 'Inter' },
             bodyFont: { size: 12, family: 'Inter' },
             displayColors: true,
-            boxWidth: 10,
-            boxHeight: 10,
-            boxPadding: 4,
+            boxWidth: 10, boxHeight: 10, boxPadding: 4,
             usePointStyle: true,
         };
 
         function pieTooltipCallbacks() {
             return {
                 label: function(context) {
-                    const dataset = context.dataset;
-                    const total = dataset.data.reduce((a, b) => a + b, 0);
-                    const value = dataset.data[context.dataIndex];
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const value = context.dataset.data[context.dataIndex];
                     const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
                     return `  ${context.label} — ${value.toLocaleString('id-ID')} aset (${pct}%)`;
                 }
@@ -966,8 +915,7 @@
         function barTooltipCallbacks() {
             return {
                 label: function(context) {
-                    const allValues = context.dataset.data;
-                    const total = allValues.reduce((a, b) => a + b, 0);
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
                     const value = context.parsed.y !== undefined ? context.parsed.y : context.parsed.x;
                     const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
                     return `  ${value.toLocaleString('id-ID')} aset (${pct}% dari total)`;
@@ -1003,14 +951,7 @@
             charts.category = new Chart(ctx, {
                 type: 'doughnut',
                 data: { labels: Object.keys(categories), datasets: [{ data: Object.values(categories), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
-                options: {
-                    ...getChartOptions(),
-                    plugins: {
-                        ...getChartOptions().plugins,
-                        legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } },
-                        tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
-                    }
-                }
+                options: { ...getChartOptions(), plugins: { ...getChartOptions().plugins, legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } }, tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() } } }
             });
         }
 
@@ -1019,20 +960,12 @@
             const locations = {};
             filteredData.forEach(d => { const loc = d['Lokasi Aset'] || 'Unknown'; locations[loc] = (locations[loc] || 0) + 1; });
             if (charts.location) charts.location.destroy();
-            const BAR_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
-            const barCount = Object.keys(locations).length;
-            const bgColors = Array.from({ length: barCount }, (_, i) => BAR_COLORS[i % BAR_COLORS.length]);
+            const BAR_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316','#84cc16','#a855f7'];
+            const bgColors = Array.from({ length: Object.keys(locations).length }, (_, i) => BAR_COLORS[i % BAR_COLORS.length]);
             charts.location = new Chart(ctx, {
                 type: 'bar',
                 data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset', data: Object.values(locations), backgroundColor: bgColors, borderRadius: 6 }] },
-                options: {
-                    ...getChartOptions(),
-                    plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } }
-                    }
-                }
+                options: { ...getChartOptions(), plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } } } }
             });
         }
 
@@ -1044,56 +977,35 @@
             charts.type = new Chart(ctx, {
                 type: 'pie',
                 data: { labels: Object.keys(types), datasets: [{ data: Object.values(types), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
-                options: {
-                    ...getChartOptions(),
-                    plugins: {
-                        ...getChartOptions().plugins,
-                        legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 10 } } },
-                        tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
-                    }
-                }
+                options: { ...getChartOptions(), plugins: { ...getChartOptions().plugins, legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 10 } } }, tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() } } }
             });
         }
 
         function renderStatusChart() {
             const ctx = document.getElementById('statusChart').getContext('2d');
             const statuses = {};
-            filteredData.forEach(d => { const status = d['Status Aset'] || 'Unknown'; statuses[status] = (statuses[status] || 0) + 1; });
+            filteredData.forEach(d => { const s = d['Status Aset'] || 'Unknown'; statuses[s] = (statuses[s] || 0) + 1; });
             if (charts.status) charts.status.destroy();
             const statusColors = { 'Terpakai': '#10b981', 'Tersedia': '#3b82f6', 'Rusak': '#ef4444', 'Dijual': '#f59e0b', 'Unknown': '#6b7280' };
             const bgColors = Object.keys(statuses).map(s => statusColors[s] || '#6b7280');
             charts.status = new Chart(ctx, {
                 type: 'doughnut',
                 data: { labels: Object.keys(statuses), datasets: [{ data: Object.values(statuses), backgroundColor: bgColors, borderWidth: 0 }] },
-                options: {
-                    ...getChartOptions(),
-                    plugins: {
-                        ...getChartOptions().plugins,
-                        legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } },
-                        tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() }
-                    }
-                }
+                options: { ...getChartOptions(), plugins: { ...getChartOptions().plugins, legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } }, tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() } } }
             });
         }
 
         function renderConditionChart() {
             const ctx = document.getElementById('conditionChart').getContext('2d');
             const conditions = {};
-            filteredData.forEach(d => { const cond = d['Kondisi Aset'] || 'Unknown'; conditions[cond] = (conditions[cond] || 0) + 1; });
+            filteredData.forEach(d => { const c = d['Kondisi Aset'] || 'Unknown'; conditions[c] = (conditions[c] || 0) + 1; });
             if (charts.condition) charts.condition.destroy();
-            const condColors = { 'Baik': '#10b981', 'Rusak': '#ef4444', 'Perbaikan': '#f59e0b', 'Unknown': '#6b7280' };
+            const condColors = { 'Baik': '#10b981', 'Rusak': '#ef4444', 'Sedang': '#f59e0b', 'Perbaikan': '#f97316', 'Unknown': '#6b7280' };
             const bgColors = Object.keys(conditions).map(c => condColors[c] || '#6b7280');
             charts.condition = new Chart(ctx, {
                 type: 'bar',
                 data: { labels: Object.keys(conditions), datasets: [{ label: 'Jumlah', data: Object.values(conditions), backgroundColor: bgColors, borderRadius: 6 }] },
-                options: {
-                    ...getChartOptions(),
-                    plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        x: { ticks: { color: '#64748b' }, grid: { display: false } }
-                    }
-                }
+                options: { ...getChartOptions(), plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { ticks: { color: '#64748b' }, grid: { display: false } } } }
             });
         }
 
@@ -1103,72 +1015,72 @@
             filteredData.forEach(d => { const merk = d['Merk'] || 'Lainnya'; merks[merk] = (merks[merk] || 0) + 1; });
             const sortedMerks = Object.entries(merks).sort((a, b) => b[1] - a[1]).slice(0, 10);
             if (charts.merk) charts.merk.destroy();
-
-            const MERK_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
-            const merkBgColors = sortedMerks.map((_, i) => MERK_COLORS[i % MERK_COLORS.length]);
-
-            const horizontalBarCallbacks = {
+            const MERK_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316'];
+            const horizCallbacks = {
                 label: function(context) {
-                    const allValues = context.dataset.data;
-                    const total = allValues.reduce((a, b) => a + b, 0);
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
                     const value = context.parsed.x;
                     const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
                     return `  ${value.toLocaleString('id-ID')} aset (${pct}% dari total)`;
                 }
             };
-
             charts.merk = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: merkBgColors, borderRadius: 6 }] },
-                options: {
-                    ...getChartOptions(),
-                    indexAxis: 'y',
-                    plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: horizontalBarCallbacks } },
-                    scales: {
-                        x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        y: { ticks: { color: '#64748b' }, grid: { display: false } }
-                    }
-                }
+                data: { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: sortedMerks.map((_, i) => MERK_COLORS[i % MERK_COLORS.length]), borderRadius: 6 }] },
+                options: { ...getChartOptions(), indexAxis: 'y', plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: horizCallbacks } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } }, y: { ticks: { color: '#64748b' }, grid: { display: false } } } }
             });
         }
 
         function showDetail(index) {
             const data = filteredData[index];
             if (!data) return;
-            const modal = document.getElementById('detailModal');
-            const content = document.getElementById('detailContent');
-            
             const fields = [
-                ['NO Inventory', 'No. Inventory'], ['Tipe Aset', 'Tipe Aset'], ['Merk', 'Merk'], ['Model Tipe Aset', 'Model'],
-                ['Seri/Spesifikasi', 'Spesifikasi'], ['IMEI', 'IMEI'], ['Kategori Aset', 'Kategori'], ['Lokasi Aset', 'Lokasi'],
-                ['Nama Karyawan', 'Karyawan'], ['Divisi Karyawan', 'Divisi'], ['Lini Bisnis', 'Lini Bisnis'],
-                ['Tanggal Pembelian Aset', 'Tanggal Pembelian'], ['Harga Beli', 'Harga Beli', formatCurrency],
-                ['Prakiraan Penyusutan (dalam bulan)', 'Penyusutan'], ['Harga Jual', 'Harga Jual', formatCurrency],
-                ['Status Aset', 'Status'], ['Kondisi Aset', 'Kondisi'], ['Garansi Aset (satuan bulan)', 'Garansi (bulan)'],
-                ['Tanggal Peminjaman Aset', 'Tanggal Peminjaman'], ['Tanggal Pengembalian an Aset', 'Tanggal Pengembalian'],
+                ['NO Inventory', 'No. Inventory'],
+                ['Tipe Aset', 'Tipe Aset'],
+                ['Merk', 'Merk'],
+                ['Model Tipe Aset', 'Model'],
+                ['Seri/Spesifikasi', 'Spesifikasi'],
+                ['IMEI', 'IMEI'],
+                ['Kategori Aset', 'Kategori'],
+                ['Lokasi Aset', 'Lokasi'],
+                ['Nama Karyawan', 'Karyawan'],
+                ['Divisi Karyawan', 'Divisi'],
+                ['Lini Bisnis', 'Lini Bisnis'],
+                ['Holding', 'Holding'],                          // ✅ NEW
+                ['Tanggal Pembelian Aset', 'Tanggal Pembelian'],
+                ['Harga Beli', 'Harga Beli', formatCurrency],
+                ['Prakiraan Penyusutan (dalam bulan)', 'Penyusutan'],
+                ['Harga Jual', 'Harga Jual', formatCurrency],
+                ['Status Aset', 'Status'],
+                ['Kondisi Aset', 'Kondisi'],
+                ['Garansi Aset (satuan bulan)', 'Garansi (bulan)'],
+                ['Tanggal Peminjaman Aset', 'Tanggal Peminjaman'],
+                ['Tanggal Pengembalian an Aset', 'Tanggal Pengembalian'],
                 ['Tanggal Penjualan Aset', 'Tanggal Penjualan']
             ];
-            
+
             let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
             fields.forEach(([key, label, formatter]) => {
                 const value = data[key];
                 if (value !== '' && value !== null && value !== undefined) {
-                    html += `<div class="bg-slate-50 rounded-lg p-3 border border-slate-200"><label class="text-xs font-medium text-slate-500 uppercase">${label}</label><div class="text-sm font-medium text-slate-900 mt-1">${formatter ? formatter(value) : value}</div></div>`;
+                    // Give Holding a purple highlight in the detail modal
+                    const isHolding = key === 'Holding';
+                    const bgClass = isHolding ? 'bg-violet-50 border-violet-200' : 'bg-slate-50 border-slate-200';
+                    const labelClass = isHolding ? 'text-violet-500' : 'text-slate-500';
+                    html += `<div class="rounded-lg p-3 border ${bgClass}"><label class="text-xs font-medium uppercase ${labelClass}">${label}</label><div class="text-sm font-medium text-slate-900 mt-1">${formatter ? formatter(value) : value}</div></div>`;
                 }
             });
             html += '</div>';
-            
+
             if (data['Link']) {
                 html += `<div class="mt-4"><a href="${data['Link']}" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"><i class="fas fa-external-link-alt"></i>Lihat Dokumen/Link Terkait</a></div>`;
             }
-            
-            content.innerHTML = html;
-            modal.classList.remove('hidden');
+
+            document.getElementById('detailContent').innerHTML = html;
+            document.getElementById('detailModal').classList.remove('hidden');
         }
 
-        function closeDetail() {
-            document.getElementById('detailModal').classList.add('hidden');
-        }
+        function closeDetail() { document.getElementById('detailModal').classList.add('hidden'); }
 
         window.onclick = function(event) {
             if (event.target === document.getElementById('settingsModal')) closeSettings();
