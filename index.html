@@ -16,9 +16,7 @@
                 extend: {
                     colors: {
                         primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
-                        surface: '#ffffff',
-                        background: '#f8fafc',
-                        border: '#e2e8f0',
+                        surface: '#ffffff', background: '#f8fafc', border: '#e2e8f0',
                         text: { primary: '#0f172a', secondary: '#64748b', muted: '#94a3b8' }
                     }
                 }
@@ -28,216 +26,113 @@
     
     <style>
         * { font-family: 'Inter', sans-serif; }
-        body { 
-            background: #f8fafc; 
-            min-height: 100vh; 
-            color: #0f172a;
-        }
-        .glass-panel { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(226, 232, 240, 0.8); 
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); 
-        }
-        .glass-panel:hover { 
-            border-color: rgba(59, 130, 246, 0.3); 
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.12); 
-        }
-        .gradient-header { 
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
-            border-bottom: 1px solid #e2e8f0; 
-        }
-        .kpi-card { 
-            transition: all 0.3s ease; 
-            background: #ffffff; 
-            border: 1px solid #e2e8f0;
-        }
-        .kpi-card:hover { 
-            transform: translateY(-4px); 
-            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15); 
-            border-color: rgba(59, 130, 246, 0.4); 
-        }
-        .kpi-icon { 
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
-        }
-        .status-badge { 
-            padding: 4px 12px; 
-            border-radius: 9999px; 
-            font-size: 0.75rem; 
-            font-weight: 600; 
-        }
-        .status-terpakai { 
-            background: rgba(16, 185, 129, 0.15); 
-            color: #059669; 
-            border: 1px solid rgba(16, 185, 129, 0.3); 
-        }
-        .status-tersedia { 
-            background: rgba(59, 130, 246, 0.15); 
-            color: #2563eb; 
-            border: 1px solid rgba(59, 130, 246, 0.3); 
-        }
-        .status-rusak { 
-            background: rgba(244, 63, 94, 0.15); 
-            color: #e11d48; 
-            border: 1px solid rgba(244, 63, 94, 0.3); 
-        }
-        .holding-badge {
-            padding: 3px 10px;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: rgba(139, 92, 246, 0.12);
-            color: #7c3aed;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-        .table-container { 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch; 
-        }
-        .loading-spinner { 
-            border: 3px solid rgba(59, 130, 246, 0.2); 
-            border-top: 3px solid #3b82f6; 
-            border-radius: 50%; 
-            width: 40px; 
-            height: 40px; 
-            animation: spin 1s linear infinite; 
-        }
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
-        .fade-in { 
-            animation: fadeIn 0.5s ease-in; 
-        }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        ::-webkit-scrollbar { 
-            width: 8px; 
-            height: 8px; 
-        }
-        ::-webkit-scrollbar-track { 
-            background: #f1f5f9; 
-        }
-        ::-webkit-scrollbar-thumb { 
-            background: #94a3b8; 
-            border-radius: 4px; 
-        }
-        ::-webkit-scrollbar-thumb:hover { 
-            background: #64748b; 
-        }
-        .search-input { 
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E"); 
-            background-repeat: no-repeat; 
-            background-position: 12px center; 
-            background-size: 20px; 
-            padding-left: 40px; 
-            background-color: #ffffff; 
-            border: 1px solid #e2e8f0; 
-            color: #0f172a; 
-        }
-        .search-input:focus { 
-            border-color: #3b82f6; 
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); 
-            outline: none;
-        }
-        .search-input::placeholder { 
-            color: #94a3b8; 
-        }
-        .chart-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 1.5rem; 
-        }
-        @media (min-width: 1024px) { 
-            .chart-grid { grid-template-columns: repeat(2, 1fr); } 
-        }
-        @media (min-width: 1280px) { 
-            .chart-grid { grid-template-columns: repeat(3, 1fr); } 
-        }
-        .btn-primary { 
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
-            transition: all 0.3s ease; 
-            color: white;
-        }
-        .btn-primary:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); 
-        }
-        .btn-secondary { 
-            background: #ffffff; 
-            border: 1px solid #e2e8f0; 
-            color: #475569;
-            transition: all 0.3s ease; 
-        }
-        .btn-secondary:hover { 
-            background: #f8fafc; 
-            border-color: #3b82f6; 
-            color: #3b82f6;
-        }
-        .modal-light { 
-            background: #ffffff; 
-            border: 1px solid #e2e8f0; 
-        }
-        select { 
-            background-color: #ffffff; 
-            border: 1px solid #e2e8f0; 
-            color: #0f172a; 
-        }
-        select:focus { 
-            border-color: #3b82f6; 
-            outline: none;
-        }
-        select option { 
-            background-color: #ffffff; 
-            color: #0f172a; 
-        }
-        table { 
-            color: #0f172a; 
-        }
-        thead { 
-            background: #f8fafc; 
-            color: #64748b; 
-        }
-        tbody tr:hover { 
-            background: #f1f5f9; 
-        }
-        .pagination-btn { 
-            background: #ffffff; 
-            border: 1px solid #e2e8f0; 
-            color: #475569; 
-        }
-        .pagination-btn:hover:not(:disabled) { 
-            background: #f8fafc; 
-            border-color: #3b82f6; 
-            color: #3b82f6;
-        }
-        .pagination-btn:disabled { 
-            opacity: 0.3; 
-            cursor: not-allowed; 
-        }
-        .admin-hint { 
-            position: fixed; 
-            bottom: 10px; 
-            right: 10px; 
-            font-size: 10px; 
-            color: rgba(0,0,0,0.1); 
-            pointer-events: none; 
-        }
-        @media (min-width: 1024px) {
-            aside {
-                position: sticky;
-                top: 100px;
-                align-self: flex-start;
-            }
-        }
-        select {
-            transition: all 0.2s ease;
-        }
-        select:focus {
-            transform: translateY(-1px);
-        }
+        body { background: #f8fafc; min-height: 100vh; color: #0f172a; }
+
+        .glass-panel { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226,232,240,0.8); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+        .glass-panel:hover { border-color: rgba(59,130,246,0.3); box-shadow: 0 8px 24px rgba(59,130,246,0.12); }
+        .gradient-header { background: linear-gradient(135deg,#ffffff 0%,#f8fafc 100%); border-bottom: 1px solid #e2e8f0; }
+
+        .kpi-card { transition: all 0.3s ease; background: #ffffff; border: 1px solid #e2e8f0; }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); }
+        .kpi-icon { background: linear-gradient(135deg,#3b82f6 0%,#2563eb 100%); }
+
+        /* ── STATUS BADGES with dot ── */
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 9999px; font-size: 0.72rem; font-weight: 600; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .status-terpakai { background: rgba(16,185,129,0.12); color: #059669; border: 1px solid rgba(16,185,129,0.25); }
+        .status-terpakai .status-dot { background: #10b981; }
+        .status-tersedia { background: rgba(59,130,246,0.12); color: #2563eb; border: 1px solid rgba(59,130,246,0.25); }
+        .status-tersedia .status-dot { background: #3b82f6; }
+        .status-rusak { background: rgba(239,68,68,0.12); color: #dc2626; border: 1px solid rgba(239,68,68,0.25); }
+        .status-rusak .status-dot { background: #ef4444; }
+        .status-stok { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.25); }
+        .status-stok .status-dot { background: #f59e0b; }
+        .status-terjual { background: rgba(139,92,246,0.12); color: #7c3aed; border: 1px solid rgba(139,92,246,0.25); }
+        .status-terjual .status-dot { background: #8b5cf6; }
+        .status-lelang { background: rgba(236,72,153,0.12); color: #be185d; border: 1px solid rgba(236,72,153,0.25); }
+        .status-lelang .status-dot { background: #ec4899; }
+        .status-default { background: rgba(148,163,184,0.12); color: #475569; border: 1px solid rgba(148,163,184,0.25); }
+        .status-default .status-dot { background: #94a3b8; }
+
+        /* ── HOLDING BADGE ── */
+        .holding-badge { padding: 2px 9px; border-radius: 9999px; font-size: 0.68rem; font-weight: 600; background: rgba(139,92,246,0.1); color: #7c3aed; border: 1px solid rgba(139,92,246,0.25); }
+
+        /* ── INVENTORY CODE PILL ── */
+        .inv-pill { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.68rem; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 2px 7px; border-radius: 5px; white-space: nowrap; letter-spacing: 0.02em; }
+
+        /* ── AVATAR ── */
+        .emp-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+
+        /* ── OPTION B ROW COLORING — left border on non-normal rows ── */
+        /* Normal rows: white, no border accent */
+        tbody tr { background: #ffffff; transition: background 0.15s; }
+        tbody tr:hover { background: #f0f7ff !important; }
+
+        /* Stok / Terjual — amber accent */
+        tbody tr.row-stok    { background: #fffdf5 !important; border-left: 3px solid #f59e0b; }
+        tbody tr.row-terjual { background: #fdf8ff !important; border-left: 3px solid #8b5cf6; }
+        tbody tr.row-lelang  { background: #fff5fa !important; border-left: 3px solid #ec4899; }
+        /* Rusak — red accent */
+        tbody tr.row-rusak   { background: #fff8f8 !important; border-left: 3px solid #ef4444; }
+        /* Hover keeps the tint but slightly darker */
+        tbody tr.row-stok:hover    { background: #fef3c7 !important; }
+        tbody tr.row-terjual:hover { background: #f5f0ff !important; }
+        tbody tr.row-lelang:hover  { background: #fce7f3 !important; }
+        tbody tr.row-rusak:hover   { background: #fee2e2 !important; }
+
+        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        .loading-spinner { border: 3px solid rgba(59,130,246,0.2); border-top: 3px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        .search-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 12px center; background-size: 20px; padding-left: 40px; background-color: #ffffff; border: 1px solid #e2e8f0; color: #0f172a; }
+        .search-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); outline: none; }
+        .search-input::placeholder { color: #94a3b8; }
+
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 1.5rem; }
+        @media (min-width: 1024px) { .chart-grid { grid-template-columns: repeat(2,1fr); } }
+        @media (min-width: 1280px) { .chart-grid { grid-template-columns: repeat(3,1fr); } }
+
+        .btn-primary { background: linear-gradient(135deg,#3b82f6 0%,#2563eb 100%); transition: all 0.3s ease; color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
+        .btn-secondary { background: #ffffff; border: 1px solid #e2e8f0; color: #475569; transition: all 0.3s ease; }
+        .btn-secondary:hover { background: #f8fafc; border-color: #3b82f6; color: #3b82f6; }
+        .modal-light { background: #ffffff; border: 1px solid #e2e8f0; }
+
+        select { background-color: #ffffff; border: 1px solid #e2e8f0; color: #0f172a; transition: all 0.2s ease; }
+        select:focus { border-color: #3b82f6; outline: none; transform: translateY(-1px); }
+        select option { background-color: #ffffff; color: #0f172a; }
+
+        table { color: #0f172a; }
+        thead { background: #f8fafc; color: #64748b; }
+
+        .pagination-btn { background: #ffffff; border: 1px solid #e2e8f0; color: #475569; }
+        .pagination-btn:hover:not(:disabled) { background: #f8fafc; border-color: #3b82f6; color: #3b82f6; }
+        .pagination-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .admin-hint { position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: rgba(0,0,0,0.1); pointer-events: none; }
+
+        @media (min-width: 1024px) { aside { position: sticky; top: 100px; align-self: flex-start; } }
+
+        /* Table cell sizing */
+        .td-no   { width: 36px; }
+        .td-inv  { width: 105px; }
+        .td-type { width: 90px; }
+        .td-brand { min-width: 120px; }
+        .td-spec { max-width: 140px; }
+        .td-loc  { width: 80px; }
+        .td-emp  { min-width: 160px; }
+        .td-hold { width: 90px; }
+        .td-status { width: 95px; }
+        .td-cond { width: 80px; }
+        .td-price { width: 110px; text-align: right; }
+        .td-action { width: 44px; }
     </style>
 </head>
 <body class="text-slate-900">
@@ -256,8 +151,8 @@
                     <p class="text-xs text-slate-500 mt-1">Hanya untuk admin. URL deployment Web App Code.gs</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="saveSettings()" class="flex-1 btn-primary text-white py-2 rounded-lg font-medium"><i class="fas fa-save mr-2"></i>Simpan</button>
-                    <button onclick="testConnection()" class="flex-1 btn-secondary text-slate-700 py-2 rounded-lg font-medium"><i class="fas fa-plug mr-2"></i>Test</button>
+                    <button onclick="saveSettings()" class="flex-1 btn-primary py-2 rounded-lg font-medium text-sm"><i class="fas fa-save mr-2"></i>Simpan</button>
+                    <button onclick="testConnection()" class="flex-1 btn-secondary py-2 rounded-lg font-medium text-sm"><i class="fas fa-plug mr-2"></i>Test</button>
                 </div>
                 <div id="testResult" class="hidden p-3 rounded-lg text-sm"></div>
             </div>
@@ -277,7 +172,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="resetFilters()" class="btn-secondary px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium"><i class="fas fa-undo"></i><span class="hidden sm:inline">Reset Filter</span></button>
-                    <button onclick="loadData()" class="btn-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium shadow-lg"><i class="fas fa-sync-alt" id="refreshIcon"></i><span class="hidden sm:inline">Refresh</span></button>
+                    <button onclick="loadData()" class="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium shadow-lg"><i class="fas fa-sync-alt" id="refreshIcon"></i><span class="hidden sm:inline">Refresh</span></button>
                 </div>
             </div>
         </div>
@@ -287,70 +182,39 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="flex flex-col lg:flex-row gap-6">
         
-            <!-- LEFT SIDEBAR - Filters & Search -->
+            <!-- LEFT SIDEBAR -->
             <aside class="lg:w-80 flex-shrink-0 space-y-4 -ml-4 sm:-ml-6 lg:-ml-8 lg:sticky lg:top-24 z-30">
                 
-                <!-- Search Box -->
                 <div class="glass-panel rounded-xl p-4 shadow-lg">
-                    <label class="block text-sm font-medium text-slate-700 mb-2">
-                        <i class="fas fa-search mr-2"></i>Pencarian
-                    </label>
-                    <input type="text" id="searchInput" 
-                        placeholder="Cari aset, merk, model, atau karyawan..." 
-                        class="search-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                        oninput="filterTable()">
+                    <label class="block text-sm font-medium text-slate-700 mb-2"><i class="fas fa-search mr-2"></i>Pencarian</label>
+                    <input type="text" id="searchInput" placeholder="Cari aset, merk, model, atau karyawan..." class="search-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" oninput="filterTable()">
                 </div>
 
-                <!-- Filters -->
                 <div class="glass-panel rounded-xl p-4 shadow-lg space-y-3">
                     <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
-                        <h3 class="font-semibold text-slate-900">
-                            <i class="fas fa-filter mr-2 text-blue-600"></i>Filter
-                        </h3>
-                        <button onclick="resetFilters()" class="text-xs text-blue-600 hover:text-blue-700 transition">
-                            <i class="fas fa-undo mr-1"></i>Reset
-                        </button>
+                        <h3 class="font-semibold text-slate-900"><i class="fas fa-filter mr-2 text-blue-600"></i>Filter</h3>
+                        <button onclick="resetFilters()" class="text-xs text-blue-600 hover:text-blue-700 transition"><i class="fas fa-undo mr-1"></i>Reset</button>
                     </div>
-                    
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Status Aset</label>
-                        <select id="filterStatus" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="">Semua Status</option>
-                        </select>
+                        <select id="filterStatus" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"><option value="">Semua Status</option></select>
                     </div>
-
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Lokasi</label>
-                        <select id="filterLocation" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="">Semua Lokasi</option>
-                        </select>
+                        <select id="filterLocation" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"><option value="">Semua Lokasi</option></select>
                     </div>
-
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Divisi</label>
-                        <select id="filterDivision" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="">Semua Divisi</option>
-                        </select>
+                        <select id="filterDivision" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"><option value="">Semua Divisi</option></select>
                     </div>
-
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Tipe Aset</label>
-                        <select id="filterType" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="">Semua Tipe</option>
-                        </select>
+                        <select id="filterType" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"><option value="">Semua Tipe</option></select>
                     </div>
-
-                    <!-- ✅ NEW: Holding filter -->
                     <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">
-                            <i class="fas fa-building-columns mr-1 text-violet-500"></i>Holding
-                        </label>
-                        <select id="filterHolding" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="">Semua Holding</option>
-                        </select>
+                        <label class="block text-xs font-medium text-slate-600 mb-1"><i class="fas fa-building-columns mr-1 text-violet-500"></i>Holding</label>
+                        <select id="filterHolding" onchange="filterTable()" class="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"><option value="">Semua Holding</option></select>
                     </div>
-
-                    <!-- Active Filters Info -->
                     <div class="pt-3 border-t border-slate-200">
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-slate-600">Menampilkan</span>
@@ -360,89 +224,58 @@
                     </div>
                 </div>
 
-                <!-- Quick Stats -->
                 <div class="glass-panel rounded-xl p-4 shadow-lg">
-                    <h3 class="text-sm font-semibold text-slate-700 mb-3">
-                        <i class="fas fa-chart-pie mr-2 text-blue-600"></i>Ringkasan
-                    </h3>
+                    <h3 class="text-sm font-semibold text-slate-700 mb-3"><i class="fas fa-chart-pie mr-2 text-blue-600"></i>Ringkasan</h3>
                     <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-slate-600">Terpakai</span>
-                            <span class="text-emerald-600 font-medium" id="sidebarActiveCount">0</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-600">Tersedia</span>
-                            <span class="text-blue-600 font-medium" id="sidebarAvailableCount">0</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-600">Rusak</span>
-                            <span class="text-rose-600 font-medium" id="sidebarDamagedCount">0</span>
-                        </div>
+                        <div class="flex justify-between"><span class="text-slate-600">Terpakai</span><span class="text-emerald-600 font-medium" id="sidebarActiveCount">0</span></div>
+                        <div class="flex justify-between"><span class="text-slate-600">Tersedia</span><span class="text-blue-600 font-medium" id="sidebarAvailableCount">0</span></div>
+                        <div class="flex justify-between"><span class="text-slate-600">Rusak</span><span class="text-rose-600 font-medium" id="sidebarDamagedCount">0</span></div>
                     </div>
                 </div>
-
             </aside>
 
-            <!-- RIGHT CONTENT - KPIs, Charts, Table -->
+            <!-- RIGHT CONTENT -->
             <div class="flex-1 space-y-6">
-                
                 <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
                     <div class="loading-spinner mb-4"></div>
                     <p class="text-slate-600">Memuat data aset...</p>
                 </div>
-                
                 <div id="errorState" class="hidden glass-panel rounded-xl p-6 text-center border-rose-300">
                     <i class="fas fa-exclamation-triangle text-rose-500 text-4xl mb-3"></i>
                     <h3 class="text-lg font-semibold text-slate-900 mb-2">Gagal Memuat Data</h3>
                     <p class="text-slate-600 text-sm mb-4" id="errorMessage">Periksa koneksi internet atau hubungi admin.</p>
-                    <button onclick="retryLoad()" class="btn-primary text-white px-4 py-2 rounded-lg mr-2">
-                        <i class="fas fa-redo mr-2"></i>Coba Lagi
-                    </button>
-                    <button onclick="openSettings()" class="btn-secondary text-slate-700 px-4 py-2 rounded-lg hidden" id="adminErrorBtn">
-                        <i class="fas fa-cog mr-2"></i>Admin
-                    </button>
+                    <button onclick="retryLoad()" class="btn-primary px-4 py-2 rounded-lg mr-2 text-sm"><i class="fas fa-redo mr-2"></i>Coba Lagi</button>
+                    <button onclick="openSettings()" class="btn-secondary px-4 py-2 rounded-lg hidden text-sm" id="adminErrorBtn"><i class="fas fa-cog mr-2"></i>Admin</button>
                 </div>
 
                 <div id="dashboardContent" class="hidden space-y-6">
-                    
+
                     <!-- KPI Cards -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
                             <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Aset</p>
-                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiTotal">0</h3>
-                                </div>
+                                <div><p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Aset</p><h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiTotal">0</h3></div>
                                 <div class="bg-blue-100 p-2 rounded-lg"><i class="fas fa-cubes text-blue-600"></i></div>
                             </div>
                             <p class="text-xs text-slate-500 mt-2" id="kpiTotalLabel">Semua aset</p>
                         </div>
                         <div class="kpi-card rounded-xl p-5 border-l-4 border-emerald-600">
                             <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Terpakai</p>
-                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiActive">0</h3>
-                                </div>
+                                <div><p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Terpakai</p><h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiActive">0</h3></div>
                                 <div class="bg-emerald-100 p-2 rounded-lg"><i class="fas fa-check-circle text-emerald-600"></i></div>
                             </div>
                             <p class="text-xs text-slate-500 mt-2" id="kpiActivePercent">0% dari total</p>
                         </div>
                         <div class="kpi-card rounded-xl p-5 border-l-4 border-blue-600">
                             <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Divisi Unik</p>
-                                    <h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiDivisions">0</h3>
-                                </div>
+                                <div><p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Divisi Unik</p><h3 class="text-3xl font-bold text-slate-900 mt-1" id="kpiDivisions">0</h3></div>
                                 <div class="bg-blue-100 p-2 rounded-lg"><i class="fas fa-building text-blue-600"></i></div>
                             </div>
                             <p class="text-xs text-slate-500 mt-2">Dalam hasil filter</p>
                         </div>
                         <div class="kpi-card rounded-xl p-5 border-l-4 border-amber-500">
                             <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Nilai</p>
-                                    <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpiValue">Rp0</h3>
-                                </div>
+                                <div><p class="text-slate-600 text-xs font-medium uppercase tracking-wide">Total Nilai</p><h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpiValue">Rp0</h3></div>
                                 <div class="bg-amber-100 p-2 rounded-lg"><i class="fas fa-money-bill-wave text-amber-600"></i></div>
                             </div>
                             <p class="text-xs text-slate-500 mt-2" id="kpiValueLabel">Harga beli total</p>
@@ -451,55 +284,42 @@
 
                     <!-- Charts -->
                     <div class="chart-grid">
-                        <div class="glass-panel rounded-xl p-5 shadow-lg">
-                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-chart-pie text-blue-600"></i>Kategori Aset</h3>
-                            <div class="h-64"><canvas id="categoryChart"></canvas></div>
-                        </div>
-                        <div class="glass-panel rounded-xl p-5 shadow-lg">
-                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-chart-bar text-blue-600"></i>Aset per Lokasi</h3>
-                            <div class="h-64"><canvas id="locationChart"></canvas></div>
-                        </div>
-                        <div class="glass-panel rounded-xl p-5 shadow-lg">
-                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-laptop text-blue-600"></i>Tipe Aset</h3>
-                            <div class="h-64"><canvas id="typeChart"></canvas></div>
-                        </div>
-                        <div class="glass-panel rounded-xl p-5 shadow-lg">
-                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-info-circle text-blue-600"></i>Status Aset</h3>
-                            <div class="h-64"><canvas id="statusChart"></canvas></div>
-                        </div>
-                        <div class="glass-panel rounded-xl p-5 shadow-lg">
-                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-heartbeat text-blue-600"></i>Kondisi Aset</h3>
-                            <div class="h-64"><canvas id="conditionChart"></canvas></div>
-                        </div>
-                        <div class="glass-panel rounded-xl p-5 shadow-lg">
-                            <h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-tags text-blue-600"></i>Top 10 Merk</h3>
-                            <div class="h-64"><canvas id="merkChart"></canvas></div>
-                        </div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg"><h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-chart-pie text-blue-600"></i>Kategori Aset</h3><div class="h-64"><canvas id="categoryChart"></canvas></div></div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg"><h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-chart-bar text-blue-600"></i>Aset per Lokasi</h3><div class="h-64"><canvas id="locationChart"></canvas></div></div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg"><h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-laptop text-blue-600"></i>Tipe Aset</h3><div class="h-64"><canvas id="typeChart"></canvas></div></div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg"><h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-info-circle text-blue-600"></i>Status Aset</h3><div class="h-64"><canvas id="statusChart"></canvas></div></div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg"><h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-heartbeat text-blue-600"></i>Kondisi Aset</h3><div class="h-64"><canvas id="conditionChart"></canvas></div></div>
+                        <div class="glass-panel rounded-xl p-5 shadow-lg"><h3 class="font-semibold text-slate-900 mb-4 flex items-center gap-2"><i class="fas fa-tags text-blue-600"></i>Top 10 Merk</h3><div class="h-64"><canvas id="merkChart"></canvas></div></div>
                     </div>
 
                     <!-- Data Table -->
                     <div class="glass-panel rounded-xl shadow-lg overflow-hidden">
+                        <!-- Row color legend -->
+                        <div class="px-4 py-2 border-b border-slate-100 flex items-center gap-4 text-xs text-slate-500 bg-slate-50/60">
+                            <span class="font-medium text-slate-600">Warna baris:</span>
+                            <span class="flex items-center gap-1.5"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ffffff;border:1px solid #e2e8f0;"></span>Normal</span>
+                            <span class="flex items-center gap-1.5"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fffdf5;border-left:3px solid #f59e0b;"></span>Stok/Terjual</span>
+                            <span class="flex items-center gap-1.5"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fff8f8;border-left:3px solid #ef4444;"></span>Rusak</span>
+                            <span class="flex items-center gap-1.5"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fff5fa;border-left:3px solid #ec4899;"></span>Lelang</span>
+                        </div>
                         <div class="table-container">
-                            <table class="w-full text-sm text-left">
+                            <table class="w-full text-sm text-left" style="table-layout: auto;">
                                 <thead class="font-semibold text-xs uppercase sticky top-0">
                                     <tr>
-                                        <th class="px-4 py-3 border-b border-slate-200">No</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Inventory</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Tipe</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Merk/Model</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Spesifikasi</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Lokasi</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Karyawan</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Divisi</th>
-                                        <!-- ✅ NEW column -->
-                                        <th class="px-4 py-3 border-b border-slate-200">Holding</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Status</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Kondisi</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Harga Beli</th>
-                                        <th class="px-4 py-3 border-b border-slate-200">Aksi</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-no">#</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-inv">Inventory</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-type">Tipe</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-brand">Merk / Model</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-loc">Lokasi</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-emp">Karyawan & Divisi</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-hold">Holding</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-status">Status</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-cond">Kondisi</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-price text-right">Harga Beli</th>
+                                        <th class="px-3 py-3 border-b border-slate-200 td-action"></th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableBody" class="divide-y divide-slate-200"></tbody>
+                                <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                         <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between">
@@ -537,49 +357,32 @@
     <div class="admin-hint">Ctrl+Shift+A for Admin</div>
 
     <script>
-        // ─── PASTE YOUR WEB APP URL BELOW (only place you need to edit) ───────────
-        const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec'; // ← replace this
-        // ────────────────────────────────────────────────────────────────────────
+        const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec';
         let API_URL = localStorage.getItem('assetApiUrl') || DEFAULT_API_URL;
-        let allData = [];
-        let filteredData = [];
-        let currentPage = 1;
-        let rowsPerPage = 30;
-        let charts = {};
-        let retryCount = 0;
+        let allData = [], filteredData = [];
+        let currentPage = 1, rowsPerPage = 30;
+        let charts = {}, retryCount = 0;
         const MAX_RETRIES = 3;
-
-        const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
+        const CHART_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1'];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Always try to load data on page open — no URL prompt for visitors
             loadData();
-            document.getElementById('apiUrlInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') saveSettings();
-            });
+            document.getElementById('apiUrlInput').addEventListener('keypress', e => { if (e.key === 'Enter') saveSettings(); });
         });
 
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openSettings(); }
             if (e.key === 'Escape') { closeSettings(); closeDetail(); }
             if (e.ctrlKey && e.key === 'r') { e.preventDefault(); loadData(); }
         });
 
-        function openSettings() {
-            document.getElementById('apiUrlInput').value = API_URL;
-            document.getElementById('settingsModal').classList.remove('hidden');
-            document.getElementById('testResult').classList.add('hidden');
-        }
+        function openSettings() { document.getElementById('apiUrlInput').value = API_URL; document.getElementById('settingsModal').classList.remove('hidden'); document.getElementById('testResult').classList.add('hidden'); }
         function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
 
         function saveSettings() {
             const url = document.getElementById('apiUrlInput').value.trim();
             if (!url) { showTestResult('URL tidak boleh kosong', 'error'); return; }
-            API_URL = url;
-            localStorage.setItem('assetApiUrl', url);
-            closeSettings();
-            retryCount = 0;
-            loadData();
+            API_URL = url; localStorage.setItem('assetApiUrl', url); closeSettings(); retryCount = 0; loadData();
         }
 
         async function testConnection() {
@@ -587,58 +390,37 @@
             if (!url) { showTestResult('Masukkan URL terlebih dahulu', 'error'); return; }
             showTestResult('Testing connection...', 'loading');
             try {
-                const response = await fetch(url + '?t=' + Date.now(), { method: 'GET', mode: 'cors', cache: 'no-cache' });
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                const data = await response.json();
-                if (data.status === 'success') {
-                    showTestResult(`✅ Connected! Found ${data.totalRecords} records`, 'success');
-                } else {
-                    showTestResult('⚠️ Error: ' + data.message, 'warning');
-                }
-            } catch (error) {
-                showTestResult('❌ Error: ' + error.message, 'error');
-            }
+                const r = await fetch(url + '?t=' + Date.now(), { method:'GET', mode:'cors', cache:'no-cache' });
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const d = await r.json();
+                d.status === 'success' ? showTestResult(`✅ Connected! Found ${d.totalRecords} records`, 'success') : showTestResult('⚠️ Error: ' + d.message, 'warning');
+            } catch(e) { showTestResult('❌ Error: ' + e.message, 'error'); }
         }
 
-        function showTestResult(message, type) {
+        function showTestResult(msg, type) {
             const el = document.getElementById('testResult');
-            el.textContent = message;
-            el.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800', 'bg-amber-100', 'text-amber-800', 'bg-slate-100', 'text-slate-600');
-            const styles = {
-                success: 'bg-emerald-100 text-emerald-800 border border-emerald-300',
-                error: 'bg-rose-100 text-rose-800 border border-rose-300',
-                warning: 'bg-amber-100 text-amber-800 border border-amber-300',
-                loading: 'bg-slate-100 text-slate-600 border border-slate-300'
-            };
-            el.classList.add(...styles[type].split(' '));
+            el.textContent = msg;
+            el.classList.remove('hidden','bg-emerald-100','text-emerald-800','bg-rose-100','text-rose-800','bg-amber-100','text-amber-800','bg-slate-100','text-slate-600');
+            const s = { success:'bg-emerald-100 text-emerald-800 border border-emerald-300', error:'bg-rose-100 text-rose-800 border border-rose-300', warning:'bg-amber-100 text-amber-800 border border-amber-300', loading:'bg-slate-100 text-slate-600 border border-slate-300' };
+            el.classList.add(...s[type].split(' '));
         }
 
         async function loadData() {
-            if (!API_URL || API_URL === DEFAULT_API_URL && DEFAULT_API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { openSettings(); return; }
+            if (!API_URL || (API_URL === DEFAULT_API_URL && DEFAULT_API_URL === 'YOUR_APPS_SCRIPT_URL_HERE')) { openSettings(); return; }
             showLoading(true);
             try {
                 const url = API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
-                const response = await fetch(url, {
-                    method: 'GET', mode: 'cors', cache: 'no-cache', redirect: 'follow',
-                    headers: { 'Accept': 'application/json' }
-                });
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                const result = await response.json();
-                if (result.status !== 'success') throw new Error(result.message || 'API returned error status');
-                allData = result.data || [];
-                filteredData = [...allData];
-                retryCount = 0;
-                updateLastUpdated(result.lastUpdated);
-                updateFilters();
-                filterTable();
-                showLoading(false);
-                showDashboard(true);
-            } catch (error) {
-                console.error('Load error:', error);
+                const r = await fetch(url, { method:'GET', mode:'cors', cache:'no-cache', redirect:'follow', headers:{'Accept':'application/json'} });
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const result = await r.json();
+                if (result.status !== 'success') throw new Error(result.message || 'API error');
+                allData = result.data || []; filteredData = [...allData]; retryCount = 0;
+                updateLastUpdated(result.lastUpdated); updateFilters(); filterTable();
+                showLoading(false); showDashboard(true);
+            } catch(e) {
                 retryCount++;
                 if (retryCount < MAX_RETRIES) { setTimeout(() => loadData(), 2000); return; }
-                showError('Gagal memuat data setelah ' + MAX_RETRIES + ' percobaan. Error: ' + error.message +
-                    '. Pastikan: 1) Koneksi internet aktif, 2) URL API benar, 3) Deployment Apps Script "Anyone"');
+                showError('Gagal memuat data setelah ' + MAX_RETRIES + ' percobaan. Error: ' + e.message + '. Pastikan: 1) Koneksi aktif, 2) URL API benar, 3) Deployment Apps Script "Anyone"');
                 document.getElementById('adminErrorBtn').classList.remove('hidden');
             }
         }
@@ -646,456 +428,339 @@
         function retryLoad() { retryCount = 0; loadData(); }
 
         function showLoading(show) {
-            const loadingEl = document.getElementById('loadingState');
-            const errorEl = document.getElementById('errorState');
-            const dashboardEl = document.getElementById('dashboardContent');
-            const refreshIcon = document.getElementById('refreshIcon');
-            if (show) {
-                loadingEl.classList.remove('hidden');
-                errorEl.classList.add('hidden');
-                dashboardEl.classList.add('hidden');
-                refreshIcon.classList.add('fa-spin');
-            } else {
-                loadingEl.classList.add('hidden');
-                refreshIcon.classList.remove('fa-spin');
-            }
+            document.getElementById('loadingState').classList.toggle('hidden', !show);
+            document.getElementById('errorState').classList.add('hidden');
+            if (show) document.getElementById('dashboardContent').classList.add('hidden');
+            document.getElementById('refreshIcon').classList.toggle('fa-spin', show);
         }
-
-        function showDashboard(show) {
-            document.getElementById('dashboardContent').classList.toggle('hidden', !show);
-        }
-
-        function showError(message) {
+        function showDashboard(show) { document.getElementById('dashboardContent').classList.toggle('hidden', !show); }
+        function showError(msg) {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('errorState').classList.remove('hidden');
-            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').textContent = msg;
             document.getElementById('dashboardContent').classList.add('hidden');
             document.getElementById('refreshIcon').classList.remove('fa-spin');
         }
 
-        function updateLastUpdated(isoString) {
-            const date = new Date(isoString);
-            const formatted = date.toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            document.getElementById('lastUpdated').textContent = 'Diperbarui: ' + formatted;
+        function updateLastUpdated(iso) {
+            const d = new Date(iso);
+            document.getElementById('lastUpdated').textContent = 'Diperbarui: ' + d.toLocaleString('id-ID', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
         }
 
         function updateKPIs() {
             const total = filteredData.length;
-            const active = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('terpakai')).length;
-            const available = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('tersedia')).length;
-            const damaged = filteredData.filter(d => (d['Status Aset'] || '').toLowerCase().includes('rusak')).length;
+            const active    = filteredData.filter(d => (d['Status Aset']||'').toLowerCase().includes('terpakai')).length;
+            const available = filteredData.filter(d => (d['Status Aset']||'').toLowerCase().includes('tersedia')).length;
+            const damaged   = filteredData.filter(d => (d['Status Aset']||'').toLowerCase().includes('rusak')).length;
             const divisions = new Set(filteredData.map(d => d['Divisi Karyawan']).filter(Boolean)).size;
-            const totalValue = filteredData.reduce((sum, d) => sum + (parseFloat(d['Harga Beli']) || 0), 0);
+            const totalValue = filteredData.reduce((s,d) => s + (parseFloat(d['Harga Beli'])||0), 0);
 
             document.getElementById('kpiTotal').textContent = total.toLocaleString('id-ID');
             document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
             document.getElementById('kpiDivisions').textContent = divisions;
             document.getElementById('kpiValue').textContent = formatCurrency(totalValue);
-
-            // Sidebar quick stats
             document.getElementById('sidebarActiveCount').textContent = active.toLocaleString('id-ID');
             document.getElementById('sidebarAvailableCount').textContent = available.toLocaleString('id-ID');
             document.getElementById('sidebarDamagedCount').textContent = damaged.toLocaleString('id-ID');
 
-            const hasFilters = document.getElementById('searchInput').value ||
-                document.getElementById('filterStatus').value ||
-                document.getElementById('filterLocation').value ||
-                document.getElementById('filterDivision').value ||
-                document.getElementById('filterType').value ||
-                document.getElementById('filterHolding').value; // ✅ included
-
-            if (hasFilters) {
-                document.getElementById('kpiTotalLabel').textContent = 'Hasil filter';
-                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active / total) * 100).toFixed(1) + '% terpakai' : '0%';
-                document.getElementById('kpiValueLabel').textContent = 'Nilai filter';
-            } else {
-                document.getElementById('kpiTotalLabel').textContent = 'Semua aset';
-                document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active / total) * 100).toFixed(1) + '% dari total' : '0%';
-                document.getElementById('kpiValueLabel').textContent = 'Harga beli total';
-            }
+            const hasFilters = ['searchInput','filterStatus','filterLocation','filterDivision','filterType','filterHolding'].some(id => document.getElementById(id).value);
+            document.getElementById('kpiTotalLabel').textContent = hasFilters ? 'Hasil filter' : 'Semua aset';
+            document.getElementById('kpiActivePercent').textContent = total > 0 ? ((active/total)*100).toFixed(1) + (hasFilters ? '% terpakai' : '% dari total') : '0%';
+            document.getElementById('kpiValueLabel').textContent = hasFilters ? 'Nilai filter' : 'Harga beli total';
         }
 
         function updateFilters() {
-            populateSelect('filterStatus', [...new Set(allData.map(d => d['Status Aset']).filter(Boolean))].sort());
-            populateSelect('filterLocation', [...new Set(allData.map(d => d['Lokasi Aset']).filter(Boolean))].sort());
-            populateSelect('filterDivision', [...new Set(allData.map(d => d['Divisi Karyawan']).filter(Boolean))].sort());
-            populateSelect('filterType', [...new Set(allData.map(d => d['Tipe Aset']).filter(Boolean))].sort());
-            // ✅ NEW: populate Holding filter
-            // Holding: stringify all values — Apps Script returns numbers (1,2,3) as JS numbers, not strings
+            populateSelect('filterStatus',   [...new Set(allData.map(d=>d['Status Aset']).filter(Boolean))].sort());
+            populateSelect('filterLocation', [...new Set(allData.map(d=>d['Lokasi Aset']).filter(Boolean))].sort());
+            populateSelect('filterDivision', [...new Set(allData.map(d=>d['Divisi Karyawan']).filter(Boolean))].sort());
+            populateSelect('filterType',     [...new Set(allData.map(d=>d['Tipe Aset']).filter(Boolean))].sort());
             const holdingValues = [...new Set(
-                allData.map(d => d['Holding'])
-                    .filter(v => v !== '' && v !== null && v !== undefined)
-                    .map(v => String(v))
-            )].sort((a, b) => {
-                const nA = parseFloat(a), nB = parseFloat(b);
-                if (!isNaN(nA) && !isNaN(nB)) return nA - nB; // numeric sort: 1 < 2 < 3
-                return a.localeCompare(b);                      // alpha sort: BASHIROH
-            });
+                allData.map(d=>d['Holding']).filter(v=>v!==''&&v!==null&&v!==undefined).map(v=>String(v))
+            )].sort((a,b)=>{ const nA=parseFloat(a),nB=parseFloat(b); return (!isNaN(nA)&&!isNaN(nB))?nA-nB:a.localeCompare(b); });
             populateSelect('filterHolding', holdingValues);
         }
 
         function populateSelect(id, values) {
-            const select = document.getElementById(id);
-            const currentVal = select.value;
-            const label = select.options[0].text;
-            select.innerHTML = `<option value="">${label}</option>`;
-            values.forEach(val => {
-                const opt = document.createElement('option');
-                opt.value = val;
-                opt.textContent = val;
-                select.appendChild(opt);
-            });
-            select.value = currentVal;
+            const sel = document.getElementById(id); const cur = sel.value; const lbl = sel.options[0].text;
+            sel.innerHTML = `<option value="">${lbl}</option>`;
+            values.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; sel.appendChild(o); });
+            sel.value = cur;
         }
 
         function filterTable() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const status = document.getElementById('filterStatus').value;
+            const search   = document.getElementById('searchInput').value.toLowerCase();
+            const status   = document.getElementById('filterStatus').value;
             const location = document.getElementById('filterLocation').value;
             const division = document.getElementById('filterDivision').value;
-            const type = document.getElementById('filterType').value;
-            const holding = document.getElementById('filterHolding').value; // ✅ NEW
+            const type     = document.getElementById('filterType').value;
+            const holding  = document.getElementById('filterHolding').value;
 
             filteredData = allData.filter(row => {
-                const matchesSearch = !search || Object.values(row).some(val => String(val).toLowerCase().includes(search));
-                return matchesSearch &&
-                    (!status   || row['Status Aset']    === status)   &&
-                    (!location || row['Lokasi Aset']    === location) &&
+                const ms = !search || Object.values(row).some(v => String(v).toLowerCase().includes(search));
+                return ms &&
+                    (!status   || row['Status Aset']     === status)   &&
+                    (!location || row['Lokasi Aset']     === location) &&
                     (!division || row['Divisi Karyawan'] === division) &&
-                    (!type     || row['Tipe Aset']      === type)     &&
-                    (!holding  || String(row['Holding'] ?? '') === holding); // ✅ string-safe
+                    (!type     || row['Tipe Aset']       === type)     &&
+                    (!holding  || String(row['Holding'] ?? '') === holding);
             });
-
-            currentPage = 1;
-            updateKPIs();
-            renderCharts();
-            renderTable();
-            updateShowingText();
+            currentPage = 1; updateKPIs(); renderCharts(); renderTable(); updateShowingText();
         }
 
         function resetFilters() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('filterStatus').value = '';
-            document.getElementById('filterLocation').value = '';
-            document.getElementById('filterDivision').value = '';
-            document.getElementById('filterType').value = '';
-            document.getElementById('filterHolding').value = ''; // ✅ NEW
-            filteredData = [...allData];
-            currentPage = 1;
-            updateKPIs();
-            renderCharts();
-            renderTable();
-            updateShowingText();
+            ['searchInput','filterStatus','filterLocation','filterDivision','filterType','filterHolding'].forEach(id => document.getElementById(id).value = '');
+            filteredData = [...allData]; currentPage = 1; updateKPIs(); renderCharts(); renderTable(); updateShowingText();
         }
 
         function updateShowingText() {
-            const start = (currentPage - 1) * rowsPerPage + 1;
-            const end = Math.min(currentPage * rowsPerPage, filteredData.length);
-            document.getElementById('showingText').textContent = `Menampilkan ${filteredData.length > 0 ? start : 0}-${end} dari ${filteredData.length} aset`;
+            const start = (currentPage-1)*rowsPerPage+1, end = Math.min(currentPage*rowsPerPage, filteredData.length);
+            document.getElementById('showingText').textContent = `Menampilkan ${filteredData.length>0?start:0}-${end} dari ${filteredData.length} aset`;
+        }
+
+        // ── AVATAR HELPERS ────────────────────────────────────────────────────────
+        const AVATAR_PALETTES = [
+            { bg:'#dbeafe', color:'#1e40af' },
+            { bg:'#d1fae5', color:'#065f46' },
+            { bg:'#fef3c7', color:'#92400e' },
+            { bg:'#fce7f3', color:'#9d174d' },
+            { bg:'#ede9fe', color:'#5b21b6' },
+            { bg:'#cffafe', color:'#164e63' },
+            { bg:'#ffedd5', color:'#9a3412' },
+            { bg:'#dcfce7', color:'#14532d' },
+        ];
+
+        function getAvatarPalette(name) {
+            let hash = 0;
+            for (let i = 0; i < (name||'').length; i++) hash = (hash + name.charCodeAt(i)) % AVATAR_PALETTES.length;
+            return AVATAR_PALETTES[hash];
+        }
+
+        function getInitials(name) {
+            if (!name || name === '-') return '?';
+            const parts = name.trim().split(/\s+/);
+            if (parts.length === 1) return parts[0][0].toUpperCase();
+            return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+        }
+
+        // ── ROW CLASS (Option B coloring) ──────────────────────────────────────────
+        function getRowClass(status) {
+            const s = (status||'').toLowerCase();
+            if (s.includes('rusak'))   return 'row-rusak';
+            if (s.includes('lelang'))  return 'row-lelang';
+            if (s.includes('terjual') || s.includes('dijual')) return 'row-terjual';
+            if (s.includes('stok'))    return 'row-stok';
+            return '';
+        }
+
+        // ── STATUS BADGE ──────────────────────────────────────────────────────────
+        function renderStatusBadge(status) {
+            const s = (status||'').toLowerCase();
+            let cls = 'status-default';
+            if (s.includes('terpakai')) cls = 'status-terpakai';
+            else if (s.includes('tersedia')) cls = 'status-tersedia';
+            else if (s.includes('rusak'))    cls = 'status-rusak';
+            else if (s.includes('stok'))     cls = 'status-stok';
+            else if (s.includes('terjual') || s.includes('dijual')) cls = 'status-terjual';
+            else if (s.includes('lelang'))   cls = 'status-lelang';
+            return `<span class="status-badge ${cls}"><span class="status-dot"></span>${status||'-'}</span>`;
+        }
+
+        // ── KONDISI with icon & color ──────────────────────────────────────────────
+        function renderKondisi(condition) {
+            const c = (condition||'').toLowerCase();
+            if (c.includes('baik'))     return `<span style="color:#059669;font-weight:500;font-size:12px;">✓ ${condition}</span>`;
+            if (c.includes('rusak'))    return `<span style="color:#dc2626;font-weight:500;font-size:12px;">✗ ${condition}</span>`;
+            if (c.includes('sedang'))   return `<span style="color:#b45309;font-weight:500;font-size:12px;">⚠ ${condition}</span>`;
+            if (c.includes('perbaikan'))return `<span style="color:#b45309;font-weight:500;font-size:12px;">⚠ ${condition}</span>`;
+            return `<span style="color:#94a3b8;font-size:12px;">${condition||'-'}</span>`;
         }
 
         function renderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
-            const start = (currentPage - 1) * rowsPerPage;
-            const pageData = filteredData.slice(start, start + rowsPerPage);
-
-            pageData.forEach((row, idx) => {
+            const start = (currentPage-1)*rowsPerPage;
+            filteredData.slice(start, start+rowsPerPage).forEach((row, idx) => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-blue-50 transition border-b border-slate-200 fade-in';
-                tr.style.animationDelay = (idx * 0.05) + 's';
-                const status = row['Status Aset'] || '';
-                const condition = row['Kondisi Aset'] || '';
-                const holding = (row['Holding'] !== undefined && row['Holding'] !== null && row['Holding'] !== '') ? String(row['Holding']) : '-';
+                const rowClass = getRowClass(row['Status Aset']);
+                tr.className = `fade-in ${rowClass}`;
+                tr.style.animationDelay = (idx*0.03) + 's';
+
+                const status    = row['Status Aset'] || '';
+                const holding   = (row['Holding']!==undefined&&row['Holding']!==null&&row['Holding']!=='') ? String(row['Holding']) : '-';
+                const empName   = row['Nama Karyawan'] || '-';
+                const division  = row['Divisi Karyawan'] || '-';
+                const initials  = getInitials(empName);
+                const palette   = getAvatarPalette(empName);
 
                 tr.innerHTML = `
-                    <td class="px-4 py-3 font-medium text-slate-900">${row['No'] || ''}</td>
-                    <td class="px-4 py-3 text-slate-600 font-mono text-xs">${row['NO Inventory'] || ''}</td>
-                    <td class="px-4 py-3"><span class="inline-flex items-center gap-1">${getTypeIcon(row['Tipe Aset'])}<span class="text-slate-700">${row['Tipe Aset'] || ''}</span></span></td>
-                    <td class="px-4 py-3"><div class="font-medium text-slate-900">${row['Merk'] || ''}</div><div class="text-xs text-slate-500">${row['Model Tipe Aset'] || ''}</div></td>
-                    <td class="px-4 py-3 text-xs text-slate-600 max-w-xs truncate" title="${row['Seri/Spesifikasi'] || ''}">${row['Seri/Spesifikasi'] || ''}</td>
-                    <td class="px-4 py-3 text-slate-700">${row['Lokasi Aset'] || ''}</td>
-                    <td class="px-4 py-3"><div class="font-medium text-slate-900">${row['Nama Karyawan'] || '-'}</div></td>
-                    <td class="px-4 py-3"><span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDivisionBadge(row['Divisi Karyawan'])}">${row['Divisi Karyawan'] || '-'}</span></td>
-                    <td class="px-4 py-3"><span class="holding-badge">${holding}</span></td>
-                    <td class="px-4 py-3"><span class="status-badge ${getStatusClass(status)}">${status || '-'}</span></td>
-                    <td class="px-4 py-3"><span class="text-xs ${getConditionColor(condition)}">${condition || '-'}</span></td>
-                    <td class="px-4 py-3 font-medium text-slate-700">${formatCurrency(row['Harga Beli'])}</td>
-                    <td class="px-4 py-3"><button onclick="showDetail(${start + idx})" class="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-100 rounded-lg transition"><i class="fas fa-eye"></i></button></td>
+                    <td class="px-3 py-3 td-no" style="color:#94a3b8;font-size:12px;">${row['No']||''}</td>
+                    <td class="px-3 py-3 td-inv"><span class="inv-pill">${row['NO Inventory']||'-'}</span></td>
+                    <td class="px-3 py-3 td-type">
+                        <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#334155;">
+                            ${getTypeIcon(row['Tipe Aset'])}${row['Tipe Aset']||'-'}
+                        </span>
+                    </td>
+                    <td class="px-3 py-3 td-brand">
+                        <div style="font-weight:500;font-size:13px;color:#0f172a;">${row['Merk']||'-'}</div>
+                        <div style="font-size:11px;color:#94a3b8;margin-top:1px;">${row['Model Tipe Aset']||''}</div>
+                    </td>
+                    <td class="px-3 py-3 td-loc" style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td>
+                    <td class="px-3 py-3 td-emp">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div class="emp-avatar" style="background:${palette.bg};color:${palette.color};">${initials}</div>
+                            <div>
+                                <div style="font-weight:500;font-size:12px;color:#0f172a;line-height:1.3;">${empName}</div>
+                                <div style="font-size:11px;color:#94a3b8;">${division}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-3 py-3 td-hold"><span class="holding-badge">${holding}</span></td>
+                    <td class="px-3 py-3 td-status">${renderStatusBadge(status)}</td>
+                    <td class="px-3 py-3 td-cond">${renderKondisi(row['Kondisi Aset'])}</td>
+                    <td class="px-3 py-3 td-price" style="text-align:right;font-size:12px;font-weight:500;color:#334155;font-variant-numeric:tabular-nums;">${formatCurrency(row['Harga Beli'])}</td>
+                    <td class="px-3 py-3 td-action">
+                        <button onclick="showDetail(${start+idx})" style="width:30px;height:30px;border-radius:7px;background:#f1f5f9;border:1px solid #e2e8f0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#f1f5f9'">
+                            <i class="fas fa-eye" style="font-size:12px;color:#3b82f6;"></i>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
-
-            updatePagination();
-            updateShowingText();
-        }
-
-        function getStatusClass(status) {
-            const s = (status || '').toLowerCase();
-            if (s.includes('terpakai')) return 'status-terpakai';
-            if (s.includes('tersedia')) return 'status-tersedia';
-            if (s.includes('rusak')) return 'status-rusak';
-            return 'bg-slate-200 text-slate-600 border border-slate-300';
-        }
-
-        function getConditionColor(condition) {
-            const c = (condition || '').toLowerCase();
-            if (c.includes('baik')) return 'text-emerald-600 font-medium';
-            if (c.includes('rusak')) return 'text-rose-600 font-medium';
-            if (c.includes('perbaikan')) return 'text-amber-600 font-medium';
-            return 'text-slate-500';
-        }
-
-        function getDivisionBadge(division) {
-            const d = (division || '').toLowerCase();
-            if (d.includes('host live')) return 'bg-pink-100 text-pink-700 border border-pink-300';
-            if (d.includes('kreatif')) return 'bg-purple-100 text-purple-700 border border-purple-300';
-            return 'bg-slate-200 text-slate-600 border border-slate-300';
+            updatePagination(); updateShowingText();
         }
 
         function getTypeIcon(type) {
-            const t = (type || '').toLowerCase();
-            if (t.includes('hp') || t.includes('phone')) return '<i class="fas fa-mobile-alt text-blue-600"></i>';
-            if (t.includes('laptop')) return '<i class="fas fa-laptop text-blue-600"></i>';
-            if (t.includes('pc')) return '<i class="fas fa-desktop text-slate-600"></i>';
-            if (t.includes('monitor')) return '<i class="fas fa-tv text-emerald-600"></i>';
-            if (t.includes('ups')) return '<i class="fas fa-battery-full text-amber-600"></i>';
-            if (t.includes('headphone')) return '<i class="fas fa-headphones text-pink-600"></i>';
-            return '<i class="fas fa-box text-slate-500"></i>';
+            const t = (type||'').toLowerCase();
+            if (t.includes('hp')||t.includes('phone')) return '<i class="fas fa-mobile-alt" style="font-size:13px;color:#3b82f6;"></i>';
+            if (t.includes('laptop'))   return '<i class="fas fa-laptop"        style="font-size:13px;color:#3b82f6;"></i>';
+            if (t.includes('pc'))       return '<i class="fas fa-desktop"       style="font-size:13px;color:#64748b;"></i>';
+            if (t.includes('monitor'))  return '<i class="fas fa-tv"            style="font-size:13px;color:#10b981;"></i>';
+            if (t.includes('ups'))      return '<i class="fas fa-battery-full"  style="font-size:13px;color:#f59e0b;"></i>';
+            if (t.includes('headphone'))return '<i class="fas fa-headphones"    style="font-size:13px;color:#ec4899;"></i>';
+            if (t.includes('keyboard')) return '<i class="fas fa-keyboard"      style="font-size:13px;color:#8b5cf6;"></i>';
+            if (t.includes('kamera')||t.includes('camera')) return '<i class="fas fa-camera" style="font-size:13px;color:#06b6d4;"></i>';
+            return '<i class="fas fa-box" style="font-size:13px;color:#94a3b8;"></i>';
         }
 
         function formatCurrency(value) {
-            if (!value || value === '') return '-';
+            if (!value||value==='') return '-';
             const num = parseFloat(value);
-            if (isNaN(num)) return value;
-            return 'Rp' + num.toLocaleString('id-ID');
+            return isNaN(num) ? value : 'Rp' + num.toLocaleString('id-ID');
         }
 
         function updatePagination() {
-            const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
+            const tp = Math.ceil(filteredData.length/rowsPerPage)||1;
             document.getElementById('currentPage').textContent = currentPage;
-            document.getElementById('totalPages').textContent = totalPages;
-            document.getElementById('prevBtn').disabled = currentPage === 1;
-            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+            document.getElementById('totalPages').textContent = tp;
+            document.getElementById('prevBtn').disabled = currentPage===1;
+            document.getElementById('nextBtn').disabled = currentPage===tp;
         }
 
-        function changePage(delta) {
-            const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
-            const newPage = currentPage + delta;
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderTable();
-                document.querySelector('.table-container').scrollTop = 0;
-            }
+        function changePage(d) {
+            const tp = Math.ceil(filteredData.length/rowsPerPage)||1, np = currentPage+d;
+            if (np>=1&&np<=tp) { currentPage=np; renderTable(); document.querySelector('.table-container').scrollTop=0; }
         }
 
-        function changeRowsPerPage() {
-            rowsPerPage = parseInt(document.getElementById('rowsPerPage').value);
-            currentPage = 1;
-            renderTable();
-        }
+        function changeRowsPerPage() { rowsPerPage=parseInt(document.getElementById('rowsPerPage').value); currentPage=1; renderTable(); }
 
-        // ── CHART CONFIG ──────────────────────────────────────────────────────────────
+        // ── CHART CONFIG ──────────────────────────────────────────────────────────
         const tooltipDefaults = {
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            titleColor: '#ffffff',
-            bodyColor: '#e2e8f0',
-            borderColor: 'rgba(59, 130, 246, 0.3)',
-            borderWidth: 1,
-            padding: 12,
-            cornerRadius: 10,
-            titleFont: { size: 12, weight: '600', family: 'Inter' },
-            bodyFont: { size: 12, family: 'Inter' },
-            displayColors: true,
-            boxWidth: 10, boxHeight: 10, boxPadding: 4,
-            usePointStyle: true,
+            backgroundColor:'rgba(15,23,42,0.95)', titleColor:'#ffffff', bodyColor:'#e2e8f0',
+            borderColor:'rgba(59,130,246,0.3)', borderWidth:1, padding:12, cornerRadius:10,
+            titleFont:{size:12,weight:'600',family:'Inter'}, bodyFont:{size:12,family:'Inter'},
+            displayColors:true, boxWidth:10, boxHeight:10, boxPadding:4, usePointStyle:true,
         };
 
         function pieTooltipCallbacks() {
-            return {
-                label: function(context) {
-                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                    const value = context.dataset.data[context.dataIndex];
-                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                    return `  ${context.label} — ${value.toLocaleString('id-ID')} aset (${pct}%)`;
-                }
-            };
+            return { label(ctx) { const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.dataset.data[ctx.dataIndex]; return `  ${ctx.label} — ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}%)`; } };
         }
-
         function barTooltipCallbacks() {
-            return {
-                label: function(context) {
-                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                    const value = context.parsed.y !== undefined ? context.parsed.y : context.parsed.x;
-                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                    return `  ${value.toLocaleString('id-ID')} aset (${pct}% dari total)`;
-                }
-            };
+            return { label(ctx) { const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.y!==undefined?ctx.parsed.y:ctx.parsed.x; return `  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`; } };
         }
-
         function getChartOptions() {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#64748b', font: { size: 11 } } },
-                    tooltip: tooltipDefaults
-                }
-            };
+            return { responsive:true, maintainAspectRatio:false, plugins:{ legend:{labels:{color:'#64748b',font:{size:11}}}, tooltip:tooltipDefaults } };
         }
-
-        function renderCharts() {
-            renderCategoryChart();
-            renderLocationChart();
-            renderTypeChart();
-            renderStatusChart();
-            renderConditionChart();
-            renderMerkChart();
-        }
+        function renderCharts() { renderCategoryChart();renderLocationChart();renderTypeChart();renderStatusChart();renderConditionChart();renderMerkChart(); }
 
         function renderCategoryChart() {
-            const ctx = document.getElementById('categoryChart').getContext('2d');
-            const categories = {};
-            filteredData.forEach(d => { const cat = d['Kategori Aset'] || 'Lainnya'; categories[cat] = (categories[cat] || 0) + 1; });
-            if (charts.category) charts.category.destroy();
-            charts.category = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels: Object.keys(categories), datasets: [{ data: Object.values(categories), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
-                options: { ...getChartOptions(), plugins: { ...getChartOptions().plugins, legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } }, tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() } } }
-            });
+            const ctx=document.getElementById('categoryChart').getContext('2d'), cats={};
+            filteredData.forEach(d=>{const c=d['Kategori Aset']||'Lainnya';cats[c]=(cats[c]||0)+1;});
+            if(charts.category)charts.category.destroy();
+            charts.category=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...getChartOptions(),plugins:{...getChartOptions().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:12,font:{size:11}}},tooltip:{...tooltipDefaults,callbacks:pieTooltipCallbacks()}}}});
         }
-
         function renderLocationChart() {
-            const ctx = document.getElementById('locationChart').getContext('2d');
-            const locations = {};
-            filteredData.forEach(d => { const loc = d['Lokasi Aset'] || 'Unknown'; locations[loc] = (locations[loc] || 0) + 1; });
-            if (charts.location) charts.location.destroy();
-            const BAR_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316','#84cc16','#a855f7'];
-            const bgColors = Array.from({ length: Object.keys(locations).length }, (_, i) => BAR_COLORS[i % BAR_COLORS.length]);
-            charts.location = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: Object.keys(locations), datasets: [{ label: 'Jumlah Aset', data: Object.values(locations), backgroundColor: bgColors, borderRadius: 6 }] },
-                options: { ...getChartOptions(), plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } } } }
-            });
+            const ctx=document.getElementById('locationChart').getContext('2d'),locs={};
+            filteredData.forEach(d=>{const l=d['Lokasi Aset']||'Unknown';locs[l]=(locs[l]||0)+1;});
+            if(charts.location)charts.location.destroy();
+            const BC=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316','#84cc16','#a855f7'];
+            const bg=Array.from({length:Object.keys(locs).length},(_,i)=>BC[i%BC.length]);
+            charts.location=new Chart(ctx,{type:'bar',data:{labels:Object.keys(locs),datasets:[{label:'Jumlah Aset',data:Object.values(locs),backgroundColor:bg,borderRadius:6}]},options:{...getChartOptions(),plugins:{legend:{display:false},tooltip:{...tooltipDefaults,callbacks:barTooltipCallbacks()}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}}}}});
         }
-
         function renderTypeChart() {
-            const ctx = document.getElementById('typeChart').getContext('2d');
-            const types = {};
-            filteredData.forEach(d => { const type = d['Tipe Aset'] || 'Lainnya'; types[type] = (types[type] || 0) + 1; });
-            if (charts.type) charts.type.destroy();
-            charts.type = new Chart(ctx, {
-                type: 'pie',
-                data: { labels: Object.keys(types), datasets: [{ data: Object.values(types), backgroundColor: CHART_COLORS, borderWidth: 0 }] },
-                options: { ...getChartOptions(), plugins: { ...getChartOptions().plugins, legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 10 } } }, tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() } } }
-            });
+            const ctx=document.getElementById('typeChart').getContext('2d'),types={};
+            filteredData.forEach(d=>{const t=d['Tipe Aset']||'Lainnya';types[t]=(types[t]||0)+1;});
+            if(charts.type)charts.type.destroy();
+            charts.type=new Chart(ctx,{type:'pie',data:{labels:Object.keys(types),datasets:[{data:Object.values(types),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...getChartOptions(),plugins:{...getChartOptions().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:12,font:{size:10}}},tooltip:{...tooltipDefaults,callbacks:pieTooltipCallbacks()}}}});
         }
-
         function renderStatusChart() {
-            const ctx = document.getElementById('statusChart').getContext('2d');
-            const statuses = {};
-            filteredData.forEach(d => { const s = d['Status Aset'] || 'Unknown'; statuses[s] = (statuses[s] || 0) + 1; });
-            if (charts.status) charts.status.destroy();
-            const statusColors = { 'Terpakai': '#10b981', 'Tersedia': '#3b82f6', 'Rusak': '#ef4444', 'Dijual': '#f59e0b', 'Unknown': '#6b7280' };
-            const bgColors = Object.keys(statuses).map(s => statusColors[s] || '#6b7280');
-            charts.status = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels: Object.keys(statuses), datasets: [{ data: Object.values(statuses), backgroundColor: bgColors, borderWidth: 0 }] },
-                options: { ...getChartOptions(), plugins: { ...getChartOptions().plugins, legend: { position: 'right', labels: { color: '#64748b', boxWidth: 12, font: { size: 11 } } }, tooltip: { ...tooltipDefaults, callbacks: pieTooltipCallbacks() } } }
-            });
+            const ctx=document.getElementById('statusChart').getContext('2d'),sts={};
+            filteredData.forEach(d=>{const s=d['Status Aset']||'Unknown';sts[s]=(sts[s]||0)+1;});
+            if(charts.status)charts.status.destroy();
+            const sc={'Terpakai':'#10b981','Tersedia':'#3b82f6','Rusak':'#ef4444','Dijual':'#f59e0b','Terjual':'#8b5cf6','Stok':'#f97316','Lelang':'#ec4899','Unknown':'#6b7280'};
+            const bg=Object.keys(sts).map(s=>sc[s]||'#6b7280');
+            charts.status=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(sts),datasets:[{data:Object.values(sts),backgroundColor:bg,borderWidth:0}]},options:{...getChartOptions(),plugins:{...getChartOptions().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:12,font:{size:11}}},tooltip:{...tooltipDefaults,callbacks:pieTooltipCallbacks()}}}});
         }
-
         function renderConditionChart() {
-            const ctx = document.getElementById('conditionChart').getContext('2d');
-            const conditions = {};
-            filteredData.forEach(d => { const c = d['Kondisi Aset'] || 'Unknown'; conditions[c] = (conditions[c] || 0) + 1; });
-            if (charts.condition) charts.condition.destroy();
-            const condColors = { 'Baik': '#10b981', 'Rusak': '#ef4444', 'Sedang': '#f59e0b', 'Perbaikan': '#f97316', 'Unknown': '#6b7280' };
-            const bgColors = Object.keys(conditions).map(c => condColors[c] || '#6b7280');
-            charts.condition = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: Object.keys(conditions), datasets: [{ label: 'Jumlah', data: Object.values(conditions), backgroundColor: bgColors, borderRadius: 6 }] },
-                options: { ...getChartOptions(), plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: barTooltipCallbacks() } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { ticks: { color: '#64748b' }, grid: { display: false } } } }
-            });
+            const ctx=document.getElementById('conditionChart').getContext('2d'),conds={};
+            filteredData.forEach(d=>{const c=d['Kondisi Aset']||'Unknown';conds[c]=(conds[c]||0)+1;});
+            if(charts.condition)charts.condition.destroy();
+            const cc={'Baik':'#10b981','Rusak':'#ef4444','Sedang':'#f59e0b','Perbaikan':'#f97316','Unknown':'#6b7280'};
+            const bg=Object.keys(conds).map(c=>cc[c]||'#6b7280');
+            charts.condition=new Chart(ctx,{type:'bar',data:{labels:Object.keys(conds),datasets:[{label:'Jumlah',data:Object.values(conds),backgroundColor:bg,borderRadius:6}]},options:{...getChartOptions(),plugins:{legend:{display:false},tooltip:{...tooltipDefaults,callbacks:barTooltipCallbacks()}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{color:'#64748b'},grid:{display:false}}}}});
         }
-
         function renderMerkChart() {
-            const ctx = document.getElementById('merkChart').getContext('2d');
-            const merks = {};
-            filteredData.forEach(d => { const merk = d['Merk'] || 'Lainnya'; merks[merk] = (merks[merk] || 0) + 1; });
-            const sortedMerks = Object.entries(merks).sort((a, b) => b[1] - a[1]).slice(0, 10);
-            if (charts.merk) charts.merk.destroy();
-            const MERK_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316'];
-            const horizCallbacks = {
-                label: function(context) {
-                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                    const value = context.parsed.x;
-                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                    return `  ${value.toLocaleString('id-ID')} aset (${pct}% dari total)`;
-                }
-            };
-            charts.merk = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: sortedMerks.map(m => m[0]), datasets: [{ label: 'Jumlah Aset', data: sortedMerks.map(m => m[1]), backgroundColor: sortedMerks.map((_, i) => MERK_COLORS[i % MERK_COLORS.length]), borderRadius: 6 }] },
-                options: { ...getChartOptions(), indexAxis: 'y', plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: horizCallbacks } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(0,0,0,0.05)' } }, y: { ticks: { color: '#64748b' }, grid: { display: false } } } }
-            });
+            const ctx=document.getElementById('merkChart').getContext('2d'),merks={};
+            filteredData.forEach(d=>{const m=d['Merk']||'Lainnya';merks[m]=(merks[m]||0)+1;});
+            const sorted=Object.entries(merks).sort((a,b)=>b[1]-a[1]).slice(0,10);
+            if(charts.merk)charts.merk.destroy();
+            const MC=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316'];
+            const hCb={label(ctx){const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.x;return`  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`;}};
+            charts.merk=new Chart(ctx,{type:'bar',data:{labels:sorted.map(m=>m[0]),datasets:[{label:'Jumlah Aset',data:sorted.map(m=>m[1]),backgroundColor:sorted.map((_,i)=>MC[i%MC.length]),borderRadius:6}]},options:{...getChartOptions(),indexAxis:'y',plugins:{legend:{display:false},tooltip:{...tooltipDefaults,callbacks:hCb}},scales:{x:{beginAtZero:true,ticks:{stepSize:1,color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.05)'}},y:{ticks:{color:'#64748b'},grid:{display:false}}}}});
         }
 
         function showDetail(index) {
-            const data = filteredData[index];
-            if (!data) return;
+            const data = filteredData[index]; if (!data) return;
             const fields = [
-                ['NO Inventory', 'No. Inventory'],
-                ['Tipe Aset', 'Tipe Aset'],
-                ['Merk', 'Merk'],
-                ['Model Tipe Aset', 'Model'],
-                ['Seri/Spesifikasi', 'Spesifikasi'],
-                ['IMEI', 'IMEI'],
-                ['Kategori Aset', 'Kategori'],
-                ['Lokasi Aset', 'Lokasi'],
-                ['Nama Karyawan', 'Karyawan'],
-                ['Divisi Karyawan', 'Divisi'],
-                ['Lini Bisnis', 'Lini Bisnis'],
-                ['Holding', 'Holding'],                          // ✅ NEW
-                ['Tanggal Pembelian Aset', 'Tanggal Pembelian'],
-                ['Harga Beli', 'Harga Beli', formatCurrency],
-                ['Prakiraan Penyusutan (dalam bulan)', 'Penyusutan'],
-                ['Harga Jual', 'Harga Jual', formatCurrency],
-                ['Status Aset', 'Status'],
-                ['Kondisi Aset', 'Kondisi'],
-                ['Garansi Aset (satuan bulan)', 'Garansi (bulan)'],
-                ['Tanggal Peminjaman Aset', 'Tanggal Peminjaman'],
-                ['Tanggal Pengembalian an Aset', 'Tanggal Pengembalian'],
-                ['Tanggal Penjualan Aset', 'Tanggal Penjualan']
+                ['NO Inventory','No. Inventory'],['Tipe Aset','Tipe Aset'],['Merk','Merk'],['Model Tipe Aset','Model'],
+                ['Seri/Spesifikasi','Spesifikasi'],['IMEI','IMEI'],['Kategori Aset','Kategori'],['Lokasi Aset','Lokasi'],
+                ['Nama Karyawan','Karyawan'],['Divisi Karyawan','Divisi'],['Lini Bisnis','Lini Bisnis'],['Holding','Holding'],
+                ['Tanggal Pembelian Aset','Tanggal Pembelian'],['Harga Beli','Harga Beli',formatCurrency],
+                ['Prakiraan Penyusutan (dalam bulan)','Penyusutan'],['Harga Jual','Harga Jual',formatCurrency],
+                ['Status Aset','Status'],['Kondisi Aset','Kondisi'],['Garansi Aset (satuan bulan)','Garansi (bulan)'],
+                ['Tanggal Peminjaman Aset','Tanggal Peminjaman'],['Tanggal Pengembalian an Aset','Tanggal Pengembalian'],
+                ['Tanggal Penjualan Aset','Tanggal Penjualan']
             ];
-
             let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
-            fields.forEach(([key, label, formatter]) => {
+            fields.forEach(([key,label,formatter]) => {
                 const value = data[key];
-                if (value !== '' && value !== null && value !== undefined) {
-                    // Give Holding a purple highlight in the detail modal
-                    const isHolding = key === 'Holding';
+                if (value!==''&&value!==null&&value!==undefined) {
+                    const isHolding = key==='Holding';
                     const bgClass = isHolding ? 'bg-violet-50 border-violet-200' : 'bg-slate-50 border-slate-200';
                     const labelClass = isHolding ? 'text-violet-500' : 'text-slate-500';
-                    html += `<div class="rounded-lg p-3 border ${bgClass}"><label class="text-xs font-medium uppercase ${labelClass}">${label}</label><div class="text-sm font-medium text-slate-900 mt-1">${formatter ? formatter(value) : value}</div></div>`;
+                    html += `<div class="rounded-lg p-3 border ${bgClass}"><label class="text-xs font-medium uppercase ${labelClass}">${label}</label><div class="text-sm font-medium text-slate-900 mt-1">${formatter?formatter(value):value}</div></div>`;
                 }
             });
             html += '</div>';
-
-            if (data['Link']) {
-                html += `<div class="mt-4"><a href="${data['Link']}" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"><i class="fas fa-external-link-alt"></i>Lihat Dokumen/Link Terkait</a></div>`;
-            }
-
+            if (data['Link']) html += `<div class="mt-4"><a href="${data['Link']}" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"><i class="fas fa-external-link-alt"></i>Lihat Dokumen/Link Terkait</a></div>`;
             document.getElementById('detailContent').innerHTML = html;
             document.getElementById('detailModal').classList.remove('hidden');
         }
 
         function closeDetail() { document.getElementById('detailModal').classList.add('hidden'); }
-
-        window.onclick = function(event) {
-            if (event.target === document.getElementById('settingsModal')) closeSettings();
-            if (event.target === document.getElementById('detailModal')) closeDetail();
-        }
+        window.onclick = e => {
+            if (e.target===document.getElementById('settingsModal')) closeSettings();
+            if (e.target===document.getElementById('detailModal'))   closeDetail();
+        };
     </script>
 </body>
 </html>
