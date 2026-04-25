@@ -537,7 +537,10 @@
     <div class="admin-hint">Ctrl+Shift+A for Admin</div>
 
     <script>
-        let API_URL = localStorage.getItem('assetApiUrl') || 'YOUR_APPS_SCRIPT_URL_HERE';
+        // ─── PASTE YOUR WEB APP URL BELOW (only place you need to edit) ───────────
+        const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec'; // ← replace this
+        // ────────────────────────────────────────────────────────────────────────
+        let API_URL = localStorage.getItem('assetApiUrl') || DEFAULT_API_URL;
         let allData = [];
         let filteredData = [];
         let currentPage = 1;
@@ -549,11 +552,8 @@
         const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#6366f1'];
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (!API_URL || API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-                openSettings();
-            } else {
-                loadData();
-            }
+            // Always try to load data on page open — no URL prompt for visitors
+            loadData();
             document.getElementById('apiUrlInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') saveSettings();
             });
@@ -614,7 +614,7 @@
         }
 
         async function loadData() {
-            if (!API_URL || API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { openSettings(); return; }
+            if (!API_URL || API_URL === DEFAULT_API_URL && DEFAULT_API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') { openSettings(); return; }
             showLoading(true);
             try {
                 const url = API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
@@ -721,7 +721,17 @@
             populateSelect('filterDivision', [...new Set(allData.map(d => d['Divisi Karyawan']).filter(Boolean))].sort());
             populateSelect('filterType', [...new Set(allData.map(d => d['Tipe Aset']).filter(Boolean))].sort());
             // ✅ NEW: populate Holding filter
-            populateSelect('filterHolding', [...new Set(allData.map(d => d['Holding']).filter(Boolean))].sort());
+            // Holding: stringify all values — Apps Script returns numbers (1,2,3) as JS numbers, not strings
+            const holdingValues = [...new Set(
+                allData.map(d => d['Holding'])
+                    .filter(v => v !== '' && v !== null && v !== undefined)
+                    .map(v => String(v))
+            )].sort((a, b) => {
+                const nA = parseFloat(a), nB = parseFloat(b);
+                if (!isNaN(nA) && !isNaN(nB)) return nA - nB; // numeric sort: 1 < 2 < 3
+                return a.localeCompare(b);                      // alpha sort: BASHIROH
+            });
+            populateSelect('filterHolding', holdingValues);
         }
 
         function populateSelect(id, values) {
@@ -753,7 +763,7 @@
                     (!location || row['Lokasi Aset']    === location) &&
                     (!division || row['Divisi Karyawan'] === division) &&
                     (!type     || row['Tipe Aset']      === type)     &&
-                    (!holding  || row['Holding']        === holding); // ✅ NEW
+                    (!holding  || String(row['Holding'] ?? '') === holding); // ✅ string-safe
             });
 
             currentPage = 1;
@@ -796,7 +806,7 @@
                 tr.style.animationDelay = (idx * 0.05) + 's';
                 const status = row['Status Aset'] || '';
                 const condition = row['Kondisi Aset'] || '';
-                const holding = row['Holding'] || '-'; // ✅ NEW
+                const holding = (row['Holding'] !== undefined && row['Holding'] !== null && row['Holding'] !== '') ? String(row['Holding']) : '-';
 
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-medium text-slate-900">${row['No'] || ''}</td>
