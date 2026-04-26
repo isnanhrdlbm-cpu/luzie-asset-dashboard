@@ -336,6 +336,20 @@
             <!-- ═══════════ DASHBOARD PAGE ═══════════ -->
             <div id="page-dashboard" class="page">
 
+                <!-- Filter bar for Dashboard -->
+                <div class="filter-bar">
+                    <div class="search-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="dashSearch" class="search-inp" placeholder="Cari aset, merk, karyawan..." oninput="applyDashboardFilters()">
+                    </div>
+                    <select id="dashFilterStatus"   class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Status</option></select>
+                    <select id="dashFilterLocation" class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Lokasi</option></select>
+                    <select id="dashFilterDivision" class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Divisi</option></select>
+                    <select id="dashFilterType"     class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Tipe</option></select>
+                    <select id="dashFilterHolding"  class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Holding</option></select>
+                    <button onclick="resetDashboardFilters()" class="btn-secondary"><i class="fas fa-undo"></i> Reset</button>
+                </div>
+
                 <!-- KPI -->
                 <div class="kpi-grid">
                     <div class="kpi-card" style="border-left:4px solid #3b82f6;">
@@ -605,6 +619,7 @@
 const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec';
 let API_URL = localStorage.getItem('assetApiUrl') || DEFAULT_API_URL;
 let allData = [], invFiltered = [], invPage = 1, invRows = 30;
+let dashboardFiltered = []; // New state for dashboard filters
 let charts = {}, retryCount = 0;
 const MAX_RETRIES = 3;
 const CHART_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1'];
@@ -664,6 +679,7 @@ async function loadData() {
         if (res.status !== 'success') throw new Error(res.message || 'API error');
         allData = res.data || [];
         invFiltered = [...allData];
+        dashboardFiltered = [...allData]; // Initialize dashboard filtered data
         retryCount = 0;
         const d = new Date(res.lastUpdated);
         const fmt = d.toLocaleString('id-ID', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
@@ -752,10 +768,46 @@ function getTypeIcon(t) {
 }
 
 // ═══════════════════════════════════════════════════════
+//  DASHBOARD FILTERS
+// ═══════════════════════════════════════════════════════
+function applyDashboardFilters() {
+    const search   = (document.getElementById('dashSearch').value||'').toLowerCase();
+    const status   = document.getElementById('dashFilterStatus').value;
+    const location = document.getElementById('dashFilterLocation').value;
+    const division = document.getElementById('dashFilterDivision').value;
+    const type     = document.getElementById('dashFilterType').value;
+    const holding  = document.getElementById('dashFilterHolding').value;
+    
+    dashboardFiltered = allData.filter(row => {
+        const ms = !search || Object.values(row).some(v=>String(v).toLowerCase().includes(search));
+        return ms &&
+            (!status   || row['Status Aset']     === status)   &&
+            (!location || row['Lokasi Aset']     === location) &&
+            (!division || row['Divisi Karyawan'] === division) &&
+            (!type     || row['Tipe Aset']       === type)     &&
+            (!holding  || String(row['Holding']??'') === holding);
+    });
+    
+    // Update dashboard with filtered data
+    updateDashboard(dashboardFiltered);
+    renderDashboardCharts();
+}
+
+function resetDashboardFilters() {
+    ['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].forEach(id=>{ 
+        const el=document.getElementById(id); 
+        if(el) el.value=''; 
+    });
+    dashboardFiltered = [...allData];
+    updateDashboard(dashboardFiltered);
+    renderDashboardCharts();
+}
+
+// ═══════════════════════════════════════════════════════
 //  DASHBOARD KPIs
 // ═══════════════════════════════════════════════════════
 function updateDashboard(data) {
-    const d = data || allData;
+    const d = data || dashboardFiltered;
     const total    = d.length;
     const active   = d.filter(r=>(r['Status Aset']||'').toLowerCase().includes('terpakai')).length;
     const divisions= new Set(d.map(r=>r['Divisi Karyawan']).filter(Boolean)).size;
@@ -765,6 +817,17 @@ function updateDashboard(data) {
     document.getElementById('kpiDivisions').textContent = divisions;
     document.getElementById('kpiValue').textContent     = formatCurrency(totalVal);
     document.getElementById('kpiActivePct').textContent = total>0?((active/total)*100).toFixed(1)+'% dari total':'0%';
+    
+    // Update KPI labels based on filters
+    const hasFilters = document.getElementById('dashSearch').value || 
+                       document.getElementById('dashFilterStatus').value ||
+                       document.getElementById('dashFilterLocation').value ||
+                       document.getElementById('dashFilterDivision').value ||
+                       document.getElementById('dashFilterType').value ||
+                       document.getElementById('dashFilterHolding').value;
+    
+    document.getElementById('kpiTotalSub').textContent = hasFilters ? 'Hasil filter' : 'Semua aset';
+    document.getElementById('kpiValueSub').textContent = hasFilters ? 'Nilai hasil filter' : 'Harga beli total';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -778,13 +841,22 @@ function populateAllFilters() {
         vals.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; el.appendChild(o); });
         el.value = cur;
     };
+    
+    // Dashboard filters
+    sel('dashFilterStatus',   [...new Set(allData.map(d=>d['Status Aset']).filter(Boolean))].sort(), 'Semua Status');
+    sel('dashFilterLocation', [...new Set(allData.map(d=>d['Lokasi Aset']).filter(Boolean))].sort(), 'Semua Lokasi');
+    sel('dashFilterDivision', [...new Set(allData.map(d=>d['Divisi Karyawan']).filter(Boolean))].sort(), 'Semua Divisi');
+    sel('dashFilterType',     [...new Set(allData.map(d=>d['Tipe Aset']).filter(Boolean))].sort(), 'Semua Tipe');
+    const hv = [...new Set(allData.map(d=>d['Holding']).filter(v=>v!==''&&v!==null&&v!==undefined).map(v=>String(v)))]
+        .sort((a,b)=>{ const nA=parseFloat(a),nB=parseFloat(b); return (!isNaN(nA)&&!isNaN(nB))?nA-nB:a.localeCompare(b); });
+    sel('dashFilterHolding', hv, 'Semua Holding');
+    
+    // Inventory filters
     sel('invFilterStatus',   [...new Set(allData.map(d=>d['Status Aset']).filter(Boolean))].sort(), 'Semua Status');
     sel('invFilterLocation', [...new Set(allData.map(d=>d['Lokasi Aset']).filter(Boolean))].sort(), 'Semua Lokasi');
     sel('invFilterDivision', [...new Set(allData.map(d=>d['Divisi Karyawan']).filter(Boolean))].sort(), 'Semua Divisi');
     sel('invFilterType',     [...new Set(allData.map(d=>d['Tipe Aset']).filter(Boolean))].sort(), 'Semua Tipe');
-    const hv = [...new Set(allData.map(d=>d['Holding']).filter(v=>v!==''&&v!==null&&v!==undefined).map(v=>String(v)))]
-        .sort((a,b)=>{ const nA=parseFloat(a),nB=parseFloat(b); return (!isNaN(nA)&&!isNaN(nB))?nA-nB:a.localeCompare(b); });
-    sel('invFilterHolding', hv, 'Semua Holding');
+    sel('invFilterHolding',  hv, 'Semua Holding');
 }
 
 // ═══════════════════════════════════════════════════════
@@ -858,7 +930,7 @@ function invChangeRows() { invRows=parseInt(document.getElementById('invRowsPerP
 //  DETAIL MODAL
 // ═══════════════════════════════════════════════════════
 function showDetail(idx, source) {
-    const data = source==='inv' ? invFiltered[idx] : allData[idx];
+    const data = source==='inv' ? invFiltered[idx] : (source==='dash' ? dashboardFiltered[idx] : allData[idx]);
     if (!data) return;
     const fields=[
         ['NO Inventory','No. Inventory'],['Tipe Aset','Tipe'],['Merk','Merk'],['Model Tipe Aset','Model'],
@@ -905,32 +977,40 @@ function barCallbacks() { return { label(ctx){ const t=ctx.dataset.data.reduce((
 function chartOpts() { return { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#64748b',font:{size:11}}},tooltip:tooltipCfg} }; }
 
 function renderAllCharts() {
-    renderCategoryChart(); renderLocationChart(); renderTypeChart();
-    renderStatusChart(); renderConditionChart(); renderMerkChart();
+    renderDashboardCharts();
+}
+
+function renderDashboardCharts() {
+    renderCategoryChart(); 
+    renderLocationChart(); 
+    renderTypeChart();
+    renderStatusChart(); 
+    renderConditionChart(); 
+    renderMerkChart();
 }
 
 function renderCategoryChart() {
     const ctx=document.getElementById('categoryChart').getContext('2d'), cats={};
-    allData.forEach(d=>{const c=d['Kategori Aset']||'Lainnya';cats[c]=(cats[c]||0)+1;});
+    dashboardFiltered.forEach(d=>{const c=d['Kategori Aset']||'Lainnya';cats[c]=(cats[c]||0)+1;});
     if(charts.cat)charts.cat.destroy();
     charts.cat=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:11}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});
 }
 function renderLocationChart() {
     const ctx=document.getElementById('locationChart').getContext('2d'), locs={};
-    allData.forEach(d=>{const l=d['Lokasi Aset']||'Unknown';locs[l]=(locs[l]||0)+1;});
+    dashboardFiltered.forEach(d=>{const l=d['Lokasi Aset']||'Unknown';locs[l]=(locs[l]||0)+1;});
     const bg=Array.from({length:Object.keys(locs).length},(_,i)=>BAR_COLORS[i%BAR_COLORS.length]);
     if(charts.loc)charts.loc.destroy();
     charts.loc=new Chart(ctx,{type:'bar',data:{labels:Object.keys(locs),datasets:[{data:Object.values(locs),backgroundColor:bg,borderRadius:5}]},options:{...chartOpts(),plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}},scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}}}}});
 }
 function renderTypeChart() {
     const ctx=document.getElementById('typeChart').getContext('2d'), types={};
-    allData.forEach(d=>{const t=d['Tipe Aset']||'Lainnya';types[t]=(types[t]||0)+1;});
+    dashboardFiltered.forEach(d=>{const t=d['Tipe Aset']||'Lainnya';types[t]=(types[t]||0)+1;});
     if(charts.type)charts.type.destroy();
     charts.type=new Chart(ctx,{type:'pie',data:{labels:Object.keys(types),datasets:[{data:Object.values(types),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:10}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});
 }
 function renderStatusChart() {
     const ctx=document.getElementById('statusChart').getContext('2d'), sts={};
-    allData.forEach(d=>{const s=d['Status Aset']||'Unknown';sts[s]=(sts[s]||0)+1;});
+    dashboardFiltered.forEach(d=>{const s=d['Status Aset']||'Unknown';sts[s]=(sts[s]||0)+1;});
     const sc={'Terpakai':'#10b981','Tersedia':'#3b82f6','Rusak':'#ef4444','Dijual':'#f59e0b','Terjual':'#8b5cf6','Stok':'#f97316','Lelang':'#ec4899','Unknown':'#6b7280'};
     const bg=Object.keys(sts).map(s=>sc[s]||'#6b7280');
     if(charts.status)charts.status.destroy();
@@ -938,7 +1018,7 @@ function renderStatusChart() {
 }
 function renderConditionChart() {
     const ctx=document.getElementById('conditionChart').getContext('2d'), conds={};
-    allData.forEach(d=>{const c=d['Kondisi Aset']||'Unknown';conds[c]=(conds[c]||0)+1;});
+    dashboardFiltered.forEach(d=>{const c=d['Kondisi Aset']||'Unknown';conds[c]=(conds[c]||0)+1;});
     const cc={'Baik':'#10b981','Rusak':'#ef4444','Sedang':'#f59e0b','Perbaikan':'#f97316','Unknown':'#6b7280'};
     const bg=Object.keys(conds).map(c=>cc[c]||'#6b7280');
     if(charts.cond)charts.cond.destroy();
@@ -946,7 +1026,7 @@ function renderConditionChart() {
 }
 function renderMerkChart() {
     const ctx=document.getElementById('merkChart').getContext('2d'), merks={};
-    allData.forEach(d=>{const m=d['Merk']||'Lainnya';merks[m]=(merks[m]||0)+1;});
+    dashboardFiltered.forEach(d=>{const m=d['Merk']||'Lainnya';merks[m]=(merks[m]||0)+1;});
     const sorted=Object.entries(merks).sort((a,b)=>b[1]-a[1]).slice(0,10);
     if(charts.merk)charts.merk.destroy();
     const hCb={label(ctx){const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.x;return`  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`;}};
