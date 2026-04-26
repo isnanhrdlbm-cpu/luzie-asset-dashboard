@@ -650,16 +650,30 @@ document.addEventListener('keydown', e => {
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Hide all pages and remove active class
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+    });
+    
+    // Remove active class from nav items
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    
+    // Show selected page
     const pg = document.getElementById('page-' + name);
-    if (pg) pg.classList.add('active');
+    if (pg) {
+        pg.classList.add('active');
+    }
+    
+    // Activate nav item
     const ni = document.querySelector(`[data-page="${name}"]`);
     if (ni) ni.classList.add('active');
+    
+    // Update page title/subtitle
     const meta = PAGE_META[name] || {};
     document.getElementById('pageTitle').textContent    = meta.title || name;
     document.getElementById('pageSubtitle').textContent = meta.sub   || '';
 
+    // Lazy-load page-specific content
     if (name === 'analytics' && allData.length) renderAnalyticsCharts();
     if (name === 'assets'    && allData.length) renderCategoryTree();
 }
@@ -704,8 +718,17 @@ function retryLoad() { retryCount=0; loadData(); }
 function showState(s) {
     document.getElementById('loadingState').style.display = s==='loading' ? 'flex' : 'none';
     document.getElementById('errorState').style.display   = s==='error'   ? 'block' : 'none';
-    document.querySelectorAll('.page').forEach(p => p.style.display = s==='content' ? '' : 'none');
-    if (s==='content') { document.getElementById('page-dashboard').style.display='block'; document.getElementById('page-dashboard').classList.add('active'); }
+    
+    if (s==='content') {
+        // Show all pages but only activate dashboard initially
+        document.querySelectorAll('.page').forEach(p => {
+            p.style.display = ''; // Let CSS handle display
+            p.classList.remove('active');
+        });
+        document.getElementById('page-dashboard').classList.add('active');
+    } else {
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    }
 }
 
 // ═══════════════════════════════════════════════════════
