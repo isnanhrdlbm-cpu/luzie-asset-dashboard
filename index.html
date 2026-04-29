@@ -11,70 +11,37 @@
     <style>
         * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
         body { background: #f1f5f9; min-height: 100vh; color: #0f172a; margin: 0; }
-
-        /* ── APP SHELL ── */
         .app-shell { display: flex; min-height: 100vh; }
 
         /* ── LEFT SIDEBAR ── */
-        .left-nav {
-            width: 220px; min-width: 220px; flex-shrink: 0;
-            background: #ffffff; border-right: 1px solid #e2e8f0;
-            display: flex; flex-direction: column;
-            position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
-            overflow-y: auto;
-        }
-        .nav-brand {
-            padding: 20px 18px 16px;
-            border-bottom: 1px solid #f1f5f9;
-        }
+        .left-nav { width: 220px; min-width: 220px; flex-shrink: 0; background: #ffffff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 50; overflow-y: auto; }
+        .nav-brand { padding: 20px 18px 16px; border-bottom: 1px solid #f1f5f9; }
         .nav-brand-name { font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.2; }
         .nav-brand-sub  { font-size: 10px; font-weight: 500; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
         .nav-brand-icon { width: 34px; height: 34px; background: linear-gradient(135deg,#3b82f6,#2563eb); border-radius: 9px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-
         .nav-section-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: #cbd5e1; padding: 14px 18px 4px; }
-
-        .nav-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 9px 18px; margin: 1px 8px; border-radius: 8px;
-            font-size: 13px; font-weight: 500; color: #64748b;
-            cursor: pointer; transition: all 0.15s; text-decoration: none;
-        }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 18px; margin: 1px 8px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.15s; text-decoration: none; }
         .nav-item:hover { background: #f8fafc; color: #0f172a; }
         .nav-item.active { background: #eff6ff; color: #2563eb; }
         .nav-item.active .nav-icon { color: #2563eb; }
         .nav-icon { width: 16px; text-align: center; font-size: 14px; color: #94a3b8; flex-shrink: 0; }
-
-        .nav-footer {
-            margin-top: auto; padding: 14px 18px;
-            border-top: 1px solid #f1f5f9;
-            font-size: 11px; color: #94a3b8;
-        }
+        .nav-footer { margin-top: auto; padding: 14px 18px; border-top: 1px solid #f1f5f9; font-size: 11px; color: #94a3b8; }
         .last-update-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block; margin-right: 5px; }
 
-        /* ── MAIN CONTENT AREA ── */
+        /* ── MAIN ── */
         .main-content { margin-left: 220px; flex: 1; min-width: 0; display: flex; flex-direction: column; }
-
-        /* ── TOP BAR ── */
-        .top-bar {
-            background: #ffffff; border-bottom: 1px solid #e2e8f0;
-            padding: 12px 28px; display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 40;
-        }
+        .top-bar { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; }
         .top-bar-title { font-size: 20px; font-weight: 700; color: #0f172a; }
         .top-bar-sub   { font-size: 12px; color: #94a3b8; margin-top: 1px; }
         .top-bar-actions { display: flex; align-items: center; gap: 8px; }
-
-        /* ── PAGE CONTENT ── */
         .page-body { padding: 24px 28px; flex: 1; }
         .page { display: none; }
         .page.active { display: block; }
 
-        /* ── CARDS & PANELS ── */
+        /* ── CARDS ── */
         .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .card:hover { border-color: rgba(59,130,246,0.25); }
-
-        /* ── KPI CARDS ── */
-        .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 20px; }
         .kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; transition: all 0.25s; }
         .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); }
         .kpi-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; }
@@ -82,13 +49,18 @@
         .kpi-sub   { font-size: 11px; color: #94a3b8; }
         .kpi-icon-wrap { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
 
-        /* ── CHART GRID ── */
-        .chart-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-bottom: 24px; }
+        /* ── CHART GRIDS ── */
+        .chart-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-bottom: 20px; }
+        .chart-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; margin-bottom: 20px; }
         .chart-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .chart-card-title { font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+        .chart-card-title { font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
         .chart-card-title i { font-size: 13px; color: #3b82f6; }
 
-        /* ── STATUS/KONDISI BADGES ── */
+        /* ── SECTION DIVIDER LABEL ── */
+        .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+        .section-label::after { content:''; flex:1; height:1px; background:#e2e8f0; }
+
+        /* ── BADGES ── */
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; }
         .status-dot   { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
         .s-terpakai { background: rgba(16,185,129,0.12); color: #059669; border: 1px solid rgba(16,185,129,0.25); }
@@ -105,14 +77,8 @@
         .s-lelang .status-dot { background: #ec4899; }
         .s-default { background: rgba(148,163,184,0.12); color: #475569; border: 1px solid rgba(148,163,184,0.25); }
         .s-default .status-dot { background: #94a3b8; }
-
-        /* ── HOLDING BADGE ── */
         .holding-badge { padding: 2px 9px; border-radius: 9999px; font-size: 0.68rem; font-weight: 600; background: rgba(139,92,246,0.1); color: #7c3aed; border: 1px solid rgba(139,92,246,0.25); }
-
-        /* ── INVENTORY PILL ── */
         .inv-pill { font-family: monospace; font-size: 0.67rem; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
-
-        /* ── AVATAR ── */
         .emp-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
 
         /* ── TABLE ── */
@@ -130,19 +96,17 @@
         .row-stok:hover    { background: #fef3c7 !important; }
         .row-terjual:hover { background: #f5f0ff !important; }
         .row-lelang:hover  { background: #fce7f3 !important; }
-
-        /* ── TABLE CONTAINER ── */
         .table-wrap { overflow-x: auto; border-radius: 12px; }
 
         /* ── BUTTONS ── */
-        .btn-primary { background: linear-gradient(135deg,#3b82f6,#2563eb); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn-primary   { background: linear-gradient(135deg,#3b82f6,#2563eb); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(59,130,246,0.3); }
         .btn-secondary { background: #fff; border: 1px solid #e2e8f0; color: #475569; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .btn-secondary:hover { border-color: #3b82f6; color: #3b82f6; background: #f8fafc; }
-        .btn-danger { background: #fff; border: 1px solid #fca5a5; color: #dc2626; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn-danger    { background: #fff; border: 1px solid #fca5a5; color: #dc2626; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .btn-danger:hover { background: #fef2f2; }
 
-        /* ── SEARCH & FILTER BAR ── */
+        /* ── FILTER BAR ── */
         .filter-bar { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
         .search-wrap { position: relative; flex: 1; min-width: 200px; }
         .search-wrap i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 13px; pointer-events: none; }
@@ -157,13 +121,12 @@
         .page-btn:hover:not(:disabled) { border-color: #3b82f6; color: #3b82f6; }
         .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* ── ANALYTICS EMPTY STATE ── */
+        /* ── EMPTY STATE ── */
         .empty-chart { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; background: #f8fafc; border-radius: 10px; border: 1px dashed #cbd5e1; color: #94a3b8; }
         .empty-chart i { font-size: 28px; margin-bottom: 10px; }
         .empty-chart p { font-size: 13px; font-weight: 500; }
 
-        /* ── ASSETS CATEGORY TREE ── */
-        .cat-tree { list-style: none; margin: 0; padding: 0; }
+        /* ── ASSETS TREE ── */
         .cat-group { margin-bottom: 6px; }
         .cat-header { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: #0f172a; background: #f8fafc; border: 1px solid #e2e8f0; user-select: none; }
         .cat-header:hover { background: #eff6ff; border-color: rgba(59,130,246,0.25); }
@@ -180,25 +143,19 @@
         .report-title { font-size: 14px; font-weight: 600; color: #0f172a; }
         .report-desc  { font-size: 12px; color: #94a3b8; margin-top: 3px; }
 
-        /* ── SCROLLBAR ── */
+        /* ── MISC ── */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-
-        /* ── SETTINGS MODAL ── */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal-overlay.open { display: flex; }
         .modal-box { background: #fff; border-radius: 16px; padding: 24px; max-width: 440px; width: 100%; box-shadow: 0 24px 48px rgba(0,0,0,0.18); }
-
-        /* ── DETAIL MODAL ── */
         .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .detail-field { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; }
         .detail-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; }
         .detail-value { font-size: 13px; font-weight: 500; color: #0f172a; margin-top: 2px; }
         .detail-holding { background: #f5f3ff; border-color: #ddd6fe; }
         .detail-holding .detail-label { color: #7c3aed; }
-
-        /* ── LOADING ── */
         .spinner { width: 36px; height: 36px; border: 3px solid rgba(59,130,246,0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .fade-in { animation: fadeIn 0.35s ease-in; }
@@ -211,10 +168,11 @@
             .nav-brand-icon { margin-bottom: 0; }
             .nav-item { justify-content: center; padding: 10px; margin: 2px 6px; }
             .main-content { margin-left: 64px; }
+            .chart-grid-3 { grid-template-columns: repeat(2,1fr); }
         }
         @media (max-width: 768px) {
             .kpi-grid { grid-template-columns: repeat(2,1fr); }
-            .chart-grid { grid-template-columns: 1fr; }
+            .chart-grid-3, .chart-grid-2 { grid-template-columns: 1fr; }
             .page-body { padding: 16px; }
             .top-bar { padding: 10px 16px; }
         }
@@ -226,19 +184,15 @@
 </head>
 <body>
 
-<!-- ───────────────── SETTINGS MODAL ───────────────── -->
+<!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
-            <div>
-                <div style="font-size:16px;font-weight:700;color:#0f172a;">⚙️ Pengaturan API</div>
-                <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Admin only</div>
-            </div>
+            <div><div style="font-size:16px;font-weight:700;color:#0f172a;">⚙️ Pengaturan API</div><div style="font-size:12px;color:#94a3b8;margin-top:2px;">Admin only</div></div>
             <button onclick="closeSettings()" style="background:none;border:none;font-size:18px;color:#94a3b8;cursor:pointer;"><i class="fas fa-times"></i></button>
         </div>
         <label style="font-size:12px;font-weight:500;color:#475569;">Google Apps Script URL</label>
-        <input type="url" id="apiUrlInput" placeholder="https://script.google.com/macros/s/.../exec"
-            style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;color:#0f172a;outline:none;">
+        <input type="url" id="apiUrlInput" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;color:#0f172a;outline:none;">
         <p style="font-size:11px;color:#94a3b8;margin:6px 0 14px;">Hanya untuk admin.</p>
         <div style="display:flex;gap:8px;">
             <button onclick="saveSettings()" class="btn-primary" style="flex:1;justify-content:center;"><i class="fas fa-save"></i> Simpan</button>
@@ -248,7 +202,7 @@
     </div>
 </div>
 
-<!-- ───────────────── DETAIL MODAL ───────────────── -->
+<!-- DETAIL MODAL -->
 <div class="modal-overlay" id="detailModal">
     <div class="modal-box" style="max-width:600px;max-height:90vh;overflow-y:auto;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;position:sticky;top:0;background:#fff;padding-bottom:12px;border-bottom:1px solid #e2e8f0;">
@@ -257,14 +211,12 @@
         </div>
         <div id="detailContent" class="detail-grid"></div>
         <div id="detailLink" style="margin-top:14px;display:none;">
-            <a id="detailLinkAnchor" target="_blank" style="font-size:13px;color:#3b82f6;font-weight:500;display:inline-flex;align-items:center;gap:6px;text-decoration:none;">
-                <i class="fas fa-external-link-alt"></i> Lihat Dokumen/Link Terkait
-            </a>
+            <a id="detailLinkAnchor" target="_blank" style="font-size:13px;color:#3b82f6;font-weight:500;display:inline-flex;align-items:center;gap:6px;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Lihat Dokumen/Link Terkait</a>
         </div>
     </div>
 </div>
 
-<!-- ───────────────── APP SHELL ───────────────── -->
+<!-- APP SHELL -->
 <div class="app-shell">
 
     <!-- LEFT NAV -->
@@ -274,53 +226,34 @@
             <div class="nav-brand-name">Luzie Group</div>
             <div class="nav-brand-sub">Asset Management</div>
         </div>
-
         <div class="nav-section-label">Menu</div>
-
-        <a class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
-            <i class="nav-icon fas fa-th-large"></i><span>Dashboard</span>
-        </a>
-        <a class="nav-item" data-page="inventory" onclick="showPage('inventory')">
-            <i class="nav-icon fas fa-box-open"></i><span>Inventory</span>
-        </a>
-        <a class="nav-item" data-page="analytics" onclick="showPage('analytics')">
-            <i class="nav-icon fas fa-chart-line"></i><span>Analytics</span>
-        </a>
-        <a class="nav-item" data-page="reports" onclick="showPage('reports')">
-            <i class="nav-icon fas fa-file-alt"></i><span>Reports</span>
-        </a>
-        <a class="nav-item" data-page="assets" onclick="showPage('assets')">
-            <i class="nav-icon fas fa-layer-group"></i><span>Assets</span>
-        </a>
-
+        <a class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')"><i class="nav-icon fas fa-th-large"></i><span>Dashboard</span></a>
+        <a class="nav-item" data-page="inventory"  onclick="showPage('inventory')"><i class="nav-icon fas fa-box-open"></i><span>Inventory</span></a>
+        <a class="nav-item" data-page="analytics"  onclick="showPage('analytics')"><i class="nav-icon fas fa-chart-line"></i><span>Analytics</span></a>
+        <a class="nav-item" data-page="reports"    onclick="showPage('reports')"><i class="nav-icon fas fa-file-alt"></i><span>Reports</span></a>
+        <a class="nav-item" data-page="assets"     onclick="showPage('assets')"><i class="nav-icon fas fa-layer-group"></i><span>Assets</span></a>
         <div class="nav-footer">
-            <div style="display:flex;align-items:center;margin-bottom:4px;">
-                <span class="last-update-dot"></span>
-                <span id="navLastUpdated">Memuat...</span>
-            </div>
+            <div style="display:flex;align-items:center;margin-bottom:4px;"><span class="last-update-dot"></span><span id="navLastUpdated">Memuat...</span></div>
             <div style="font-size:10px;margin-top:2px;">Ctrl+Shift+A = Admin</div>
         </div>
     </nav>
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
-
-        <!-- TOP BAR -->
         <div class="top-bar">
             <div>
                 <div class="top-bar-title" id="pageTitle">Dashboard</div>
-                <div class="top-bar-sub" id="pageSubtitle">Overview aset Luzie Group</div>
+                <div class="top-bar-sub"   id="pageSubtitle">Overview aset Luzie Group</div>
             </div>
             <div class="top-bar-actions">
-                <button onclick="loadData()" class="btn-secondary" id="refreshBtn"><i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh</button>
+                <button onclick="loadData()" class="btn-secondary"><i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh</button>
                 <button onclick="openSettings()" class="btn-secondary"><i class="fas fa-cog"></i></button>
             </div>
         </div>
 
-        <!-- PAGE BODY -->
         <div class="page-body">
 
-            <!-- ═══════════ LOADING / ERROR ═══════════ -->
+            <!-- LOADING / ERROR -->
             <div id="loadingState" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;">
                 <div class="spinner"></div>
                 <p style="color:#94a3b8;font-size:14px;">Memuat data aset...</p>
@@ -333,15 +266,12 @@
                 <button onclick="openSettings()" class="btn-secondary" id="adminErrorBtn" style="display:none;margin-left:8px;"><i class="fas fa-cog"></i> Admin</button>
             </div>
 
-            <!-- ═══════════ DASHBOARD PAGE ═══════════ -->
+            <!-- ════════════════ DASHBOARD PAGE ════════════════ -->
             <div id="page-dashboard" class="page">
 
-                <!-- Filter bar for Dashboard -->
+                <!-- Dashboard Filters -->
                 <div class="filter-bar">
-                    <div class="search-wrap">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="dashSearch" class="search-inp" placeholder="Cari aset, merk, karyawan..." oninput="applyDashboardFilters()">
-                    </div>
+                    <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="dashSearch" class="search-inp" placeholder="Cari aset, merk, karyawan..." oninput="applyDashboardFilters()"></div>
                     <select id="dashFilterStatus"   class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Status</option></select>
                     <select id="dashFilterLocation" class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Lokasi</option></select>
                     <select id="dashFilterDivision" class="filter-select" onchange="applyDashboardFilters()"><option value="">Semua Divisi</option></select>
@@ -350,52 +280,37 @@
                     <button onclick="resetDashboardFilters()" class="btn-secondary"><i class="fas fa-undo"></i> Reset</button>
                 </div>
 
-                <!-- KPI -->
+                <!-- KPIs -->
                 <div class="kpi-grid">
                     <div class="kpi-card" style="border-left:4px solid #3b82f6;">
                         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                            <div>
-                                <div class="kpi-label">Total Aset</div>
-                                <div class="kpi-value" id="kpiTotal">0</div>
-                                <div class="kpi-sub" id="kpiTotalSub">Semua aset</div>
-                            </div>
+                            <div><div class="kpi-label">Total Aset</div><div class="kpi-value" id="kpiTotal">0</div><div class="kpi-sub" id="kpiTotalSub">Semua aset</div></div>
                             <div class="kpi-icon-wrap" style="background:#eff6ff;"><i class="fas fa-cubes" style="color:#3b82f6;"></i></div>
                         </div>
                     </div>
                     <div class="kpi-card" style="border-left:4px solid #10b981;">
                         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                            <div>
-                                <div class="kpi-label">Terpakai</div>
-                                <div class="kpi-value" id="kpiActive">0</div>
-                                <div class="kpi-sub" id="kpiActivePct">0% dari total</div>
-                            </div>
+                            <div><div class="kpi-label">Terpakai</div><div class="kpi-value" id="kpiActive">0</div><div class="kpi-sub" id="kpiActivePct">0% dari total</div></div>
                             <div class="kpi-icon-wrap" style="background:#d1fae5;"><i class="fas fa-check-circle" style="color:#10b981;"></i></div>
                         </div>
                     </div>
                     <div class="kpi-card" style="border-left:4px solid #8b5cf6;">
                         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                            <div>
-                                <div class="kpi-label">Divisi Unik</div>
-                                <div class="kpi-value" id="kpiDivisions">0</div>
-                                <div class="kpi-sub">Dalam hasil filter</div>
-                            </div>
+                            <div><div class="kpi-label">Divisi Unik</div><div class="kpi-value" id="kpiDivisions">0</div><div class="kpi-sub">Dalam hasil filter</div></div>
                             <div class="kpi-icon-wrap" style="background:#ede9fe;"><i class="fas fa-building" style="color:#8b5cf6;"></i></div>
                         </div>
                     </div>
                     <div class="kpi-card" style="border-left:4px solid #f59e0b;">
                         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                            <div>
-                                <div class="kpi-label">Total Nilai</div>
-                                <div class="kpi-value" style="font-size:20px;" id="kpiValue">Rp0</div>
-                                <div class="kpi-sub" id="kpiValueSub">Harga beli total</div>
-                            </div>
+                            <div><div class="kpi-label">Total Nilai</div><div class="kpi-value" style="font-size:20px;" id="kpiValue">Rp0</div><div class="kpi-sub" id="kpiValueSub">Harga beli total</div></div>
                             <div class="kpi-icon-wrap" style="background:#fef3c7;"><i class="fas fa-money-bill-wave" style="color:#f59e0b;"></i></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Charts -->
-                <div class="chart-grid">
+                <!-- Section: Overview Charts -->
+                <div class="section-label">Overview</div>
+                <div class="chart-grid-3">
                     <div class="chart-card"><div class="chart-card-title"><i class="fas fa-chart-pie"></i>Kategori Aset</div><div style="height:220px;"><canvas id="categoryChart"></canvas></div></div>
                     <div class="chart-card"><div class="chart-card-title"><i class="fas fa-chart-bar"></i>Aset per Lokasi</div><div style="height:220px;"><canvas id="locationChart"></canvas></div></div>
                     <div class="chart-card"><div class="chart-card-title"><i class="fas fa-laptop"></i>Tipe Aset</div><div style="height:220px;"><canvas id="typeChart"></canvas></div></div>
@@ -404,17 +319,48 @@
                     <div class="chart-card"><div class="chart-card-title"><i class="fas fa-tags"></i>Top 10 Merk</div><div style="height:220px;"><canvas id="merkChart"></canvas></div></div>
                 </div>
 
+                <!-- Section: Analytics Charts on Dashboard -->
+                <div class="section-label">Analisis Aset</div>
+                <div class="chart-grid-2">
+
+                    <!-- Asset Age Distribution -->
+                    <div class="chart-card">
+                        <div class="chart-card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Distribusi Usia Aset
+                            <span style="font-size:11px;color:#94a3b8;font-weight:400;margin-left:auto;">Berdasarkan Tanggal Pembelian</span>
+                        </div>
+                        <div style="height:240px;"><canvas id="dashAgeChart"></canvas></div>
+                    </div>
+
+                    <!-- Monthly Acquisition Trend -->
+                    <div class="chart-card">
+                        <div class="chart-card-title" style="justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:7px;">
+                                <i class="fas fa-chart-line" style="color:#3b82f6;"></i>
+                                Tren Pengadaan Aset Bulanan
+                            </span>
+                            <!-- Year filter -->
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span style="font-size:11px;color:#94a3b8;font-weight:400;">Tahun:</span>
+                                <select id="acqYearFilter" class="filter-select" style="padding:4px 8px;font-size:12px;" onchange="renderMonthlyAcquisitionChart()">
+                                    <option value="all">Semua</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="height:240px;"><canvas id="monthlyAcqChart"></canvas></div>
+                        <!-- Monthly totals summary row -->
+                        <div id="monthlyAcqSummary" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9;"></div>
+                    </div>
+
+                </div>
+
             </div><!-- /dashboard -->
 
-            <!-- ═══════════ INVENTORY PAGE ═══════════ -->
+            <!-- ════════════════ INVENTORY PAGE ════════════════ -->
             <div id="page-inventory" class="page">
-
-                <!-- Filter bar -->
                 <div class="filter-bar">
-                    <div class="search-wrap">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="invSearch" class="search-inp" placeholder="Cari aset, merk, karyawan..." oninput="applyInvFilters()">
-                    </div>
+                    <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="invSearch" class="search-inp" placeholder="Cari aset, merk, karyawan..." oninput="applyInvFilters()"></div>
                     <select id="invFilterStatus"   class="filter-select" onchange="applyInvFilters()"><option value="">Semua Status</option></select>
                     <select id="invFilterLocation" class="filter-select" onchange="applyInvFilters()"><option value="">Semua Lokasi</option></select>
                     <select id="invFilterDivision" class="filter-select" onchange="applyInvFilters()"><option value="">Semua Divisi</option></select>
@@ -422,8 +368,6 @@
                     <select id="invFilterHolding"  class="filter-select" onchange="applyInvFilters()"><option value="">Semua Holding</option></select>
                     <button onclick="resetInvFilters()" class="btn-secondary"><i class="fas fa-undo"></i> Reset</button>
                 </div>
-
-                <!-- Row color legend -->
                 <div style="display:flex;align-items:center;gap:14px;font-size:11px;color:#94a3b8;margin-bottom:12px;">
                     <span style="font-weight:500;color:#64748b;">Warna baris:</span>
                     <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#fff;border:1px solid #e2e8f0;display:inline-block;"></span>Normal</span>
@@ -431,17 +375,9 @@
                     <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#fff8f8;border-left:3px solid #ef4444;display:inline-block;"></span>Rusak</span>
                     <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#fff5fa;border-left:3px solid #ec4899;display:inline-block;"></span>Lelang</span>
                 </div>
-
-                <!-- Table -->
                 <div class="card table-wrap">
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>#</th><th>Inventory</th><th>Tipe</th><th>Merk / Model</th>
-                                <th>Lokasi</th><th>Karyawan & Divisi</th><th>Holding</th>
-                                <th>Status</th><th>Kondisi</th><th style="text-align:right;">Harga Beli</th><th></th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>#</th><th>Inventory</th><th>Tipe</th><th>Merk / Model</th><th>Lokasi</th><th>Karyawan & Divisi</th><th>Holding</th><th>Status</th><th>Kondisi</th><th style="text-align:right;">Harga Beli</th><th></th></tr></thead>
                         <tbody id="invTableBody"></tbody>
                     </table>
                     <div class="pagination">
@@ -452,21 +388,14 @@
                         </div>
                         <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#94a3b8;">
                             <span id="invShowingText">0 aset</span>
-                            <select id="invRowsPerPage" onchange="invChangeRows()" class="filter-select" style="padding:5px 8px;">
-                                <option value="30">30 / hal</option>
-                                <option value="50">50 / hal</option>
-                                <option value="100">100 / hal</option>
-                            </select>
+                            <select id="invRowsPerPage" onchange="invChangeRows()" class="filter-select" style="padding:5px 8px;"><option value="30">30/hal</option><option value="50">50/hal</option><option value="100">100/hal</option></select>
                         </div>
                     </div>
                 </div>
-
             </div><!-- /inventory -->
 
-            <!-- ═══════════ ANALYTICS PAGE ═══════════ -->
+            <!-- ════════════════ ANALYTICS PAGE ════════════════ -->
             <div id="page-analytics" class="page">
-
-                <!-- Info note -->
                 <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 18px;margin-bottom:22px;display:flex;align-items:flex-start;gap:12px;">
                     <i class="fas fa-info-circle" style="color:#3b82f6;margin-top:2px;font-size:15px;"></i>
                     <div>
@@ -474,164 +403,98 @@
                         <div style="font-size:13px;color:#3b82f6;">Hubungi <strong>HRD</strong> untuk permintaan analisis khusus.</div>
                     </div>
                 </div>
-
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
-
-                    <!-- Asset Age Distribution -->
-                    <div class="chart-card" style="grid-column:1/2;">
-                        <div class="chart-card-title"><i class="fas fa-calendar-alt"></i>Distribusi Usia Aset</div>
-                        <div style="height:260px;"><canvas id="ageChart"></canvas></div>
-                    </div>
-
-                    <!-- Holding Comparison -->
-                    <div class="chart-card" style="grid-column:2/3;">
-                        <div class="chart-card-title"><i class="fas fa-building-columns"></i>Perbandingan per Holding</div>
-                        <div style="height:260px;"><canvas id="holdingChart"></canvas></div>
-                    </div>
-
+                    <div class="chart-card"><div class="chart-card-title"><i class="fas fa-calendar-alt"></i>Distribusi Usia Aset</div><div style="height:260px;"><canvas id="ageChart"></canvas></div></div>
+                    <div class="chart-card"><div class="chart-card-title"><i class="fas fa-building-columns"></i>Perbandingan per Holding</div><div style="height:260px;"><canvas id="holdingChart"></canvas></div></div>
                 </div>
-
-                <!-- Depreciation Trend — empty state -->
                 <div class="chart-card">
                     <div class="chart-card-title"><i class="fas fa-chart-line"></i>Tren Depresiasi Aset</div>
-                    <div class="empty-chart">
-                        <i class="fas fa-database"></i>
-                        <p>Tidak ada Data</p>
-                        <p style="font-size:12px;color:#cbd5e1;margin-top:4px;">Perlu diskusi dengan <strong style="color:#94a3b8;">Keuangan</strong></p>
-                    </div>
+                    <div class="empty-chart"><i class="fas fa-database"></i><p>Tidak ada Data</p><p style="font-size:12px;color:#cbd5e1;margin-top:4px;">Perlu diskusi dengan <strong style="color:#94a3b8;">Keuangan</strong></p></div>
                 </div>
-
             </div><!-- /analytics -->
 
-            <!-- ═══════════ REPORTS PAGE ═══════════ -->
+            <!-- ════════════════ REPORTS PAGE ════════════════ -->
             <div id="page-reports" class="page">
-
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px;">
-
-                    <!-- CSV Export -->
                     <div class="report-card">
                         <div class="report-icon" style="background:#eff6ff;"><i class="fas fa-file-csv" style="color:#3b82f6;"></i></div>
-                        <div style="flex:1;">
-                            <div class="report-title">Export CSV</div>
-                            <div class="report-desc">Download seluruh data aset sebagai file CSV (filter aktif ikut tersaring)</div>
-                            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-                                <button onclick="exportCSV('all')" class="btn-primary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-download"></i> Semua Aset</button>
-                                <button onclick="exportCSV('filtered')" class="btn-secondary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-filter"></i> Hasil Filter</button>
-                            </div>
-                        </div>
+                        <div style="flex:1;"><div class="report-title">Export CSV</div><div class="report-desc">Download data aset sebagai file CSV</div>
+                        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;"><button onclick="exportCSV('all')" class="btn-primary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-download"></i> Semua Aset</button><button onclick="exportCSV('filtered')" class="btn-secondary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-filter"></i> Hasil Filter</button></div></div>
                     </div>
-
-                    <!-- PDF Summary -->
                     <div class="report-card">
                         <div class="report-icon" style="background:#fef3c7;"><i class="fas fa-file-pdf" style="color:#f59e0b;"></i></div>
-                        <div style="flex:1;">
-                            <div class="report-title">Ringkasan PDF</div>
-                            <div class="report-desc">Cetak ringkasan KPI dan tabel aset dalam format print-friendly</div>
-                            <div style="margin-top:12px;">
-                                <button onclick="printSummary()" class="btn-secondary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-print"></i> Print / Save PDF</button>
-                            </div>
-                        </div>
+                        <div style="flex:1;"><div class="report-title">Ringkasan PDF</div><div class="report-desc">Cetak ringkasan KPI dan tabel aset</div>
+                        <div style="margin-top:12px;"><button onclick="printSummary()" class="btn-secondary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-print"></i> Print / Save PDF</button></div></div>
                     </div>
-
-                    <!-- Rusak List -->
                     <div class="report-card">
                         <div class="report-icon" style="background:#fef2f2;"><i class="fas fa-tools" style="color:#ef4444;"></i></div>
-                        <div style="flex:1;">
-                            <div class="report-title">Daftar Aset Rusak</div>
-                            <div class="report-desc">Lihat dan export daftar aset dengan status Rusak / perlu maintenance</div>
-                            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-                                <button onclick="showRusakTable()" class="btn-danger" style="font-size:12px;padding:6px 12px;"><i class="fas fa-eye"></i> Lihat</button>
-                                <button onclick="exportCSV('rusak')" class="btn-secondary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-download"></i> Export CSV</button>
-                            </div>
-                        </div>
+                        <div style="flex:1;"><div class="report-title">Daftar Aset Rusak</div><div class="report-desc">Lihat dan export daftar aset Rusak / maintenance</div>
+                        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;"><button onclick="showRusakTable()" class="btn-danger" style="font-size:12px;padding:6px 12px;"><i class="fas fa-eye"></i> Lihat</button><button onclick="exportCSV('rusak')" class="btn-secondary" style="font-size:12px;padding:6px 12px;"><i class="fas fa-download"></i> Export CSV</button></div></div>
                     </div>
-
                 </div>
-
-                <!-- Rusak Table (toggleable) -->
                 <div id="rusakSection" style="display:none;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                         <div style="font-size:14px;font-weight:600;color:#0f172a;"><i class="fas fa-exclamation-triangle" style="color:#ef4444;margin-right:6px;"></i>Daftar Aset Rusak / Perlu Maintenance</div>
                         <button onclick="hideRusakTable()" class="btn-secondary" style="font-size:12px;padding:5px 10px;"><i class="fas fa-times"></i> Tutup</button>
                     </div>
                     <div class="card table-wrap">
-                        <table class="data-table">
-                            <thead>
-                                <tr><th>#</th><th>Inventory</th><th>Tipe</th><th>Merk / Model</th><th>Lokasi</th><th>Karyawan</th><th>Status</th><th>Kondisi</th><th>Holding</th></tr>
-                            </thead>
-                            <tbody id="rusakTableBody"></tbody>
-                        </table>
+                        <table class="data-table"><thead><tr><th>#</th><th>Inventory</th><th>Tipe</th><th>Merk / Model</th><th>Lokasi</th><th>Karyawan</th><th>Status</th><th>Kondisi</th><th>Holding</th></tr></thead><tbody id="rusakTableBody"></tbody></table>
                     </div>
                 </div>
-
             </div><!-- /reports -->
 
-            <!-- ═══════════ ASSETS PAGE ═══════════ -->
+            <!-- ════════════════ ASSETS PAGE ════════════════ -->
             <div id="page-assets" class="page">
-
                 <div style="display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:flex-start;">
-
-                    <!-- Category Tree -->
                     <div class="card" style="padding:18px;">
                         <div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:14px;"><i class="fas fa-sitemap" style="color:#3b82f6;margin-right:7px;"></i>Kategori Aset</div>
                         <div id="catTreeWrap"></div>
                     </div>
-
-                    <!-- Asset panel for selected category -->
                     <div>
                         <div class="card" style="padding:18px;margin-bottom:16px;">
                             <div id="assetPanelTitle" style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:4px;">Semua Aset</div>
-                            <div id="assetPanelSub" style="font-size:12px;color:#94a3b8;"></div>
+                            <div id="assetPanelSub"   style="font-size:12px;color:#94a3b8;"></div>
                         </div>
                         <div class="card table-wrap">
-                            <table class="data-table">
-                                <thead>
-                                    <tr><th>#</th><th>Inventory</th><th>Merk / Model</th><th>Karyawan</th><th>Lokasi</th><th>Status</th><th>Kondisi</th></tr>
-                                </thead>
-                                <tbody id="assetTableBody"></tbody>
-                            </table>
+                            <table class="data-table"><thead><tr><th>#</th><th>Inventory</th><th>Merk / Model</th><th>Karyawan</th><th>Lokasi</th><th>Status</th><th>Kondisi</th></tr></thead><tbody id="assetTableBody"></tbody></table>
                         </div>
                     </div>
-
                 </div>
-
             </div><!-- /assets -->
 
         </div><!-- /page-body -->
     </div><!-- /main-content -->
 </div><!-- /app-shell -->
 
-<!-- Print styles -->
 <style id="printStyles">
 @media print {
-    .left-nav, .top-bar, .filter-bar, .pagination, .btn-primary, .btn-secondary, .btn-danger, #rusakSection button, .modal-overlay { display: none !important; }
-    .main-content { margin-left: 0 !important; }
-    .page-body { padding: 0 !important; }
-    body { background: #fff; }
-    .card, .chart-card, .kpi-card { box-shadow: none; border: 1px solid #e2e8f0; }
+    .left-nav,.top-bar,.filter-bar,.pagination,.btn-primary,.btn-secondary,.btn-danger,#rusakSection button,.modal-overlay { display:none !important; }
+    .main-content { margin-left:0 !important; }
+    .page-body { padding:0 !important; }
+    body { background:#fff; }
 }
 </style>
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  CONFIG & STATE
+//  STATE
 // ═══════════════════════════════════════════════════════
 const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbyCob6nr7Z0d8_LBZricJ0eomH-djqRwUXJFDKyN6zcJUlf0SAO1cBGLp7FdZiKSr1rCw/exec';
 let API_URL = localStorage.getItem('assetApiUrl') || DEFAULT_API_URL;
-let allData = [], invFiltered = [], invPage = 1, invRows = 30;
-let dashboardFiltered = []; // New state for dashboard filters
+let allData = [], invFiltered = [], dashboardFiltered = [];
+let invPage = 1, invRows = 30;
 let charts = {}, retryCount = 0;
 const MAX_RETRIES = 3;
 const CHART_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1'];
 const BAR_COLORS   = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316','#84cc16','#a855f7'];
+const MONTHS_ID    = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 
-// ─── Page titles ───
 const PAGE_META = {
-    dashboard: { title: 'Dashboard', sub: 'Overview aset Luzie Group' },
-    inventory:  { title: 'Inventory', sub: 'Daftar lengkap semua aset' },
-    analytics:  { title: 'Analytics', sub: 'Analisis data aset' },
-    reports:    { title: 'Reports', sub: 'Export & cetak laporan' },
-    assets:     { title: 'Assets', sub: 'Hierarki kategori aset' },
+    dashboard: { title:'Dashboard',   sub:'Overview aset Luzie Group' },
+    inventory:  { title:'Inventory',  sub:'Daftar lengkap semua aset' },
+    analytics:  { title:'Analytics',  sub:'Analisis data aset' },
+    reports:    { title:'Reports',    sub:'Export & cetak laporan' },
+    assets:     { title:'Assets',     sub:'Hierarki kategori aset' },
 };
 
 // ═══════════════════════════════════════════════════════
@@ -639,66 +502,51 @@ const PAGE_META = {
 // ═══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
-    document.getElementById('apiUrlInput').addEventListener('keypress', e => { if (e.key==='Enter') saveSettings(); });
+    document.getElementById('apiUrlInput').addEventListener('keypress', e => { if(e.key==='Enter') saveSettings(); });
 });
 document.addEventListener('keydown', e => {
-    if (e.ctrlKey && e.shiftKey && e.key==='A') { e.preventDefault(); openSettings(); }
-    if (e.key === 'Escape') { closeSettings(); closeDetail(); }
+    if(e.ctrlKey && e.shiftKey && e.key==='A') { e.preventDefault(); openSettings(); }
+    if(e.key==='Escape') { closeSettings(); closeDetail(); }
 });
 
 // ═══════════════════════════════════════════════════════
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    // Hide all pages and remove active class
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-    });
-    
-    // Remove active class from nav items
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    
-    // Show selected page
-    const pg = document.getElementById('page-' + name);
-    if (pg) {
-        pg.classList.add('active');
-    }
-    
-    // Activate nav item
+    const pg = document.getElementById('page-'+name);
+    if(pg) pg.classList.add('active');
     const ni = document.querySelector(`[data-page="${name}"]`);
-    if (ni) ni.classList.add('active');
-    
-    // Update page title/subtitle
-    const meta = PAGE_META[name] || {};
-    document.getElementById('pageTitle').textContent    = meta.title || name;
-    document.getElementById('pageSubtitle').textContent = meta.sub   || '';
-
-    // Lazy-load page-specific content
-    if (name === 'analytics' && allData.length) renderAnalyticsCharts();
-    if (name === 'assets'    && allData.length) renderCategoryTree();
+    if(ni) ni.classList.add('active');
+    const meta = PAGE_META[name]||{};
+    document.getElementById('pageTitle').textContent    = meta.title||name;
+    document.getElementById('pageSubtitle').textContent = meta.sub||'';
+    if(name==='analytics' && allData.length) renderAnalyticsCharts();
+    if(name==='assets'    && allData.length) renderCategoryTree();
 }
 
 // ═══════════════════════════════════════════════════════
 //  DATA LOADING
 // ═══════════════════════════════════════════════════════
 async function loadData() {
-    if (!API_URL || (API_URL===DEFAULT_API_URL && DEFAULT_API_URL==='YOUR_APPS_SCRIPT_URL_HERE')) { openSettings(); return; }
+    if(!API_URL||(API_URL===DEFAULT_API_URL&&DEFAULT_API_URL==='YOUR_APPS_SCRIPT_URL_HERE')){openSettings();return;}
     showState('loading');
     document.getElementById('refreshIcon').classList.add('fa-spin');
     try {
-        const url = API_URL + (API_URL.includes('?')?'&':'?') + '_=' + Date.now();
-        const r = await fetch(url, { method:'GET', mode:'cors', cache:'no-cache', redirect:'follow', headers:{'Accept':'application/json'} });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const url = API_URL+(API_URL.includes('?')?'&':'?')+'_='+Date.now();
+        const r = await fetch(url,{method:'GET',mode:'cors',cache:'no-cache',redirect:'follow',headers:{'Accept':'application/json'}});
+        if(!r.ok) throw new Error('HTTP '+r.status);
         const res = await r.json();
-        if (res.status !== 'success') throw new Error(res.message || 'API error');
-        allData = res.data || [];
+        if(res.status!=='success') throw new Error(res.message||'API error');
+        allData = res.data||[];
         invFiltered = [...allData];
-        dashboardFiltered = [...allData]; // Initialize dashboard filtered data
+        dashboardFiltered = [...allData];
         retryCount = 0;
         const d = new Date(res.lastUpdated);
-        const fmt = d.toLocaleString('id-ID', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-        document.getElementById('navLastUpdated').textContent = fmt;
+        document.getElementById('navLastUpdated').textContent = d.toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
         populateAllFilters();
+        populateYearFilter();
         updateDashboard();
         renderAllCharts();
         renderInvTable();
@@ -706,88 +554,104 @@ async function loadData() {
         showPage('dashboard');
     } catch(e) {
         retryCount++;
-        if (retryCount < MAX_RETRIES) { setTimeout(loadData, 2000); return; }
-        document.getElementById('errorMsg').textContent = 'Error: ' + e.message + '. Pastikan URL API benar dan deployment "Anyone".';
-        document.getElementById('adminErrorBtn').style.display = 'inline-flex';
+        if(retryCount<MAX_RETRIES){setTimeout(loadData,2000);return;}
+        document.getElementById('errorMsg').textContent='Error: '+e.message+'. Pastikan URL API benar dan deployment "Anyone".';
+        document.getElementById('adminErrorBtn').style.display='inline-flex';
         showState('error');
     } finally {
         document.getElementById('refreshIcon').classList.remove('fa-spin');
     }
 }
-function retryLoad() { retryCount=0; loadData(); }
+function retryLoad(){retryCount=0;loadData();}
 function showState(s) {
-    document.getElementById('loadingState').style.display = s==='loading' ? 'flex' : 'none';
-    document.getElementById('errorState').style.display   = s==='error'   ? 'block' : 'none';
-    
-    if (s==='content') {
-        // Show all pages but only activate dashboard initially
-        document.querySelectorAll('.page').forEach(p => {
-            p.style.display = ''; // Let CSS handle display
-            p.classList.remove('active');
-        });
+    document.getElementById('loadingState').style.display = s==='loading'?'flex':'none';
+    document.getElementById('errorState').style.display   = s==='error'?'block':'none';
+    if(s==='content'){
+        document.querySelectorAll('.page').forEach(p=>{p.style.display='';p.classList.remove('active');});
         document.getElementById('page-dashboard').classList.add('active');
     } else {
-        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        document.querySelectorAll('.page').forEach(p=>p.style.display='none');
     }
 }
 
 // ═══════════════════════════════════════════════════════
 //  SETTINGS
 // ═══════════════════════════════════════════════════════
-function openSettings()  { document.getElementById('apiUrlInput').value=API_URL; document.getElementById('settingsModal').classList.add('open'); document.getElementById('testResult').style.display='none'; }
-function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
-function saveSettings()  {
-    const u = document.getElementById('apiUrlInput').value.trim();
-    if (!u) { showTestResult('URL tidak boleh kosong','error'); return; }
-    API_URL=u; localStorage.setItem('assetApiUrl',u); closeSettings(); retryCount=0; loadData();
+function openSettings(){document.getElementById('apiUrlInput').value=API_URL;document.getElementById('settingsModal').classList.add('open');document.getElementById('testResult').style.display='none';}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('open');}
+function saveSettings(){
+    const u=document.getElementById('apiUrlInput').value.trim();
+    if(!u){showTestResult('URL tidak boleh kosong','error');return;}
+    API_URL=u;localStorage.setItem('assetApiUrl',u);closeSettings();retryCount=0;loadData();
 }
-async function testConnection() {
-    const u = document.getElementById('apiUrlInput').value.trim();
-    if (!u) { showTestResult('Masukkan URL','error'); return; }
+async function testConnection(){
+    const u=document.getElementById('apiUrlInput').value.trim();
+    if(!u){showTestResult('Masukkan URL','error');return;}
     showTestResult('Testing...','loading');
-    try {
-        const r = await fetch(u+'?t='+Date.now(),{method:'GET',mode:'cors',cache:'no-cache'});
-        const d = await r.json();
-        d.status==='success' ? showTestResult('✅ Connected! '+d.totalRecords+' records','success') : showTestResult('⚠️ '+d.message,'warning');
-    } catch(e) { showTestResult('❌ '+e.message,'error'); }
+    try{const r=await fetch(u+'?t='+Date.now(),{method:'GET',mode:'cors',cache:'no-cache'});const d=await r.json();d.status==='success'?showTestResult('✅ Connected! '+d.totalRecords+' records','success'):showTestResult('⚠️ '+d.message,'warning');}
+    catch(e){showTestResult('❌ '+e.message,'error');}
 }
-function showTestResult(msg,type) {
-    const el=document.getElementById('testResult');
-    el.textContent=msg; el.style.display='block';
-    const styles={success:'background:#d1fae5;color:#065f46;border:1px solid #6ee7b7',error:'background:#fee2e2;color:#991b1b;border:1px solid #fca5a5',warning:'background:#fef3c7;color:#92400e;border:1px solid #fcd34d',loading:'background:#f1f5f9;color:#475569;border:1px solid #e2e8f0'};
-    el.style.cssText += ';'+styles[type]+';border-radius:7px;padding:10px 12px;font-size:12px;';
+function showTestResult(msg,type){
+    const el=document.getElementById('testResult');el.textContent=msg;el.style.display='block';
+    const s={success:'background:#d1fae5;color:#065f46;border:1px solid #6ee7b7',error:'background:#fee2e2;color:#991b1b;border:1px solid #fca5a5',warning:'background:#fef3c7;color:#92400e;border:1px solid #fcd34d',loading:'background:#f1f5f9;color:#475569;border:1px solid #e2e8f0'};
+    el.style.cssText+=';'+s[type]+';border-radius:7px;padding:10px 12px;font-size:12px;';
 }
 
 // ═══════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════
-function formatCurrency(v) { if(!v||v==='')return'-'; const n=parseFloat(v); return isNaN(n)?v:'Rp'+n.toLocaleString('id-ID'); }
-function getInitials(n) { if(!n||n==='-')return'?'; const p=n.trim().split(/\s+/); return p.length===1?p[0][0].toUpperCase():(p[0][0]+p[p.length-1][0]).toUpperCase(); }
+function formatCurrency(v){if(!v||v==='')return'-';const n=parseFloat(v);return isNaN(n)?v:'Rp'+n.toLocaleString('id-ID');}
+function getInitials(n){if(!n||n==='-')return'?';const p=n.trim().split(/\s+/);return p.length===1?p[0][0].toUpperCase():(p[0][0]+p[p.length-1][0]).toUpperCase();}
 const PALETTES=[{bg:'#dbeafe',c:'#1e40af'},{bg:'#d1fae5',c:'#065f46'},{bg:'#fef3c7',c:'#92400e'},{bg:'#fce7f3',c:'#9d174d'},{bg:'#ede9fe',c:'#5b21b6'},{bg:'#cffafe',c:'#164e63'},{bg:'#ffedd5',c:'#9a3412'},{bg:'#dcfce7',c:'#14532d'}];
-function getPalette(n) { let h=0; for(let i=0;i<(n||'').length;i++)h=(h+n.charCodeAt(i))%PALETTES.length; return PALETTES[h]; }
-function getRowClass(s) { const sl=(s||'').toLowerCase(); if(sl.includes('rusak'))return'row-rusak'; if(sl.includes('lelang'))return'row-lelang'; if(sl.includes('terjual')||sl.includes('dijual'))return'row-terjual'; if(sl.includes('stok'))return'row-stok'; return ''; }
-function renderStatusBadge(s) {
+function getPalette(n){let h=0;for(let i=0;i<(n||'').length;i++)h=(h+n.charCodeAt(i))%PALETTES.length;return PALETTES[h];}
+function getRowClass(s){const sl=(s||'').toLowerCase();if(sl.includes('rusak'))return'row-rusak';if(sl.includes('lelang'))return'row-lelang';if(sl.includes('terjual')||sl.includes('dijual'))return'row-terjual';if(sl.includes('stok'))return'row-stok';return'';}
+function renderStatusBadge(s){
     const sl=(s||'').toLowerCase();
     let cls='s-default';
-    if(sl.includes('terpakai'))cls='s-terpakai'; else if(sl.includes('tersedia'))cls='s-tersedia'; else if(sl.includes('rusak'))cls='s-rusak'; else if(sl.includes('stok'))cls='s-stok'; else if(sl.includes('terjual')||sl.includes('dijual'))cls='s-terjual'; else if(sl.includes('lelang'))cls='s-lelang';
-    return `<span class="status-badge ${cls}"><span class="status-dot"></span>${s||'-'}</span>`;
+    if(sl.includes('terpakai'))cls='s-terpakai';else if(sl.includes('tersedia'))cls='s-tersedia';else if(sl.includes('rusak'))cls='s-rusak';else if(sl.includes('stok'))cls='s-stok';else if(sl.includes('terjual')||sl.includes('dijual'))cls='s-terjual';else if(sl.includes('lelang'))cls='s-lelang';
+    return`<span class="status-badge ${cls}"><span class="status-dot"></span>${s||'-'}</span>`;
 }
-function renderKondisi(c) {
+function renderKondisi(c){
     const cl=(c||'').toLowerCase();
-    if(cl.includes('baik'))     return `<span style="color:#059669;font-weight:500;font-size:12px;">✓ ${c}</span>`;
-    if(cl.includes('rusak'))    return `<span style="color:#dc2626;font-weight:500;font-size:12px;">✗ ${c}</span>`;
-    if(cl.includes('sedang')||cl.includes('perbaikan')) return `<span style="color:#b45309;font-weight:500;font-size:12px;">⚠ ${c}</span>`;
-    return `<span style="color:#94a3b8;font-size:12px;">${c||'-'}</span>`;
+    if(cl.includes('baik'))     return`<span style="color:#059669;font-weight:500;font-size:12px;">✓ ${c}</span>`;
+    if(cl.includes('rusak'))    return`<span style="color:#dc2626;font-weight:500;font-size:12px;">✗ ${c}</span>`;
+    if(cl.includes('sedang')||cl.includes('perbaikan'))return`<span style="color:#b45309;font-weight:500;font-size:12px;">⚠ ${c}</span>`;
+    return`<span style="color:#94a3b8;font-size:12px;">${c||'-'}</span>`;
 }
-function getTypeIcon(t) {
+function getTypeIcon(t){
     const tl=(t||'').toLowerCase();
     if(tl.includes('hp')||tl.includes('phone'))return'<i class="fas fa-mobile-alt" style="color:#3b82f6;font-size:13px;"></i>';
-    if(tl.includes('laptop'))  return'<i class="fas fa-laptop"       style="color:#3b82f6;font-size:13px;"></i>';
-    if(tl.includes('pc'))      return'<i class="fas fa-desktop"      style="color:#64748b;font-size:13px;"></i>';
-    if(tl.includes('monitor')) return'<i class="fas fa-tv"           style="color:#10b981;font-size:13px;"></i>';
-    if(tl.includes('ups'))     return'<i class="fas fa-battery-full" style="color:#f59e0b;font-size:13px;"></i>';
-    if(tl.includes('headphone'))return'<i class="fas fa-headphones"  style="color:#ec4899;font-size:13px;"></i>';
+    if(tl.includes('laptop'))   return'<i class="fas fa-laptop"       style="color:#3b82f6;font-size:13px;"></i>';
+    if(tl.includes('pc'))       return'<i class="fas fa-desktop"      style="color:#64748b;font-size:13px;"></i>';
+    if(tl.includes('monitor'))  return'<i class="fas fa-tv"           style="color:#10b981;font-size:13px;"></i>';
+    if(tl.includes('ups'))      return'<i class="fas fa-battery-full" style="color:#f59e0b;font-size:13px;"></i>';
+    if(tl.includes('headphone'))return'<i class="fas fa-headphones"   style="color:#ec4899;font-size:13px;"></i>';
     return'<i class="fas fa-box" style="color:#94a3b8;font-size:13px;"></i>';
+}
+
+// ═══════════════════════════════════════════════════════
+//  YEAR FILTER FOR MONTHLY ACQUISITION
+// ═══════════════════════════════════════════════════════
+function populateYearFilter() {
+    const years = new Set();
+    allData.forEach(d => {
+        const raw = d['Tanggal Pembelian Aset'];
+        if(!raw) return;
+        const dt = new Date(raw);
+        if(!isNaN(dt)) years.add(dt.getFullYear());
+    });
+    const sel = document.getElementById('acqYearFilter');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="all">Semua</option>';
+    [...years].sort((a,b)=>b-a).forEach(y => {
+        const o = document.createElement('option');
+        o.value = y; o.textContent = y;
+        sel.appendChild(o);
+    });
+    // Default to current year if available
+    const curYear = new Date().getFullYear();
+    if(years.has(curYear)) sel.value = curYear;
+    else sel.value = cur||'all';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -800,29 +664,17 @@ function applyDashboardFilters() {
     const division = document.getElementById('dashFilterDivision').value;
     const type     = document.getElementById('dashFilterType').value;
     const holding  = document.getElementById('dashFilterHolding').value;
-    
     dashboardFiltered = allData.filter(row => {
-        const ms = !search || Object.values(row).some(v=>String(v).toLowerCase().includes(search));
-        return ms &&
-            (!status   || row['Status Aset']     === status)   &&
-            (!location || row['Lokasi Aset']     === location) &&
-            (!division || row['Divisi Karyawan'] === division) &&
-            (!type     || row['Tipe Aset']       === type)     &&
-            (!holding  || String(row['Holding']??'') === holding);
+        const ms = !search||Object.values(row).some(v=>String(v).toLowerCase().includes(search));
+        return ms&&(!status||row['Status Aset']===status)&&(!location||row['Lokasi Aset']===location)&&(!division||row['Divisi Karyawan']===division)&&(!type||row['Tipe Aset']===type)&&(!holding||String(row['Holding']??'')=== holding);
     });
-    
-    // Update dashboard with filtered data
-    updateDashboard(dashboardFiltered);
+    updateDashboard();
     renderDashboardCharts();
 }
-
 function resetDashboardFilters() {
-    ['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].forEach(id=>{ 
-        const el=document.getElementById(id); 
-        if(el) el.value=''; 
-    });
-    dashboardFiltered = [...allData];
-    updateDashboard(dashboardFiltered);
+    ['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    dashboardFiltered=[...allData];
+    updateDashboard();
     renderDashboardCharts();
 }
 
@@ -830,7 +682,7 @@ function resetDashboardFilters() {
 //  DASHBOARD KPIs
 // ═══════════════════════════════════════════════════════
 function updateDashboard(data) {
-    const d = data || dashboardFiltered;
+    const d = data||dashboardFiltered;
     const total    = d.length;
     const active   = d.filter(r=>(r['Status Aset']||'').toLowerCase().includes('terpakai')).length;
     const divisions= new Set(d.map(r=>r['Divisi Karyawan']).filter(Boolean)).size;
@@ -840,301 +692,278 @@ function updateDashboard(data) {
     document.getElementById('kpiDivisions').textContent = divisions;
     document.getElementById('kpiValue').textContent     = formatCurrency(totalVal);
     document.getElementById('kpiActivePct').textContent = total>0?((active/total)*100).toFixed(1)+'% dari total':'0%';
-    
-    // Update KPI labels based on filters
-    const hasFilters = document.getElementById('dashSearch').value || 
-                       document.getElementById('dashFilterStatus').value ||
-                       document.getElementById('dashFilterLocation').value ||
-                       document.getElementById('dashFilterDivision').value ||
-                       document.getElementById('dashFilterType').value ||
-                       document.getElementById('dashFilterHolding').value;
-    
-    document.getElementById('kpiTotalSub').textContent = hasFilters ? 'Hasil filter' : 'Semua aset';
-    document.getElementById('kpiValueSub').textContent = hasFilters ? 'Nilai hasil filter' : 'Harga beli total';
+    const hasFilters=['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].some(id=>document.getElementById(id).value);
+    document.getElementById('kpiTotalSub').textContent  = hasFilters?'Hasil filter':'Semua aset';
+    document.getElementById('kpiValueSub').textContent  = hasFilters?'Nilai hasil filter':'Harga beli total';
 }
 
 // ═══════════════════════════════════════════════════════
 //  FILTER POPULATION
 // ═══════════════════════════════════════════════════════
 function populateAllFilters() {
-    const sel = (id, vals, label) => {
-        const el = document.getElementById(id); if(!el) return;
-        const cur = el.value;
-        el.innerHTML = `<option value="">${label}</option>`;
-        vals.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; el.appendChild(o); });
-        el.value = cur;
-    };
-    
-    // Dashboard filters
-    sel('dashFilterStatus',   [...new Set(allData.map(d=>d['Status Aset']).filter(Boolean))].sort(), 'Semua Status');
-    sel('dashFilterLocation', [...new Set(allData.map(d=>d['Lokasi Aset']).filter(Boolean))].sort(), 'Semua Lokasi');
-    sel('dashFilterDivision', [...new Set(allData.map(d=>d['Divisi Karyawan']).filter(Boolean))].sort(), 'Semua Divisi');
-    sel('dashFilterType',     [...new Set(allData.map(d=>d['Tipe Aset']).filter(Boolean))].sort(), 'Semua Tipe');
-    const hv = [...new Set(allData.map(d=>d['Holding']).filter(v=>v!==''&&v!==null&&v!==undefined).map(v=>String(v)))]
-        .sort((a,b)=>{ const nA=parseFloat(a),nB=parseFloat(b); return (!isNaN(nA)&&!isNaN(nB))?nA-nB:a.localeCompare(b); });
-    sel('dashFilterHolding', hv, 'Semua Holding');
-    
-    // Inventory filters
-    sel('invFilterStatus',   [...new Set(allData.map(d=>d['Status Aset']).filter(Boolean))].sort(), 'Semua Status');
-    sel('invFilterLocation', [...new Set(allData.map(d=>d['Lokasi Aset']).filter(Boolean))].sort(), 'Semua Lokasi');
-    sel('invFilterDivision', [...new Set(allData.map(d=>d['Divisi Karyawan']).filter(Boolean))].sort(), 'Semua Divisi');
-    sel('invFilterType',     [...new Set(allData.map(d=>d['Tipe Aset']).filter(Boolean))].sort(), 'Semua Tipe');
-    sel('invFilterHolding',  hv, 'Semua Holding');
+    const sel=(id,vals,label)=>{const el=document.getElementById(id);if(!el)return;const cur=el.value;el.innerHTML=`<option value="">${label}</option>`;vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o);});el.value=cur;};
+    const hv=[...new Set(allData.map(d=>d['Holding']).filter(v=>v!==''&&v!==null&&v!==undefined).map(v=>String(v)))].sort((a,b)=>{const nA=parseFloat(a),nB=parseFloat(b);return(!isNaN(nA)&&!isNaN(nB))?nA-nB:a.localeCompare(b);});
+    ['dash','inv'].forEach(pfx=>{
+        sel(pfx+'FilterStatus',  [...new Set(allData.map(d=>d['Status Aset']).filter(Boolean))].sort(),'Semua Status');
+        sel(pfx+'FilterLocation',[...new Set(allData.map(d=>d['Lokasi Aset']).filter(Boolean))].sort(),'Semua Lokasi');
+        sel(pfx+'FilterDivision',[...new Set(allData.map(d=>d['Divisi Karyawan']).filter(Boolean))].sort(),'Semua Divisi');
+        sel(pfx+'FilterType',    [...new Set(allData.map(d=>d['Tipe Aset']).filter(Boolean))].sort(),'Semua Tipe');
+        sel(pfx+'FilterHolding', hv,'Semua Holding');
+    });
 }
 
 // ═══════════════════════════════════════════════════════
-//  INVENTORY FILTERS & TABLE
+//  INVENTORY TABLE
 // ═══════════════════════════════════════════════════════
-function applyInvFilters() {
-    const search   = (document.getElementById('invSearch').value||'').toLowerCase();
-    const status   = document.getElementById('invFilterStatus').value;
-    const location = document.getElementById('invFilterLocation').value;
-    const division = document.getElementById('invFilterDivision').value;
-    const type     = document.getElementById('invFilterType').value;
-    const holding  = document.getElementById('invFilterHolding').value;
-    invFiltered = allData.filter(row => {
-        const ms = !search || Object.values(row).some(v=>String(v).toLowerCase().includes(search));
-        return ms &&
-            (!status   || row['Status Aset']     === status)   &&
-            (!location || row['Lokasi Aset']     === location) &&
-            (!division || row['Divisi Karyawan'] === division) &&
-            (!type     || row['Tipe Aset']       === type)     &&
-            (!holding  || String(row['Holding']??'') === holding);
-    });
-    invPage = 1;
-    renderInvTable();
+function applyInvFilters(){
+    const search=( document.getElementById('invSearch').value||'').toLowerCase();
+    const status=document.getElementById('invFilterStatus').value;
+    const location=document.getElementById('invFilterLocation').value;
+    const division=document.getElementById('invFilterDivision').value;
+    const type=document.getElementById('invFilterType').value;
+    const holding=document.getElementById('invFilterHolding').value;
+    invFiltered=allData.filter(row=>{const ms=!search||Object.values(row).some(v=>String(v).toLowerCase().includes(search));return ms&&(!status||row['Status Aset']===status)&&(!location||row['Lokasi Aset']===location)&&(!division||row['Divisi Karyawan']===division)&&(!type||row['Tipe Aset']===type)&&(!holding||String(row['Holding']??'')=== holding);});
+    invPage=1;renderInvTable();
 }
-function resetInvFilters() {
-    ['invSearch','invFilterStatus','invFilterLocation','invFilterDivision','invFilterType','invFilterHolding'].forEach(id=>{ const el=document.getElementById(id); if(el)el.value=''; });
-    invFiltered=[...allData]; invPage=1; renderInvTable();
-}
-function renderInvTable() {
-    const tbody = document.getElementById('invTableBody');
-    tbody.innerHTML = '';
-    const start = (invPage-1)*invRows;
-    invFiltered.slice(start, start+invRows).forEach((row, idx) => {
-        const tr = document.createElement('tr');
-        const rc = getRowClass(row['Status Aset']);
-        tr.className = `fade-in ${rc}`;
-        tr.style.animationDelay = (idx*0.025)+'s';
-        const emp = row['Nama Karyawan']||'-';
-        const pal = getPalette(emp);
-        const holding = (row['Holding']!==undefined&&row['Holding']!==null&&row['Holding']!=='') ? String(row['Holding']) : '-';
-        tr.innerHTML = `
-            <td style="color:#94a3b8;font-size:12px;">${row['No']||''}</td>
-            <td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td>
-            <td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;">${getTypeIcon(row['Tipe Aset'])} ${row['Tipe Aset']||'-'}</span></td>
-            <td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td>
-            <td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td>
-            <td><div style="display:flex;align-items:center;gap:7px;">
-                <div class="emp-avatar" style="background:${pal.bg};color:${pal.c};">${getInitials(emp)}</div>
-                <div><div style="font-weight:500;font-size:12px;">${emp}</div><div style="font-size:11px;color:#94a3b8;">${row['Divisi Karyawan']||'-'}</div></div>
-            </div></td>
-            <td><span class="holding-badge">${holding}</span></td>
-            <td>${renderStatusBadge(row['Status Aset'])}</td>
-            <td>${renderKondisi(row['Kondisi Aset'])}</td>
-            <td style="text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">${formatCurrency(row['Harga Beli'])}</td>
-            <td><button onclick="showDetail(${start+idx},'inv')" style="width:28px;height:28px;border-radius:6px;background:#f1f5f9;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;color:#3b82f6;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#f1f5f9'"><i class="fas fa-eye"></i></button></td>
-        `;
+function resetInvFilters(){['invSearch','invFilterStatus','invFilterLocation','invFilterDivision','invFilterType','invFilterHolding'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});invFiltered=[...allData];invPage=1;renderInvTable();}
+function renderInvTable(){
+    const tbody=document.getElementById('invTableBody');tbody.innerHTML='';
+    const start=(invPage-1)*invRows;
+    invFiltered.slice(start,start+invRows).forEach((row,idx)=>{
+        const tr=document.createElement('tr');
+        tr.className=`fade-in ${getRowClass(row['Status Aset'])}`;
+        tr.style.animationDelay=(idx*0.025)+'s';
+        const emp=row['Nama Karyawan']||'-';const pal=getPalette(emp);
+        const holding=(row['Holding']!==undefined&&row['Holding']!==null&&row['Holding']!=='') ? String(row['Holding']) : '-';
+        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${row['No']||''}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;">${getTypeIcon(row['Tipe Aset'])} ${row['Tipe Aset']||'-'}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td><div style="display:flex;align-items:center;gap:7px;"><div class="emp-avatar" style="background:${pal.bg};color:${pal.c};">${getInitials(emp)}</div><div><div style="font-weight:500;font-size:12px;">${emp}</div><div style="font-size:11px;color:#94a3b8;">${row['Divisi Karyawan']||'-'}</div></div></div></td><td><span class="holding-badge">${holding}</span></td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td style="text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">${formatCurrency(row['Harga Beli'])}</td><td><button onclick="showDetail(${start+idx},'inv')" style="width:28px;height:28px;border-radius:6px;background:#f1f5f9;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;color:#3b82f6;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#f1f5f9'"><i class="fas fa-eye"></i></button></td>`;
         tbody.appendChild(tr);
     });
-    const totalPages = Math.ceil(invFiltered.length/invRows)||1;
-    document.getElementById('invCurPage').textContent   = invPage;
-    document.getElementById('invTotalPages').textContent= totalPages;
-    document.getElementById('invPrevBtn').disabled = invPage===1;
-    document.getElementById('invNextBtn').disabled = invPage===totalPages;
-    const s=(invPage-1)*invRows+1, e=Math.min(invPage*invRows,invFiltered.length);
-    document.getElementById('invShowingText').textContent = invFiltered.length>0?`${s}–${e} dari ${invFiltered.length} aset`:'0 aset';
+    const tp=Math.ceil(invFiltered.length/invRows)||1;
+    document.getElementById('invCurPage').textContent=invPage;
+    document.getElementById('invTotalPages').textContent=tp;
+    document.getElementById('invPrevBtn').disabled=invPage===1;
+    document.getElementById('invNextBtn').disabled=invPage===tp;
+    const s=(invPage-1)*invRows+1,e=Math.min(invPage*invRows,invFiltered.length);
+    document.getElementById('invShowingText').textContent=invFiltered.length>0?`${s}–${e} dari ${invFiltered.length} aset`:'0 aset';
 }
-function invChangePage(d) { const tp=Math.ceil(invFiltered.length/invRows)||1, np=invPage+d; if(np>=1&&np<=tp){invPage=np;renderInvTable();} }
-function invChangeRows() { invRows=parseInt(document.getElementById('invRowsPerPage').value); invPage=1; renderInvTable(); }
+function invChangePage(d){const tp=Math.ceil(invFiltered.length/invRows)||1,np=invPage+d;if(np>=1&&np<=tp){invPage=np;renderInvTable();}}
+function invChangeRows(){invRows=parseInt(document.getElementById('invRowsPerPage').value);invPage=1;renderInvTable();}
 
 // ═══════════════════════════════════════════════════════
 //  DETAIL MODAL
 // ═══════════════════════════════════════════════════════
-function showDetail(idx, source) {
-    const data = source==='inv' ? invFiltered[idx] : (source==='dash' ? dashboardFiltered[idx] : allData[idx]);
-    if (!data) return;
-    const fields=[
-        ['NO Inventory','No. Inventory'],['Tipe Aset','Tipe'],['Merk','Merk'],['Model Tipe Aset','Model'],
-        ['Seri/Spesifikasi','Spesifikasi'],['IMEI','IMEI'],['Kategori Aset','Kategori'],['Lokasi Aset','Lokasi'],
-        ['Nama Karyawan','Karyawan'],['Divisi Karyawan','Divisi'],['Lini Bisnis','Lini Bisnis'],['Holding','Holding'],
-        ['Tanggal Pembelian Aset','Tgl Pembelian'],['Harga Beli','Harga Beli',formatCurrency],
-        ['Prakiraan Penyusutan (dalam bulan)','Penyusutan'],['Harga Jual','Harga Jual',formatCurrency],
-        ['Status Aset','Status'],['Kondisi Aset','Kondisi'],['Garansi Aset (satuan bulan)','Garansi (bln)'],
-        ['Tanggal Peminjaman Aset','Tgl Peminjaman'],['Tanggal Pengembalian an Aset','Tgl Pengembalian'],
-        ['Tanggal Penjualan Aset','Tgl Penjualan']
-    ];
-    const cont = document.getElementById('detailContent');
-    cont.innerHTML='';
+function showDetail(idx,source){
+    const data=source==='inv'?invFiltered[idx]:(source==='dash'?dashboardFiltered[idx]:allData[idx]);
+    if(!data)return;
+    const fields=[['NO Inventory','No. Inventory'],['Tipe Aset','Tipe'],['Merk','Merk'],['Model Tipe Aset','Model'],['Seri/Spesifikasi','Spesifikasi'],['IMEI','IMEI'],['Kategori Aset','Kategori'],['Lokasi Aset','Lokasi'],['Nama Karyawan','Karyawan'],['Divisi Karyawan','Divisi'],['Lini Bisnis','Lini Bisnis'],['Holding','Holding'],['Tanggal Pembelian Aset','Tgl Pembelian'],['Harga Beli','Harga Beli',formatCurrency],['Prakiraan Penyusutan (dalam bulan)','Penyusutan'],['Harga Jual','Harga Jual',formatCurrency],['Status Aset','Status'],['Kondisi Aset','Kondisi'],['Garansi Aset (satuan bulan)','Garansi (bln)'],['Tanggal Peminjaman Aset','Tgl Peminjaman'],['Tanggal Pengembalian an Aset','Tgl Pengembalian'],['Tanggal Penjualan Aset','Tgl Penjualan']];
+    const cont=document.getElementById('detailContent');cont.innerHTML='';
     fields.forEach(([key,label,fmt])=>{
-        const v=data[key];
-        if(v===''||v===null||v===undefined)return;
-        const div=document.createElement('div');
-        div.className='detail-field'+(key==='Holding'?' detail-holding':'');
-        div.innerHTML=`<div class="detail-label">${label}</div><div class="detail-value">${fmt?fmt(v):v}</div>`;
-        cont.appendChild(div);
+        const v=data[key];if(v===''||v===null||v===undefined)return;
+        const div=document.createElement('div');div.className='detail-field'+(key==='Holding'?' detail-holding':'');
+        div.innerHTML=`<div class="detail-label">${label}</div><div class="detail-value">${fmt?fmt(v):v}</div>`;cont.appendChild(div);
     });
     const linkEl=document.getElementById('detailLink');
-    if (data['Link']) { document.getElementById('detailLinkAnchor').href=data['Link']; linkEl.style.display='block'; }
-    else { linkEl.style.display='none'; }
+    if(data['Link']){document.getElementById('detailLinkAnchor').href=data['Link'];linkEl.style.display='block';}else{linkEl.style.display='none';}
     document.getElementById('detailModal').classList.add('open');
 }
-function closeDetail() { document.getElementById('detailModal').classList.remove('open'); }
-window.onclick = e => {
-    if(e.target===document.getElementById('settingsModal')) closeSettings();
-    if(e.target===document.getElementById('detailModal'))   closeDetail();
-};
+function closeDetail(){document.getElementById('detailModal').classList.remove('open');}
+window.onclick=e=>{if(e.target===document.getElementById('settingsModal'))closeSettings();if(e.target===document.getElementById('detailModal'))closeDetail();};
 
 // ═══════════════════════════════════════════════════════
-//  DASHBOARD CHARTS
+//  CHART CONFIG
 // ═══════════════════════════════════════════════════════
-const tooltipCfg = {
-    backgroundColor:'rgba(15,23,42,0.92)', titleColor:'#fff', bodyColor:'#e2e8f0',
-    borderColor:'rgba(59,130,246,0.3)', borderWidth:1, padding:11, cornerRadius:9,
-    titleFont:{size:12,weight:'600',family:'Inter'}, bodyFont:{size:12,family:'Inter'},
-    displayColors:true, boxWidth:9, boxHeight:9, boxPadding:3, usePointStyle:true,
-};
-function pieCallbacks() { return { label(ctx){ const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.dataset.data[ctx.dataIndex]; return `  ${ctx.label} — ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}%)`; } }; }
-function barCallbacks() { return { label(ctx){ const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.y!==undefined?ctx.parsed.y:ctx.parsed.x; return `  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`; } }; }
-function chartOpts() { return { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#64748b',font:{size:11}}},tooltip:tooltipCfg} }; }
+const tooltipCfg={backgroundColor:'rgba(15,23,42,0.92)',titleColor:'#fff',bodyColor:'#e2e8f0',borderColor:'rgba(59,130,246,0.3)',borderWidth:1,padding:11,cornerRadius:9,titleFont:{size:12,weight:'600',family:'Inter'},bodyFont:{size:12,family:'Inter'},displayColors:true,boxWidth:9,boxHeight:9,boxPadding:3,usePointStyle:true};
+function pieCallbacks(){return{label(ctx){const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.dataset.data[ctx.dataIndex];return`  ${ctx.label} — ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}%)`;}};}
+function barCallbacks(){return{label(ctx){const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.y!==undefined?ctx.parsed.y:ctx.parsed.x;return`  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`;}};}
+function chartOpts(){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#64748b',font:{size:11}}},tooltip:tooltipCfg}};}
 
-function renderAllCharts() {
-    renderDashboardCharts();
-}
-
-function renderDashboardCharts() {
-    renderCategoryChart(); 
-    renderLocationChart(); 
-    renderTypeChart();
-    renderStatusChart(); 
-    renderConditionChart(); 
-    renderMerkChart();
+function renderAllCharts(){renderDashboardCharts();}
+function renderDashboardCharts(){
+    renderCategoryChart();renderLocationChart();renderTypeChart();
+    renderStatusChart();renderConditionChart();renderMerkChart();
+    renderDashAgeChart();
+    renderMonthlyAcquisitionChart();
 }
 
-function renderCategoryChart() {
-    const ctx=document.getElementById('categoryChart').getContext('2d'), cats={};
-    dashboardFiltered.forEach(d=>{const c=d['Kategori Aset']||'Lainnya';cats[c]=(cats[c]||0)+1;});
-    if(charts.cat)charts.cat.destroy();
-    charts.cat=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:11}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});
-}
-function renderLocationChart() {
-    const ctx=document.getElementById('locationChart').getContext('2d'), locs={};
-    dashboardFiltered.forEach(d=>{const l=d['Lokasi Aset']||'Unknown';locs[l]=(locs[l]||0)+1;});
-    const bg=Array.from({length:Object.keys(locs).length},(_,i)=>BAR_COLORS[i%BAR_COLORS.length]);
-    if(charts.loc)charts.loc.destroy();
-    charts.loc=new Chart(ctx,{type:'bar',data:{labels:Object.keys(locs),datasets:[{data:Object.values(locs),backgroundColor:bg,borderRadius:5}]},options:{...chartOpts(),plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}},scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}}}}});
-}
-function renderTypeChart() {
-    const ctx=document.getElementById('typeChart').getContext('2d'), types={};
-    dashboardFiltered.forEach(d=>{const t=d['Tipe Aset']||'Lainnya';types[t]=(types[t]||0)+1;});
-    if(charts.type)charts.type.destroy();
-    charts.type=new Chart(ctx,{type:'pie',data:{labels:Object.keys(types),datasets:[{data:Object.values(types),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:10}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});
-}
-function renderStatusChart() {
-    const ctx=document.getElementById('statusChart').getContext('2d'), sts={};
-    dashboardFiltered.forEach(d=>{const s=d['Status Aset']||'Unknown';sts[s]=(sts[s]||0)+1;});
-    const sc={'Terpakai':'#10b981','Tersedia':'#3b82f6','Rusak':'#ef4444','Dijual':'#f59e0b','Terjual':'#8b5cf6','Stok':'#f97316','Lelang':'#ec4899','Unknown':'#6b7280'};
-    const bg=Object.keys(sts).map(s=>sc[s]||'#6b7280');
-    if(charts.status)charts.status.destroy();
-    charts.status=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(sts),datasets:[{data:Object.values(sts),backgroundColor:bg,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:11}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});
-}
-function renderConditionChart() {
-    const ctx=document.getElementById('conditionChart').getContext('2d'), conds={};
-    dashboardFiltered.forEach(d=>{const c=d['Kondisi Aset']||'Unknown';conds[c]=(conds[c]||0)+1;});
-    const cc={'Baik':'#10b981','Rusak':'#ef4444','Sedang':'#f59e0b','Perbaikan':'#f97316','Unknown':'#6b7280'};
-    const bg=Object.keys(conds).map(c=>cc[c]||'#6b7280');
-    if(charts.cond)charts.cond.destroy();
-    charts.cond=new Chart(ctx,{type:'bar',data:{labels:Object.keys(conds),datasets:[{data:Object.values(conds),backgroundColor:bg,borderRadius:5}]},options:{...chartOpts(),plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}},scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b'},grid:{display:false}}}}});
-}
-function renderMerkChart() {
-    const ctx=document.getElementById('merkChart').getContext('2d'), merks={};
-    dashboardFiltered.forEach(d=>{const m=d['Merk']||'Lainnya';merks[m]=(merks[m]||0)+1;});
-    const sorted=Object.entries(merks).sort((a,b)=>b[1]-a[1]).slice(0,10);
-    if(charts.merk)charts.merk.destroy();
-    const hCb={label(ctx){const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.x;return`  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`;}};
-    charts.merk=new Chart(ctx,{type:'bar',data:{labels:sorted.map(m=>m[0]),datasets:[{data:sorted.map(m=>m[1]),backgroundColor:sorted.map((_,i)=>BAR_COLORS[i%BAR_COLORS.length]),borderRadius:5}]},options:{...chartOpts(),indexAxis:'y',plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:hCb}},scales:{x:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{color:'#64748b'},grid:{display:false}}}}});
-}
+// ── Standard 6 charts (use dashboardFiltered) ──────────
+function renderCategoryChart(){const ctx=document.getElementById('categoryChart').getContext('2d'),cats={};dashboardFiltered.forEach(d=>{const c=d['Kategori Aset']||'Lainnya';cats[c]=(cats[c]||0)+1;});if(charts.cat)charts.cat.destroy();charts.cat=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:11}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});}
+function renderLocationChart(){const ctx=document.getElementById('locationChart').getContext('2d'),locs={};dashboardFiltered.forEach(d=>{const l=d['Lokasi Aset']||'Unknown';locs[l]=(locs[l]||0)+1;});const bg=Array.from({length:Object.keys(locs).length},(_,i)=>BAR_COLORS[i%BAR_COLORS.length]);if(charts.loc)charts.loc.destroy();charts.loc=new Chart(ctx,{type:'bar',data:{labels:Object.keys(locs),datasets:[{data:Object.values(locs),backgroundColor:bg,borderRadius:5}]},options:{...chartOpts(),plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}},scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}}}}});}
+function renderTypeChart(){const ctx=document.getElementById('typeChart').getContext('2d'),types={};dashboardFiltered.forEach(d=>{const t=d['Tipe Aset']||'Lainnya';types[t]=(types[t]||0)+1;});if(charts.type)charts.type.destroy();charts.type=new Chart(ctx,{type:'pie',data:{labels:Object.keys(types),datasets:[{data:Object.values(types),backgroundColor:CHART_COLORS,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:10}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});}
+function renderStatusChart(){const ctx=document.getElementById('statusChart').getContext('2d'),sts={};dashboardFiltered.forEach(d=>{const s=d['Status Aset']||'Unknown';sts[s]=(sts[s]||0)+1;});const sc={'Terpakai':'#10b981','Tersedia':'#3b82f6','Rusak':'#ef4444','Dijual':'#f59e0b','Terjual':'#8b5cf6','Stok':'#f97316','Lelang':'#ec4899','Unknown':'#6b7280'};const bg=Object.keys(sts).map(s=>sc[s]||'#6b7280');if(charts.status)charts.status.destroy();charts.status=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(sts),datasets:[{data:Object.values(sts),backgroundColor:bg,borderWidth:0}]},options:{...chartOpts(),plugins:{...chartOpts().plugins,legend:{position:'right',labels:{color:'#64748b',boxWidth:11,font:{size:11}}},tooltip:{...tooltipCfg,callbacks:pieCallbacks()}}}});}
+function renderConditionChart(){const ctx=document.getElementById('conditionChart').getContext('2d'),conds={};dashboardFiltered.forEach(d=>{const c=d['Kondisi Aset']||'Unknown';conds[c]=(conds[c]||0)+1;});const cc={'Baik':'#10b981','Rusak':'#ef4444','Sedang':'#f59e0b','Perbaikan':'#f97316','Unknown':'#6b7280'};const bg=Object.keys(conds).map(c=>cc[c]||'#6b7280');if(charts.cond)charts.cond.destroy();charts.cond=new Chart(ctx,{type:'bar',data:{labels:Object.keys(conds),datasets:[{data:Object.values(conds),backgroundColor:bg,borderRadius:5}]},options:{...chartOpts(),plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}},scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b'},grid:{display:false}}}}});}
+function renderMerkChart(){const ctx=document.getElementById('merkChart').getContext('2d'),merks={};dashboardFiltered.forEach(d=>{const m=d['Merk']||'Lainnya';merks[m]=(merks[m]||0)+1;});const sorted=Object.entries(merks).sort((a,b)=>b[1]-a[1]).slice(0,10);if(charts.merk)charts.merk.destroy();const hCb={label(ctx){const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.x;return`  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`;}};charts.merk=new Chart(ctx,{type:'bar',data:{labels:sorted.map(m=>m[0]),datasets:[{data:sorted.map(m=>m[1]),backgroundColor:sorted.map((_,i)=>BAR_COLORS[i%BAR_COLORS.length]),borderRadius:5}]},options:{...chartOpts(),indexAxis:'y',plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:hCb}},scales:{x:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{color:'#64748b'},grid:{display:false}}}}});}
 
-// ═══════════════════════════════════════════════════════
-//  ANALYTICS CHARTS
-// ═══════════════════════════════════════════════════════
-function renderAnalyticsCharts() {
-    renderAgeChart();
-    renderHoldingChart();
-}
-
-function renderAgeChart() {
-    const ctx = document.getElementById('ageChart').getContext('2d');
+// ── NEW: Asset Age Distribution on Dashboard ───────────
+function renderDashAgeChart() {
+    const ctx = document.getElementById('dashAgeChart').getContext('2d');
     const now = new Date();
-    const buckets = { '< 1 tahun':0, '1–2 tahun':0, '2–3 tahun':0, '3–5 tahun':0, '> 5 tahun':0 };
-    allData.forEach(d => {
+    const buckets = { '< 1 thn':0, '1–2 thn':0, '2–3 thn':0, '3–5 thn':0, '> 5 thn':0 };
+    const colors  = ['#10b981','#3b82f6','#f59e0b','#f97316','#ef4444'];
+    dashboardFiltered.forEach(d => {
         const raw = d['Tanggal Pembelian Aset'];
-        if (!raw) return;
+        if(!raw) return;
         const dt = new Date(raw);
-        if (isNaN(dt)) return;
-        const yrs = (now - dt) / (1000*60*60*24*365.25);
-        if      (yrs < 1)  buckets['< 1 tahun']++;
-        else if (yrs < 2)  buckets['1–2 tahun']++;
-        else if (yrs < 3)  buckets['2–3 tahun']++;
-        else if (yrs < 5)  buckets['3–5 tahun']++;
-        else               buckets['> 5 tahun']++;
+        if(isNaN(dt)) return;
+        const yrs = (now - dt)/(1000*60*60*24*365.25);
+        if     (yrs < 1) buckets['< 1 thn']++;
+        else if(yrs < 2) buckets['1–2 thn']++;
+        else if(yrs < 3) buckets['2–3 thn']++;
+        else if(yrs < 5) buckets['3–5 thn']++;
+        else             buckets['> 5 thn']++;
     });
-    if (charts.age) charts.age.destroy();
-    charts.age = new Chart(ctx, {
-        type:'bar',
-        data:{ labels:Object.keys(buckets), datasets:[{ data:Object.values(buckets), backgroundColor:['#10b981','#3b82f6','#f59e0b','#f97316','#ef4444'], borderRadius:6 }] },
-        options:{...chartOpts(), plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}}, scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b'},grid:{display:false}}}}
+    if(charts.dashAge) charts.dashAge.destroy();
+    charts.dashAge = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(buckets),
+            datasets: [{
+                label: 'Jumlah Aset',
+                data: Object.values(buckets),
+                backgroundColor: colors,
+                borderRadius: 7,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            ...chartOpts(),
+            plugins: {
+                legend: { display: false },
+                tooltip: { ...tooltipCfg, callbacks: {
+                    title: ctx => `Usia: ${ctx[0].label}`,
+                    label: ctx => {
+                        const total = Object.values(buckets).reduce((a,b)=>a+b,0);
+                        return `  ${ctx.parsed.y.toLocaleString('id-ID')} aset (${total>0?((ctx.parsed.y/total)*100).toFixed(1):0}%)`;
+                    }
+                }}
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { color:'#94a3b8', stepSize:1 }, grid: { color:'rgba(0,0,0,0.04)' } },
+                x: { ticks: { color:'#64748b' }, grid: { display:false } }
+            }
+        }
     });
 }
 
-function renderHoldingChart() {
-    const ctx = document.getElementById('holdingChart').getContext('2d');
-    const holdings = {};
-    allData.forEach(d => {
-        const h = (d['Holding']!==undefined&&d['Holding']!==null&&d['Holding']!=='') ? String(d['Holding']) : 'Tidak Diketahui';
-        holdings[h] = (holdings[h]||0)+1;
+// ── NEW: Monthly Acquisition Trend ─────────────────────
+function renderMonthlyAcquisitionChart() {
+    const ctx  = document.getElementById('monthlyAcqChart').getContext('2d');
+    const year = document.getElementById('acqYearFilter').value;
+
+    // Build monthly counts — use dashboardFiltered so global filters apply
+    const monthlyCounts = Array(12).fill(0);
+    const dataSource = dashboardFiltered; // respects dashboard filters
+
+    dataSource.forEach(d => {
+        const raw = d['Tanggal Pembelian Aset'];
+        if(!raw) return;
+        const dt = new Date(raw);
+        if(isNaN(dt)) return;
+        if(year !== 'all' && dt.getFullYear() !== parseInt(year)) return;
+        monthlyCounts[dt.getMonth()]++;
     });
-    const sorted = Object.entries(holdings).sort((a,b)=>b[1]-a[1]);
-    if (charts.holding) charts.holding.destroy();
-    charts.holding = new Chart(ctx, {
-        type:'bar',
-        data:{ labels:sorted.map(h=>h[0]), datasets:[{ data:sorted.map(h=>h[1]), backgroundColor:sorted.map((_,i)=>BAR_COLORS[i%BAR_COLORS.length]), borderRadius:6 }] },
-        options:{...chartOpts(), indexAxis:'y', plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:{ label(ctx){ const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.x; return `  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`; } }}}, scales:{x:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{color:'#64748b'},grid:{display:false}}}}
+
+    const total = monthlyCounts.reduce((a,b)=>a+b,0);
+    const maxVal= Math.max(...monthlyCounts);
+
+    // Color bars — highlight the peak month in blue, rest in lighter blue
+    const bgColors = monthlyCounts.map((v,i) =>
+        v === maxVal && maxVal > 0 ? '#3b82f6' : '#bfdbfe'
+    );
+
+    if(charts.monthlyAcq) charts.monthlyAcq.destroy();
+    charts.monthlyAcq = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: MONTHS_ID,
+            datasets: [{
+                label: 'Pengadaan',
+                data: monthlyCounts,
+                backgroundColor: bgColors,
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            ...chartOpts(),
+            plugins: {
+                legend: { display: false },
+                tooltip: { ...tooltipCfg, callbacks: {
+                    title: ctx => `${MONTHS_ID[ctx[0].dataIndex]} ${year==='all'?'(semua tahun)':year}`,
+                    label: ctx => {
+                        const pct = total>0?((ctx.parsed.y/total)*100).toFixed(1):0;
+                        return `  ${ctx.parsed.y.toLocaleString('id-ID')} aset (${pct}% dari total tahun)`;
+                    }
+                }}
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { color:'#94a3b8', stepSize:1 }, grid: { color:'rgba(0,0,0,0.04)' } },
+                x: { ticks: { color:'#64748b', font:{size:11} }, grid: { display:false } }
+            }
+        }
     });
+
+    // Update summary row (highlight top 3 months)
+    const summaryEl = document.getElementById('monthlyAcqSummary');
+    const withIdx = monthlyCounts.map((v,i)=>({v,i})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+    summaryEl.innerHTML = '';
+    if(withIdx.length === 0) {
+        summaryEl.innerHTML = '<span style="font-size:11px;color:#94a3b8;">Tidak ada data pengadaan pada periode ini.</span>';
+        return;
+    }
+    // Show all months compactly
+    monthlyCounts.forEach((v,i) => {
+        const isPeak = v === maxVal && maxVal > 0;
+        const chip = document.createElement('div');
+        chip.style.cssText = `display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:9999px;font-size:11px;font-weight:${isPeak?'600':'400'};background:${isPeak?'#eff6ff':'#f8fafc'};border:1px solid ${isPeak?'#bfdbfe':'#e2e8f0'};color:${isPeak?'#1e40af':'#64748b'};`;
+        chip.innerHTML = `${MONTHS_ID[i]}<strong style="margin-left:3px;">${v}</strong>`;
+        summaryEl.appendChild(chip);
+    });
+}
+
+// ═══════════════════════════════════════════════════════
+//  ANALYTICS PAGE CHARTS
+// ═══════════════════════════════════════════════════════
+function renderAnalyticsCharts(){renderAgeChart();renderHoldingChart();}
+function renderAgeChart(){
+    const ctx=document.getElementById('ageChart').getContext('2d');
+    const now=new Date();
+    const buckets={'< 1 tahun':0,'1–2 tahun':0,'2–3 tahun':0,'3–5 tahun':0,'> 5 tahun':0};
+    allData.forEach(d=>{const raw=d['Tanggal Pembelian Aset'];if(!raw)return;const dt=new Date(raw);if(isNaN(dt))return;const yrs=(now-dt)/(1000*60*60*24*365.25);if(yrs<1)buckets['< 1 tahun']++;else if(yrs<2)buckets['1–2 tahun']++;else if(yrs<3)buckets['2–3 tahun']++;else if(yrs<5)buckets['3–5 tahun']++;else buckets['> 5 tahun']++;});
+    if(charts.age)charts.age.destroy();
+    charts.age=new Chart(ctx,{type:'bar',data:{labels:Object.keys(buckets),datasets:[{data:Object.values(buckets),backgroundColor:['#10b981','#3b82f6','#f59e0b','#f97316','#ef4444'],borderRadius:6}]},options:{...chartOpts(),plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}},scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b'},grid:{display:false}}}}});
+}
+function renderHoldingChart(){
+    const ctx=document.getElementById('holdingChart').getContext('2d');
+    const holdings={};
+    allData.forEach(d=>{const h=(d['Holding']!==undefined&&d['Holding']!==null&&d['Holding']!=='') ? String(d['Holding']) : 'Tidak Diketahui';holdings[h]=(holdings[h]||0)+1;});
+    const sorted=Object.entries(holdings).sort((a,b)=>b[1]-a[1]);
+    if(charts.holding)charts.holding.destroy();
+    const hCb2={label(ctx){const t=ctx.dataset.data.reduce((a,b)=>a+b,0),v=ctx.parsed.x;return`  ${v.toLocaleString('id-ID')} aset (${t>0?((v/t)*100).toFixed(1):0}% dari total)`;}};
+    charts.holding=new Chart(ctx,{type:'bar',data:{labels:sorted.map(h=>h[0]),datasets:[{data:sorted.map(h=>h[1]),backgroundColor:sorted.map((_,i)=>BAR_COLORS[i%BAR_COLORS.length]),borderRadius:6}]},options:{...chartOpts(),indexAxis:'y',plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:hCb2}},scales:{x:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{color:'#64748b'},grid:{display:false}}}}});
 }
 
 // ═══════════════════════════════════════════════════════
 //  REPORTS
 // ═══════════════════════════════════════════════════════
-function exportCSV(mode) {
+function exportCSV(mode){
     let data;
-    if      (mode==='all')     data = allData;
-    else if (mode==='filtered') data = invFiltered;
-    else if (mode==='rusak')    data = allData.filter(r=>(r['Status Aset']||'').toLowerCase().includes('rusak')||(r['Kondisi Aset']||'').toLowerCase().includes('rusak'));
-
-    if (!data || !data.length) { alert('Tidak ada data untuk diekspor.'); return; }
-
-    const keys = ['No','NO Inventory','Tipe Aset','Merk','Model Tipe Aset','Seri/Spesifikasi','Lokasi Aset','Nama Karyawan','Divisi Karyawan','Holding','Status Aset','Kondisi Aset','Harga Beli','Tanggal Pembelian Aset'];
-    const header = keys.join(',');
-    const rows = data.map(r => keys.map(k => { const v = r[k]!==undefined?String(r[k]):''; return v.includes(',')||v.includes('"')||v.includes('\n') ? `"${v.replace(/"/g,'""')}"` : v; }).join(','));
-    const csv = [header, ...rows].join('\n');
-    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = `luzie-assets-${mode}-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    if(mode==='all')      data=allData;
+    else if(mode==='filtered') data=invFiltered;
+    else if(mode==='rusak')    data=allData.filter(r=>(r['Status Aset']||'').toLowerCase().includes('rusak')||(r['Kondisi Aset']||'').toLowerCase().includes('rusak'));
+    if(!data||!data.length){alert('Tidak ada data untuk diekspor.');return;}
+    const keys=['No','NO Inventory','Tipe Aset','Merk','Model Tipe Aset','Seri/Spesifikasi','Lokasi Aset','Nama Karyawan','Divisi Karyawan','Holding','Status Aset','Kondisi Aset','Harga Beli','Tanggal Pembelian Aset'];
+    const header=keys.join(',');
+    const rows=data.map(r=>keys.map(k=>{const v=r[k]!==undefined?String(r[k]):'';return v.includes(',')||v.includes('"')||v.includes('\n')?`"${v.replace(/"/g,'""')}"`:v;}).join(','));
+    const csv=[header,...rows].join('\n');
+    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=`luzie-assets-${mode}-${new Date().toISOString().split('T')[0]}.csv`;a.click();URL.revokeObjectURL(url);
 }
-
-function showRusakTable() {
-    const rusak = allData.filter(r=>(r['Status Aset']||'').toLowerCase().includes('rusak')||(r['Kondisi Aset']||'').toLowerCase().includes('rusak'));
-    const tbody  = document.getElementById('rusakTableBody');
-    tbody.innerHTML='';
-    rusak.forEach((row,i) => {
-        const tr=document.createElement('tr');
-        tr.className='row-rusak fade-in';
+function showRusakTable(){
+    const rusak=allData.filter(r=>(r['Status Aset']||'').toLowerCase().includes('rusak')||(r['Kondisi Aset']||'').toLowerCase().includes('rusak'));
+    const tbody=document.getElementById('rusakTableBody');tbody.innerHTML='';
+    rusak.forEach((row,i)=>{
+        const tr=document.createElement('tr');tr.className='row-rusak fade-in';
         const holding=(row['Holding']!==undefined&&row['Holding']!==null&&row['Holding']!=='') ? String(row['Holding']) : '-';
         tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${i+1}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td style="font-size:12px;">${row['Tipe Aset']||'-'}</td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;">${row['Lokasi Aset']||'-'}</td><td style="font-weight:500;font-size:12px;">${row['Nama Karyawan']||'-'}</td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td><span class="holding-badge">${holding}</span></td>`;
         tbody.appendChild(tr);
@@ -1142,95 +971,58 @@ function showRusakTable() {
     document.getElementById('rusakSection').style.display='block';
     document.getElementById('rusakSection').scrollIntoView({behavior:'smooth',block:'start'});
 }
-function hideRusakTable() { document.getElementById('rusakSection').style.display='none'; }
-
-function printSummary() {
-    const active   = allData.filter(d=>(d['Status Aset']||'').toLowerCase().includes('terpakai')).length;
-    const rusak    = allData.filter(d=>(d['Status Aset']||'').toLowerCase().includes('rusak')).length;
-    const totalVal = allData.reduce((s,d)=>s+(parseFloat(d['Harga Beli'])||0),0);
-    const win = window.open('','_blank');
+function hideRusakTable(){document.getElementById('rusakSection').style.display='none';}
+function printSummary(){
+    const active=allData.filter(d=>(d['Status Aset']||'').toLowerCase().includes('terpakai')).length;
+    const rusak=allData.filter(d=>(d['Status Aset']||'').toLowerCase().includes('rusak')).length;
+    const totalVal=allData.reduce((s,d)=>s+(parseFloat(d['Harga Beli'])||0),0);
+    const win=window.open('','_blank');
     win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ringkasan Aset — Luzie Group</title><style>body{font-family:Inter,sans-serif;color:#0f172a;padding:32px;max-width:900px;margin:auto}h1{font-size:22px;font-weight:700;margin-bottom:4px}p.sub{font-size:13px;color:#94a3b8;margin:0 0 28px}table{width:100%;border-collapse:collapse;font-size:13px;margin-top:20px}th{background:#f8fafc;padding:9px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;border-bottom:1px solid #e2e8f0}td{padding:9px 12px;border-bottom:1px solid #f1f5f9}.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}.kpi-box{border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}.kpi-box .lbl{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em}.kpi-box .val{font-size:22px;font-weight:700;margin-top:4px}@media print{@page{margin:24mm}}</style></head><body>`);
     win.document.write(`<h1>Luzie Group — Ringkasan Aset</h1><p class="sub">Dicetak: ${new Date().toLocaleString('id-ID')}</p>`);
     win.document.write(`<div class="kpi"><div class="kpi-box"><div class="lbl">Total Aset</div><div class="val">${allData.length.toLocaleString('id-ID')}</div></div><div class="kpi-box"><div class="lbl">Terpakai</div><div class="val" style="color:#059669">${active.toLocaleString('id-ID')}</div></div><div class="kpi-box"><div class="lbl">Rusak</div><div class="val" style="color:#dc2626">${rusak.toLocaleString('id-ID')}</div></div><div class="kpi-box"><div class="lbl">Total Nilai</div><div class="val" style="font-size:16px">${formatCurrency(totalVal)}</div></div></div>`);
     win.document.write(`<table><thead><tr><th>#</th><th>Inventory</th><th>Tipe</th><th>Merk/Model</th><th>Karyawan</th><th>Lokasi</th><th>Status</th><th>Kondisi</th><th>Harga Beli</th></tr></thead><tbody>`);
-    allData.slice(0,200).forEach((r,i)=>{ win.document.write(`<tr><td>${i+1}</td><td>${r['NO Inventory']||''}</td><td>${r['Tipe Aset']||''}</td><td>${r['Merk']||''} ${r['Model Tipe Aset']||''}</td><td>${r['Nama Karyawan']||'-'}</td><td>${r['Lokasi Aset']||''}</td><td>${r['Status Aset']||''}</td><td>${r['Kondisi Aset']||''}</td><td>${formatCurrency(r['Harga Beli'])}</td></tr>`); });
-    win.document.write(`</tbody></table></body></html>`);
-    win.document.close();
-    setTimeout(()=>win.print(), 500);
+    allData.slice(0,200).forEach((r,i)=>{win.document.write(`<tr><td>${i+1}</td><td>${r['NO Inventory']||''}</td><td>${r['Tipe Aset']||''}</td><td>${r['Merk']||''} ${r['Model Tipe Aset']||''}</td><td>${r['Nama Karyawan']||'-'}</td><td>${r['Lokasi Aset']||''}</td><td>${r['Status Aset']||''}</td><td>${r['Kondisi Aset']||''}</td><td>${formatCurrency(r['Harga Beli'])}</td></tr>`);});
+    win.document.write(`</tbody></table></body></html>`);win.document.close();setTimeout(()=>win.print(),500);
 }
 
 // ═══════════════════════════════════════════════════════
-//  ASSETS PAGE — CATEGORY TREE
+//  ASSETS — CATEGORY TREE
 // ═══════════════════════════════════════════════════════
-let selectedCat = null, selectedType = null;
-
-function renderCategoryTree() {
-    const cats = {};
-    allData.forEach(d => {
-        const cat  = d['Kategori Aset'] || 'Lainnya';
-        const type = d['Tipe Aset']     || 'Lainnya';
-        if (!cats[cat]) cats[cat] = {};
-        cats[cat][type] = (cats[cat][type]||0)+1;
-    });
-    const wrap = document.getElementById('catTreeWrap');
-    wrap.innerHTML='';
-    const all = document.createElement('div');
-    all.className='cat-child';
-    all.style.fontWeight='500';
-    all.style.color='#0f172a';
+function renderCategoryTree(){
+    const cats={};
+    allData.forEach(d=>{const cat=d['Kategori Aset']||'Lainnya';const type=d['Tipe Aset']||'Lainnya';if(!cats[cat])cats[cat]={};cats[cat][type]=(cats[cat][type]||0)+1;});
+    const wrap=document.getElementById('catTreeWrap');wrap.innerHTML='';
+    const all=document.createElement('div');all.className='cat-child';all.style.fontWeight='500';all.style.color='#0f172a';
     all.innerHTML=`<span>Semua Aset</span><span class="cat-child-count">${allData.length}</span>`;
-    all.onclick=()=>{ selectedCat=null; selectedType=null; renderAssetTable(allData); document.getElementById('assetPanelTitle').textContent='Semua Aset'; document.getElementById('assetPanelSub').textContent=`${allData.length} aset`; };
+    all.onclick=()=>{renderAssetTable(allData);document.getElementById('assetPanelTitle').textContent='Semua Aset';document.getElementById('assetPanelSub').textContent=`${allData.length} aset`;};
     wrap.appendChild(all);
-
-    Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([cat, types]) => {
-        const total = Object.values(types).reduce((a,b)=>a+b,0);
-        const grp = document.createElement('div'); grp.className='cat-group';
-
-        const hdr = document.createElement('div'); hdr.className='cat-header';
+    Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([cat,types])=>{
+        const total=Object.values(types).reduce((a,b)=>a+b,0);
+        const grp=document.createElement('div');grp.className='cat-group';
+        const hdr=document.createElement('div');hdr.className='cat-header';
         hdr.innerHTML=`<i class="fas fa-folder" style="color:#3b82f6;font-size:13px;"></i><span style="flex:1;">${cat}</span><span class="cat-count">${total}</span><i class="fas fa-chevron-right" style="font-size:11px;color:#94a3b8;transition:transform 0.2s;"></i>`;
-        const children=document.createElement('div'); children.className='cat-children';
-        hdr.onclick=()=>{
-            const isOpen=children.classList.toggle('open');
-            hdr.querySelector('.fa-chevron-right').style.transform=isOpen?'rotate(90deg)':'rotate(0)';
-            selectedCat=cat; selectedType=null;
-            const d=allData.filter(r=>(r['Kategori Aset']||'Lainnya')===cat);
-            renderAssetTable(d);
-            document.getElementById('assetPanelTitle').textContent=cat;
-            document.getElementById('assetPanelSub').textContent=`${d.length} aset`;
-        };
-
+        const children=document.createElement('div');children.className='cat-children';
+        hdr.onclick=()=>{const isOpen=children.classList.toggle('open');hdr.querySelector('.fa-chevron-right').style.transform=isOpen?'rotate(90deg)':'rotate(0)';const d=allData.filter(r=>(r['Kategori Aset']||'Lainnya')===cat);renderAssetTable(d);document.getElementById('assetPanelTitle').textContent=cat;document.getElementById('assetPanelSub').textContent=`${d.length} aset`;};
         Object.entries(types).sort((a,b)=>b[1]-a[1]).forEach(([type,count])=>{
-            const child=document.createElement('div'); child.className='cat-child';
+            const child=document.createElement('div');child.className='cat-child';
             child.innerHTML=`<span>${getTypeIcon(type)} ${type}</span><span class="cat-child-count">${count}</span>`;
-            child.onclick=(e)=>{
-                e.stopPropagation();
-                selectedCat=cat; selectedType=type;
-                const d=allData.filter(r=>(r['Kategori Aset']||'Lainnya')===cat&&(r['Tipe Aset']||'Lainnya')===type);
-                renderAssetTable(d);
-                document.getElementById('assetPanelTitle').textContent=`${cat} › ${type}`;
-                document.getElementById('assetPanelSub').textContent=`${d.length} aset`;
-            };
+            child.onclick=(e)=>{e.stopPropagation();const d=allData.filter(r=>(r['Kategori Aset']||'Lainnya')===cat&&(r['Tipe Aset']||'Lainnya')===type);renderAssetTable(d);document.getElementById('assetPanelTitle').textContent=`${cat} › ${type}`;document.getElementById('assetPanelSub').textContent=`${d.length} aset`;};
             children.appendChild(child);
         });
-        grp.appendChild(hdr); grp.appendChild(children);
-        wrap.appendChild(grp);
+        grp.appendChild(hdr);grp.appendChild(children);wrap.appendChild(grp);
     });
     renderAssetTable(allData);
     document.getElementById('assetPanelSub').textContent=`${allData.length} aset`;
 }
-
-function renderAssetTable(data) {
-    const tbody=document.getElementById('assetTableBody');
-    tbody.innerHTML='';
+function renderAssetTable(data){
+    const tbody=document.getElementById('assetTableBody');tbody.innerHTML='';
     data.slice(0,100).forEach((row,i)=>{
-        const tr=document.createElement('tr');
-        tr.className=`fade-in ${getRowClass(row['Status Aset'])}`;
-        tr.style.animationDelay=(i*0.02)+'s';
+        const tr=document.createElement('tr');tr.className=`fade-in ${getRowClass(row['Status Aset'])}`;tr.style.animationDelay=(i*0.02)+'s';
         const emp=row['Nama Karyawan']||'-';
         tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${i+1}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;font-weight:500;">${emp}</td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td>`;
         tbody.appendChild(tr);
     });
-    if(data.length>100) { const tr=document.createElement('tr'); tr.innerHTML=`<td colspan="7" style="text-align:center;color:#94a3b8;font-size:12px;padding:12px;">Menampilkan 100 dari ${data.length} aset. Gunakan halaman Inventory untuk melihat semua.</td>`; tbody.appendChild(tr); }
+    if(data.length>100){const tr=document.createElement('tr');tr.innerHTML=`<td colspan="7" style="text-align:center;color:#94a3b8;font-size:12px;padding:12px;">Menampilkan 100 dari ${data.length} aset. Gunakan halaman Inventory untuk melihat semua.</td>`;tbody.appendChild(tr);}
 }
 </script>
 </body>
