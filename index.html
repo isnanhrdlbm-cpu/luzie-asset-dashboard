@@ -181,6 +181,7 @@
             .detail-grid { grid-template-columns: 1fr; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -488,6 +489,74 @@ const MAX_RETRIES = 3;
 const CHART_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1'];
 const BAR_COLORS   = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6366f1','#14b8a6','#f97316','#84cc16','#a855f7'];
 const MONTHS_ID    = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const MONTHS_ID_FULL = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+// ═══════════════════════════════════════════════════════
+//  INDONESIAN DATE PARSER (fixes "1 Januari 2026" parsing)
+// ═══════════════════════════════════════════════════════
+function parseIndonesianDate(raw) {
+    if (!raw || raw === '' || raw === '-') return null;
+
+    // Already a valid ISO or standard date
+    const direct = new Date(raw);
+    if (!isNaN(direct)) return direct;
+
+    const str = String(raw).trim().toLowerCase();
+
+    // Pattern: "1 Januari 2026" or "01 Januari 2026"
+    const fullMonthMatch = str.match(/^(\d{1,2})\s+([a-zéû]+)\s+(\d{4})$/i);
+    if (fullMonthMatch) {
+        const day   = parseInt(fullMonthMatch[1], 10);
+        const monthStr = fullMonthMatch[2].toLowerCase();
+        const year  = parseInt(fullMonthMatch[3], 10);
+
+        const monthIndex = MONTHS_ID_FULL.findIndex(m => m.toLowerCase() === monthStr);
+        if (monthIndex !== -1 && day >= 1 && day <= 31) {
+            const dt = new Date(year, monthIndex, day);
+            if (dt.getMonth() === monthIndex) return dt; // validate day is valid for month
+        }
+    }
+
+    // Pattern: "1 Jan 2026" (abbreviated)
+    const shortMonthMatch = str.match(/^(\d{1,2})\s+([a-zéû]+)\s+(\d{4})$/i);
+    if (shortMonthMatch) {
+        const day   = parseInt(shortMonthMatch[1], 10);
+        const monthStr = shortMonthMatch[2].toLowerCase();
+        const year  = parseInt(shortMonthMatch[3], 10);
+
+        const monthIndex = MONTHS_ID.findIndex(m => m.toLowerCase() === monthStr);
+        if (monthIndex !== -1 && day >= 1 && day <= 31) {
+            const dt = new Date(year, monthIndex, day);
+            if (dt.getMonth() === monthIndex) return dt;
+        }
+    }
+
+    // Pattern: "01/01/2026" or "1/1/2026" (DD/MM/YYYY)
+    const slashMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (slashMatch) {
+        const day   = parseInt(slashMatch[1], 10);
+        const month = parseInt(slashMatch[2], 10) - 1; // 0-indexed
+        const year  = parseInt(slashMatch[3], 10);
+        const dt = new Date(year, month, day);
+        if (dt.getMonth() === month && dt.getDate() === day) return dt;
+    }
+
+    // Pattern: "2026-01-01" (YYYY-MM-DD)
+    const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (isoMatch) {
+        const year  = parseInt(isoMatch[1], 10);
+        const month = parseInt(isoMatch[2], 10) - 1;
+        const day   = parseInt(isoMatch[3], 10);
+        const dt = new Date(year, month, day);
+        if (dt.getMonth() === month && dt.getDate() === day) return dt;
+    }
+
+    // Last resort: try parsing with Date.parse
+    const fallback = Date.parse(raw);
+    if (!isNaN(fallback)) return new Date(fallback);
+
+    return null; // Unparseable
+}
 
 const PAGE_META = {
     dashboard: { title:'Dashboard',   sub:'Overview aset Luzie Group' },
@@ -637,8 +706,8 @@ function populateYearFilter() {
     allData.forEach(d => {
         const raw = d['Tanggal Pembelian Aset'];
         if(!raw) return;
-        const dt = new Date(raw);
-        if(!isNaN(dt)) years.add(dt.getFullYear());
+        const dt = parseIndonesianDate(raw);
+        if(dt) years.add(dt.getFullYear());
     });
     const sel = document.getElementById('acqYearFilter');
     const cur = sel.value;
@@ -802,8 +871,8 @@ function renderDashAgeChart() {
     dashboardFiltered.forEach(d => {
         const raw = d['Tanggal Pembelian Aset'];
         if(!raw) return;
-        const dt = new Date(raw);
-        if(isNaN(dt)) return;
+        const dt = parseIndonesianDate(raw);
+        if(!dt) return;
         const yrs = (now - dt)/(1000*60*60*24*365.25);
         if     (yrs < 1) buckets['< 1 thn']++;
         else if(yrs < 2) buckets['1–2 thn']++;
@@ -856,8 +925,8 @@ function renderMonthlyAcquisitionChart() {
     dataSource.forEach(d => {
         const raw = d['Tanggal Pembelian Aset'];
         if(!raw) return;
-        const dt = new Date(raw);
-        if(isNaN(dt)) return;
+        const dt = parseIndonesianDate(raw);
+        if(!dt) return;
         if(year !== 'all' && dt.getFullYear() !== parseInt(year)) return;
         monthlyCounts[dt.getMonth()]++;
     });
@@ -928,7 +997,7 @@ function renderAgeChart(){
     const ctx=document.getElementById('ageChart').getContext('2d');
     const now=new Date();
     const buckets={'< 1 tahun':0,'1–2 tahun':0,'2–3 tahun':0,'3–5 tahun':0,'> 5 tahun':0};
-    allData.forEach(d=>{const raw=d['Tanggal Pembelian Aset'];if(!raw)return;const dt=new Date(raw);if(isNaN(dt))return;const yrs=(now-dt)/(1000*60*60*24*365.25);if(yrs<1)buckets['< 1 tahun']++;else if(yrs<2)buckets['1–2 tahun']++;else if(yrs<3)buckets['2–3 tahun']++;else if(yrs<5)buckets['3–5 tahun']++;else buckets['> 5 tahun']++;});
+    allData.forEach(d=>{const raw=d['Tanggal Pembelian Aset'];if(!raw)return;const dt=parseIndonesianDate(raw);if(!dt)return;const yrs=(now-dt)/(1000*60*60*24*365.25);if(yrs<1)buckets['< 1 tahun']++;else if(yrs<2)buckets['1–2 tahun']++;else if(yrs<3)buckets['2–3 tahun']++;else if(yrs<5)buckets['3–5 tahun']++;else buckets['> 5 tahun']++;});
     if(charts.age)charts.age.destroy();
     charts.age=new Chart(ctx,{type:'bar',data:{labels:Object.keys(buckets),datasets:[{data:Object.values(buckets),backgroundColor:['#10b981','#3b82f6','#f59e0b','#f97316','#ef4444'],borderRadius:6}]},options:{...chartOpts(),plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:barCallbacks()}},scales:{y:{beginAtZero:true,ticks:{color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{color:'#64748b'},grid:{display:false}}}}});
 }
