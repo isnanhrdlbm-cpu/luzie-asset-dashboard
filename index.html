@@ -6,6 +6,7 @@
     <title>Luzie Group - Asset Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -161,6 +162,44 @@
         .fade-in { animation: fadeIn 0.35s ease-in; }
         @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
 
+        /* ── QR CODE STYLES ── */
+.qr-modal-box { max-width: 420px; text-align: center; }
+.qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 10px 0; }
+#qrcode { padding: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; }
+.qr-info { text-align: center; }
+.qr-info .qr-inv { font-family: monospace; font-size: 14px; font-weight: 600; color: #3b82f6; background: #eff6ff; padding: 4px 12px; border-radius: 6px; display: inline-block; }
+.qr-info .qr-asset { font-size: 13px; color: #475569; margin-top: 6px; font-weight: 500; }
+.qr-info .qr-meta { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+/* ── PRINTABLE QR STICKER ── */
+@media print {
+    .qr-print-only { display: block !important; }
+    .qr-no-print { display: none !important; }
+}
+.qr-print-only { display: none; }
+
+/* Sticker sheet layout for printing */
+.sticker-sheet { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px; 
+    padding: 20px; 
+}
+.sticker-item {
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    page-break-inside: avoid;
+}
+.sticker-item .st-qr { padding: 6px; background: #fff; }
+.sticker-item .st-inv { font-family: monospace; font-size: 11px; font-weight: 600; color: #0f172a; }
+.sticker-item .st-type { font-size: 10px; color: #64748b; }
+.sticker-item .st-brand { font-size: 9px; color: #94a3b8; }
+
         /* ── RESPONSIVE ── */
         @media (max-width: 1024px) {
             .left-nav { width: 64px; min-width: 64px; }
@@ -201,6 +240,43 @@
         </div>
         <div id="testResult" style="display:none;margin-top:10px;padding:10px;border-radius:8px;font-size:12px;"></div>
     </div>
+    <!-- QR CODE MODAL -->
+<div class="modal-overlay" id="qrModal">
+    <div class="modal-box qr-modal-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+            <div>
+                <div style="font-size:16px;font-weight:700;color:#0f172a;">
+                    <i class="fas fa-qrcode" style="color:#3b82f6;margin-right:6px;"></i>QR Code Aset
+                </div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Scan untuk detail lengkap</div>
+            </div>
+            <button onclick="closeQrModal()" style="background:none;border:none;font-size:18px;color:#94a3b8;cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="qr-wrap">
+            <div id="qrcode"></div>
+            <div class="qr-info">
+                <div class="qr-inv" id="qrInvNo">-</div>
+                <div class="qr-asset" id="qrAssetName">-</div>
+                <div class="qr-meta" id="qrMeta">-</div>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px;">
+            <button onclick="printQrSticker()" class="btn-primary" style="flex:1;justify-content:center;">
+                <i class="fas fa-print"></i> Print Stiker
+            </button>
+            <button onclick="downloadQrPng()" class="btn-secondary" style="flex:1;justify-content:center;">
+                <i class="fas fa-download"></i> Download PNG
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- HIDDEN PRINT CONTAINER -->
+<div id="qrPrintContainer" style="display:none;"></div>
 </div>
 
 <!-- DETAIL MODAL -->
@@ -807,7 +883,12 @@ function renderInvTable(){
         tr.style.animationDelay=(idx*0.025)+'s';
         const emp=row['Nama Karyawan']||'-';const pal=getPalette(emp);
         const holding=(row['Holding']!==undefined&&row['Holding']!==null&&row['Holding']!=='') ? String(row['Holding']) : '-';
-        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${row['No']||''}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;">${getTypeIcon(row['Tipe Aset'])} ${row['Tipe Aset']||'-'}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td><div style="display:flex;align-items:center;gap:7px;"><div class="emp-avatar" style="background:${pal.bg};color:${pal.c};">${getInitials(emp)}</div><div><div style="font-weight:500;font-size:12px;">${emp}</div><div style="font-size:11px;color:#94a3b8;">${row['Divisi Karyawan']||'-'}</div></div></div></td><td><span class="holding-badge">${holding}</span></td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td style="text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">${formatCurrency(row['Harga Beli'])}</td><td><button onclick="showDetail(${start+idx},'inv')" style="width:28px;height:28px;border-radius:6px;background:#f1f5f9;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;color:#3b82f6;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#f1f5f9'"><i class="fas fa-eye"></i></button></td>`;
+        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${row['No']||''}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;">${getTypeIcon(row['Tipe Aset'])} ${row['Tipe Aset']||'-'}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td><div style="display:flex;align-items:center;gap:7px;"><div class="emp-avatar" style="background:${pal.bg};color:${pal.c};">${getInitials(emp)}</div><div><div style="font-weight:500;font-size:12px;">${emp}</div><div style="font-size:11px;color:#94a3b8;">${row['Divisi Karyawan']||'-'}</div></div></div></td><td><span class="holding-badge">${holding}</span></td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td style="text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">${formatCurrency(row['Harga Beli'])}</td><td>
+    <div style="display:flex;gap:4px;">
+        <button onclick="showDetail(${start+idx},'inv')" style="width:28px;height:28px;border-radius:6px;background:#f1f5f9;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;color:#3b82f6;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#f1f5f9'" title="Detail"><i class="fas fa-eye"></i></button>
+        <button onclick="showQrModal(${start+idx},'inv')" style="width:28px;height:28px;border-radius:6px;background:#f0fdf4;border:1px solid #bbf7d0;cursor:pointer;font-size:12px;color:#16a34a;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'" title="QR Code"><i class="fas fa-qrcode"></i></button>
+    </div>
+</td>
         tbody.appendChild(tr);
     });
     const tp=Math.ceil(invFiltered.length/invRows)||1;
@@ -838,8 +919,235 @@ function showDetail(idx,source){
     if(data['Link']){document.getElementById('detailLinkAnchor').href=data['Link'];linkEl.style.display='block';}else{linkEl.style.display='none';}
     document.getElementById('detailModal').classList.add('open');
 }
+    // ═══════════════════════════════════════════════════════
+//  QR CODE FUNCTIONS
+// ═══════════════════════════════════════════════════════
+
+let currentQrData = null;
+
+function showQrModal(idx, source) {
+    const data = source === 'inv' ? invFiltered[idx] : 
+                 source === 'dash' ? dashboardFiltered[idx] : allData[idx];
+    if (!data) return;
+    
+    currentQrData = data;
+    
+    // Clear previous QR
+    const qrContainer = document.getElementById('qrcode');
+    qrContainer.innerHTML = '';
+    
+    // Build QR content (JSON with key asset info)
+    const qrContent = JSON.stringify({
+        inv: data['NO Inventory'] || '',
+        type: data['Tipe Aset'] || '',
+        merk: data['Merk'] || '',
+        model: data['Model Tipe Aset'] || '',
+        lokasi: data['Lokasi Aset'] || '',
+        status: data['Status Aset'] || '',
+        karyawan: data['Nama Karyawan'] || '',
+        divisi: data['Divisi Karyawan'] || ''
+    });
+    
+    // Generate QR code
+    new QRCode(qrContainer, {
+        text: qrContent,
+        width: 180,
+        height: 180,
+        colorDark: "#0f172a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
+    
+    // Update info text
+    document.getElementById('qrInvNo').textContent = data['NO Inventory'] || '-';
+    document.getElementById('qrAssetName').textContent = `${data['Merk'] || ''} ${data['Model Tipe Aset'] || ''}`.trim() || data['Tipe Aset'] || '-';
+    document.getElementById('qrMeta').textContent = `${data['Lokasi Aset'] || '-'} • ${data['Status Aset'] || '-'}`;
+    
+    // Show modal
+    document.getElementById('qrModal').classList.add('open');
+}
+
+function closeQrModal() {
+    document.getElementById('qrModal').classList.remove('open');
+    currentQrData = null;
+}
+
+// Print single sticker
+function printQrSticker() {
+    if (!currentQrData) return;
+    
+    const data = currentQrData;
+    const qrCanvas = document.querySelector('#qrcode canvas');
+    const qrDataUrl = qrCanvas ? qrCanvas.toDataURL('image/png') : '';
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Stiker QR - ${data['NO Inventory']}</title>
+            <style>
+                @page { margin: 0; size: 60mm 40mm; }
+                body { 
+                    margin: 0; 
+                    padding: 0; 
+                    display: flex; 
+                    justify-content: center; 
+                    align-items: center; 
+                    min-height: 100vh;
+                    font-family: Inter, sans-serif;
+                }
+                .sticker {
+                    width: 56mm;
+                    height: 36mm;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 4mm;
+                    padding: 3mm;
+                    display: flex;
+                    align-items: center;
+                    gap: 3mm;
+                    box-sizing: border-box;
+                }
+                .st-qr { width: 28mm; height: 28mm; flex-shrink: 0; }
+                .st-qr img { width: 100%; height: 100%; }
+                .st-info { flex: 1; min-width: 0; }
+                .st-inv { font-family: monospace; font-size: 8pt; font-weight: 700; color: #3b82f6; }
+                .st-type { font-size: 7pt; color: #0f172a; font-weight: 600; margin-top: 1mm; }
+                .st-brand { font-size: 6pt; color: #64748b; margin-top: 0.5mm; }
+                .st-loc { font-size: 6pt; color: #94a3b8; margin-top: 2mm; }
+                .st-logo { font-size: 5pt; color: #cbd5e1; margin-top: auto; text-align: right; }
+            </style>
+        </head>
+        <body>
+            <div class="sticker">
+                <div class="st-qr"><img src="${qrDataUrl}"></div>
+                <div class="st-info">
+                    <div class="st-inv">${data['NO Inventory'] || '-'}</div>
+                    <div class="st-type">${data['Tipe Aset'] || '-'}</div>
+                    <div class="st-brand">${data['Merk'] || ''} ${data['Model Tipe Aset'] || ''}</div>
+                    <div class="st-loc">${data['Lokasi Aset'] || '-'}</div>
+                    <div class="st-logo">Luzie Group</div>
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => printWindow.print(), 300);
+}
+
+// Download QR as PNG
+function downloadQrPng() {
+    if (!currentQrData) return;
+    const qrCanvas = document.querySelector('#qrcode canvas');
+    if (!qrCanvas) return;
+    
+    const link = document.createElement('a');
+    link.download = `QR-${currentQrData['NO Inventory'] || 'asset'}.png`;
+    link.href = qrCanvas.toDataURL('image/png');
+    link.click();
+}
+
+// Bulk print QR stickers for filtered results
+function printBulkQrStickers() {
+    const dataList = invFiltered.length > 0 ? invFiltered : allData;
+    if (!dataList.length) { alert('Tidak ada data untuk diprint.'); return; }
+    
+    const printWindow = window.open('', '_blank');
+    let stickersHtml = '';
+    
+    dataList.forEach(data => {
+        // Generate QR for each (we'll use a simple approach)
+        const qrContent = JSON.stringify({
+            inv: data['NO Inventory'] || '',
+            type: data['Tipe Aset'] || '',
+            merk: data['Merk'] || '',
+            model: data['Model Tipe Aset'] || ''
+        });
+        
+        stickersHtml += `
+            <div class="sticker-item" data-qr="${encodeURIComponent(qrContent)}">
+                <div class="st-qr" id="qr-${data['No'] || Math.random()}"></div>
+                <div class="st-inv">${data['NO Inventory'] || '-'}</div>
+                <div class="st-type">${data['Tipe Aset'] || '-'}</div>
+                <div class="st-brand">${data['Merk'] || ''}</div>
+            </div>
+        `;
+    });
+    
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Batch QR Stickers</title>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+            <style>
+                @page { margin: 10mm; size: A4; }
+                body { font-family: Inter, sans-serif; padding: 20px; }
+                .sticker-sheet { 
+                    display: grid; 
+                    grid-template-columns: repeat(2, 1fr); 
+                    gap: 12px; 
+                }
+                .sticker-item {
+                    border: 1px dashed #cbd5e1;
+                    border-radius: 8px;
+                    padding: 12px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 6px;
+                    page-break-inside: avoid;
+                }
+                .st-qr { padding: 4px; }
+                .st-inv { font-family: monospace; font-size: 11px; font-weight: 600; color: #0f172a; }
+                .st-type { font-size: 10px; color: #64748b; }
+                .st-brand { font-size: 9px; color: #94a3b8; }
+            </style>
+        </head>
+        <body>
+            <div style="text-align:center;margin-bottom:20px;">
+                <h2 style="font-size:16px;color:#0f172a;">QR Sticker Batch Print</h2>
+                <p style="font-size:12px;color:#94a3b8;">${dataList.length} assets • Luzie Group</p>
+            </div>
+            <div class="sticker-sheet">
+                ${stickersHtml}
+            </div>
+            <script>
+                document.querySelectorAll('.sticker-item').forEach(item => {
+                    const qrText = decodeURIComponent(item.dataset.qr);
+                    const qrDiv = item.querySelector('.st-qr');
+                    new QRCode(qrDiv, {
+                        text: qrText,
+                        width: 120,
+                        height: 120,
+                        colorDark: "#0f172a",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                });
+                setTimeout(() => window.print(), 1000);
+            <\/script>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+
+// Close modal on outside click
+window.onclick = e => {
+    if(e.target === document.getElementById('settingsModal')) closeSettings();
+    if(e.target === document.getElementById('detailModal')) closeDetail();
+    if(e.target === document.getElementById('qrModal')) closeQrModal();
+};
 function closeDetail(){document.getElementById('detailModal').classList.remove('open');}
-window.onclick=e=>{if(e.target===document.getElementById('settingsModal'))closeSettings();if(e.target===document.getElementById('detailModal'))closeDetail();};
+window.onclick = e => {
+    if(e.target === document.getElementById('settingsModal')) closeSettings();
+    if(e.target === document.getElementById('detailModal')) closeDetail();
+    if(e.target === document.getElementById('qrModal')) closeQrModal();
+};
 
 // ═══════════════════════════════════════════════════════
 //  CHART CONFIG
@@ -1043,6 +1351,17 @@ function showRusakTable(){
     document.getElementById('rusakSection').style.display='block';
     document.getElementById('rusakSection').scrollIntoView({behavior:'smooth',block:'start'});
 }
+    <!-- QR Sticker Batch Print -->
+<div class="report-card">
+    <div class="report-icon" style="background:#f0fdf4;"><i class="fas fa-qrcode" style="color:#16a34a;"></i></div>
+    <div style="flex:1;">
+        <div class="report-title">Print QR Stiker</div>
+        <div class="report-desc">Cetak stiker QR untuk semua aset hasil filter saat ini</div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+            <button onclick="printBulkQrStickers()" class="btn-primary" style="font-size:12px;padding:6px 12px;background:linear-gradient(135deg,#16a34a,#15803d);"><i class="fas fa-print"></i> Print Batch</button>
+        </div>
+    </div>
+</div>
 function hideRusakTable(){document.getElementById('rusakSection').style.display='none';}
 function printSummary(){
     const active=allData.filter(d=>(d['Status Aset']||'').toLowerCase().includes('terpakai')).length;
