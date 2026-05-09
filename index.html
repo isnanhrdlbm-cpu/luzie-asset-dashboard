@@ -41,7 +41,7 @@
         /* ── CARDS ── */
         .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .card:hover { border-color: rgba(59,130,246,0.25); }
-        .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 20px; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; margin-bottom: 20px; }
         .kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; transition: all 0.25s; }
         .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); }
         .kpi-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; }
@@ -169,6 +169,8 @@
             .nav-item { justify-content: center; padding: 10px; margin: 2px 6px; }
             .main-content { margin-left: 64px; }
             .chart-grid-3 { grid-template-columns: repeat(2,1fr); }
+            .kpi-grid { grid-template-columns: repeat(3,1fr); }
+            
         }
         @media (max-width: 768px) {
             .kpi-grid { grid-template-columns: repeat(2,1fr); }
@@ -309,6 +311,16 @@
                             <div><div class="kpi-label">Total Nilai</div><div class="kpi-value" style="font-size:20px;" id="kpiValue">Rp0</div><div class="kpi-sub" id="kpiValueSub">Harga beli total</div></div>
                             <div class="kpi-icon-wrap" style="background:#fef3c7;"><i class="fas fa-money-bill-wave" style="color:#f59e0b;"></i></div>
                         </div>
+                    <div class="kpi-card" style="border-left:4px solid #8b5cf6;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+            <div class="kpi-label">Terjual</div>
+            <div class="kpi-value" id="kpiTerjual">0</div>
+            <div class="kpi-sub" id="kpiTerjualPct">0% dari total</div>
+        </div>
+        <div class="kpi-icon-wrap" style="background:#ede9fe;"><i class="fas fa-handshake" style="color:#8b5cf6;"></i></div>
+    </div>
+</div>    
                     </div>
                 </div>
 
@@ -754,19 +766,33 @@ function resetDashboardFilters() {
 //  DASHBOARD KPIs
 // ═══════════════════════════════════════════════════════
 function updateDashboard(data) {
-    const d = data||dashboardFiltered;
-    const total    = d.length;
-    const active   = d.filter(r=>(r['Status Aset']||'').toLowerCase().includes('terpakai')).length;
-    const divisions= new Set(d.map(r=>r['Divisi Karyawan']).filter(Boolean)).size;
-    const totalVal = d.reduce((s,r)=>s+(parseFloat(r['Harga Beli'])||0),0);
-    document.getElementById('kpiTotal').textContent     = total.toLocaleString('id-ID');
-    document.getElementById('kpiActive').textContent    = active.toLocaleString('id-ID');
+    const d = data || dashboardFiltered;
+    
+    // Count statuses
+    const terjual = d.filter(r => (r['Status Aset'] || '').toLowerCase().includes('terjual')).length;
+    
+    // Total Aset EXCLUDES "Terjual"
+    const total = d.filter(r => !(r['Status Aset'] || '').toLowerCase().includes('terjual')).length;
+    
+    const active = d.filter(r => (r['Status Aset'] || '').toLowerCase().includes('terpakai')).length;
+    const divisions = new Set(d.map(r => r['Divisi Karyawan']).filter(Boolean)).size;
+    
+    // Total Nilai also EXCLUDES "Terjual" (optional — remove the filter if you want to count sold value too)
+    const totalVal = d.filter(r => !(r['Status Aset'] || '').toLowerCase().includes('terjual'))
+                      .reduce((s, r) => s + (parseFloat(r['Harga Beli']) || 0), 0);
+
+    document.getElementById('kpiTotal').textContent = total.toLocaleString('id-ID');
+    document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
     document.getElementById('kpiDivisions').textContent = divisions;
-    document.getElementById('kpiValue').textContent     = formatCurrency(totalVal);
-    document.getElementById('kpiActivePct').textContent = total>0?((active/total)*100).toFixed(1)+'% dari total':'0%';
-    const hasFilters=['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].some(id=>document.getElementById(id).value);
-    document.getElementById('kpiTotalSub').textContent  = hasFilters?'Hasil filter':'Semua aset';
-    document.getElementById('kpiValueSub').textContent  = hasFilters?'Nilai hasil filter':'Harga beli total';
+    document.getElementById('kpiValue').textContent = formatCurrency(totalVal);
+    document.getElementById('kpiTerjual').textContent = terjual.toLocaleString('id-ID');
+    
+    document.getElementById('kpiActivePct').textContent = total > 0 ? ((active / total) * 100).toFixed(1) + '% dari total' : '0%';
+    document.getElementById('kpiTerjualPct').textContent = d.length > 0 ? ((terjual / d.length) * 100).toFixed(1) + '% dari total' : '0%';
+    
+    const hasFilters = ['dashSearch', 'dashFilterStatus', 'dashFilterLocation', 'dashFilterDivision', 'dashFilterType', 'dashFilterHolding'].some(id => document.getElementById(id).value);
+    document.getElementById('kpiTotalSub').textContent = hasFilters ? 'Hasil filter (excl. Terjual)' : 'Semua aset aktif';
+    document.getElementById('kpiValueSub').textContent = hasFilters ? 'Nilai hasil filter' : 'Harga beli total';
 }
 
 // ═══════════════════════════════════════════════════════
