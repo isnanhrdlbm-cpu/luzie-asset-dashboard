@@ -35,8 +35,8 @@
         .top-bar-sub   { font-size: 12px; color: #94a3b8; margin-top: 1px; }
         .top-bar-actions { display: flex; align-items: center; gap: 8px; }
         .page-body { padding: 24px 28px; flex: 1; }
-        .page { display: none !important; }
-        .page.active { display: block !important; }
+        .page { display: none; }
+        .page.active { display: block; }
 
         /* ── CARDS ── */
         .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
@@ -602,36 +602,17 @@ document.addEventListener('keydown', e => {
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    // 1. FORCE HIDE all pages
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.style.display = 'none'; // Explicit inline style override
-    });
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    
-    // 2. FORCE SHOW target page
     const pg = document.getElementById('page-'+name);
-    if(pg) {
-        pg.classList.add('active');
-        pg.style.display = 'block'; // Explicit inline style override
-    }
-    
-    // 3. Update Nav
+    if(pg) pg.classList.add('active');
     const ni = document.querySelector(`[data-page="${name}"]`);
     if(ni) ni.classList.add('active');
-    
-    // 4. Update Header
     const meta = PAGE_META[name]||{};
     document.getElementById('pageTitle').textContent    = meta.title||name;
     document.getElementById('pageSubtitle').textContent = meta.sub||'';
-    
-    // 5. Render Content
-    if(name === 'dashboard' && allData.length) renderAllCharts();
-    else if(name === 'analytics' && allData.length) renderAnalyticsCharts();
-    else if(name === 'assets' && allData.length) renderCategoryTree();
-    
-    // 6. Cleanup
-    if(name !== 'dashboard') destroyDashboardCharts();
+    if(name==='analytics' && allData.length) renderAnalyticsCharts();
+    if(name==='assets'    && allData.length) renderCategoryTree();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -655,15 +636,9 @@ async function loadData() {
         document.getElementById('navLastUpdated').textContent = d.toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
         populateAllFilters();
         populateYearFilter();
-            updateDashboard();
-    
-    // ✅ Only render charts if user is actually on the dashboard
-    const activePage = document.querySelector('.page.active');
-    if (activePage && activePage.id === 'page-dashboard') {
+        updateDashboard();
         renderAllCharts();
-    }
-    
-    renderInvTable();
+        renderInvTable();
         showState('content');
         showPage('dashboard');
     } catch(e) {
@@ -680,27 +655,14 @@ function retryLoad(){retryCount=0;loadData();}
 function showState(s) {
     document.getElementById('loadingState').style.display = s==='loading'?'flex':'none';
     document.getElementById('errorState').style.display   = s==='error'?'block':'none';
-    
     if(s==='content'){
-        // Force hide all pages first
-        document.querySelectorAll('.page').forEach(p => {
-            p.style.display = 'none';
-            p.classList.remove('active');
-        });
-        // Force show dashboard
-        const dash = document.getElementById('page-dashboard');
-        if(dash) {
-            dash.style.display = 'block';
-            dash.classList.add('active');
-        }
+        document.querySelectorAll('.page').forEach(p=>{p.style.display='';p.classList.remove('active');});
+        document.getElementById('page-dashboard').classList.add('active');
     } else {
-        // Hide all pages on error/loading
-        document.querySelectorAll('.page').forEach(p => {
-            p.style.display = 'none';
-            p.classList.remove('active');
-        });
+        document.querySelectorAll('.page').forEach(p=>p.style.display='none');
     }
 }
+
 // ═══════════════════════════════════════════════════════
 //  SETTINGS
 // ═══════════════════════════════════════════════════════
@@ -754,18 +716,6 @@ function getTypeIcon(t){
     if(tl.includes('ups'))      return'<i class="fas fa-battery-full" style="color:#f59e0b;font-size:13px;"></i>';
     if(tl.includes('headphone'))return'<i class="fas fa-headphones"   style="color:#ec4899;font-size:13px;"></i>';
     return'<i class="fas fa-box" style="color:#94a3b8;font-size:13px;"></i>';
-}
-    // ══════════════════════════════════════════════════════
-//  DESTROY DASHBOARD CHARTS (prevents leakage on other pages)
-// ═══════════════════════════════════════════════════════
-function destroyDashboardCharts() {
-    const chartKeys = ['cat', 'loc', 'type', 'status', 'cond', 'merk', 'dashAge', 'monthlyAcq'];
-    chartKeys.forEach(key => {
-        if (charts[key]) {
-            charts[key].destroy();
-            charts[key] = null;
-        }
-    });
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1200,17 +1150,6 @@ function renderAssetTable(data){
     });
     if(data.length>100){const tr=document.createElement('tr');tr.innerHTML=`<td colspan="7" style="text-align:center;color:#94a3b8;font-size:12px;padding:12px;">Menampilkan 100 dari ${data.length} aset. Gunakan halaman Inventory untuk melihat semua.</td>`;tbody.appendChild(tr);}
 }
-    // Debug: Check which pages are visible
-function debugPages() {
-    console.log('=== Page Visibility Debug ===');
-    document.querySelectorAll('.page').forEach(p => {
-        const id = p.id;
-        const active = p.classList.contains('active');
-        const display = window.getComputedStyle(p).display;
-        console.log(`${id}: active=${active}, display=${display}`);
-    });
-}
-// Run in console: debugPages()
 </script>
 </body>
 </html>
