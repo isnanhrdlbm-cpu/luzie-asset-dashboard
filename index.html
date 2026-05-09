@@ -182,6 +182,7 @@
         }
     </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -755,18 +756,44 @@ function resetDashboardFilters() {
 // ═══════════════════════════════════════════════════════
 function updateDashboard(data) {
     const d = data||dashboardFiltered;
-    const total    = d.length;
-    const active   = d.filter(r=>(r['Status Aset']||'').toLowerCase().includes('terpakai')).length;
-    const divisions= new Set(d.map(r=>r['Divisi Karyawan']).filter(Boolean)).size;
-    const totalVal = d.reduce((s,r)=>s+(parseFloat(r['Harga Beli'])||0),0);
+    const hasFilters=['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].some(id=>document.getElementById(id).value);
+
+    // When unfiltered: exclude Terjual/Dijual assets from Total Aset (no longer in company)
+    // When filtered: show all matching results
+    const effectiveData = (!hasFilters) 
+        ? d.filter(r=>{
+            const status = (r['Status Aset']||'').toLowerCase();
+            return !status.includes('terjual') && !status.includes('dijual');
+          })
+        : d;
+
+    const total    = effectiveData.length;
+    const active   = effectiveData.filter(r=>(r['Status Aset']||'').toLowerCase().includes('terpakai')).length;
+    const divisions= new Set(effectiveData.map(r=>r['Divisi Karyawan']).filter(Boolean)).size;
+
+    // Use Harga Jual for Terjual/Dijual assets, Harga Beli for all others
+    const totalVal = d.reduce((s,r)=>{
+        const status = (r['Status Aset']||'').toLowerCase();
+        if(status.includes('terjual') || status.includes('dijual')){
+            return s + (parseFloat(r['Harga Jual']) || 0);
+        }
+        return s + (parseFloat(r['Harga Beli']) || 0);
+    },0);
+
     document.getElementById('kpiTotal').textContent     = total.toLocaleString('id-ID');
     document.getElementById('kpiActive').textContent    = active.toLocaleString('id-ID');
     document.getElementById('kpiDivisions').textContent = divisions;
     document.getElementById('kpiValue').textContent     = formatCurrency(totalVal);
     document.getElementById('kpiActivePct').textContent = total>0?((active/total)*100).toFixed(1)+'% dari total':'0%';
-    const hasFilters=['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].some(id=>document.getElementById(id).value);
-    document.getElementById('kpiTotalSub').textContent  = hasFilters?'Hasil filter':'Semua aset';
-    document.getElementById('kpiValueSub').textContent  = hasFilters?'Nilai hasil filter':'Harga beli total';
+
+    // Update subtitles
+    const isTerjualFilter = document.getElementById('dashFilterStatus').value.toLowerCase().includes('terjual') || 
+                            document.getElementById('dashFilterStatus').value.toLowerCase().includes('dijual');
+
+    document.getElementById('kpiTotalSub').textContent  = hasFilters?'Hasil filter':'Aset aktif (excl. terjual)';
+    document.getElementById('kpiValueSub').textContent  = hasFilters 
+        ? (isTerjualFilter ? 'Nilai hasil filter (Harga Jual)' : 'Nilai hasil filter') 
+        : 'Harga beli / jual total';
 }
 // ═══════════════════════════════════════════════════════
 //  FILTER POPULATION
