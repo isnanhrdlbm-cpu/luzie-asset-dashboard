@@ -753,20 +753,57 @@ function resetDashboardFilters() {
 // ═══════════════════════════════════════════════════════
 //  DASHBOARD KPIs
 // ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  DASHBOARD KPIs
+// ═══════════════════════════════════════════════════════
 function updateDashboard(data) {
-    const d = data||dashboardFiltered;
-    const total    = d.length;
-    const active   = d.filter(r=>(r['Status Aset']||'').toLowerCase().includes('terpakai')).length;
-    const divisions= new Set(d.map(r=>r['Divisi Karyawan']).filter(Boolean)).size;
-    const totalVal = d.reduce((s,r)=>s+(parseFloat(r['Harga Beli'])||0),0);
-    document.getElementById('kpiTotal').textContent     = total.toLocaleString('id-ID');
-    document.getElementById('kpiActive').textContent    = active.toLocaleString('id-ID');
+    const d = data || dashboardFiltered;
+    
+    // Count statuses
+    const terjual = d.filter(r => (r['Status Aset'] || '').toLowerCase().includes('terjual')).length;
+    
+    // Total Aset EXCLUDES "Terjual"
+    const total = d.filter(r => !(r['Status Aset'] || '').toLowerCase().includes('terjual')).length;
+    
+    const active = d.filter(r => (r['Status Aset'] || '').toLowerCase().includes('terpakai')).length;
+    const divisions = new Set(d.map(r => r['Divisi Karyawan']).filter(Boolean)).size;
+    
+    // ✅ FIXED: Total Nilai - use Harga Jual for sold assets, Harga Beli for others
+    const totalVal = d.reduce((sum, r) => {
+        const status = (r['Status Aset'] || '').toLowerCase();
+        const isTerjual = status.includes('terjual');
+        
+        // Use Harga Jual for sold assets, Harga Beli for others
+        const value = isTerjual ? 
+            (parseFloat(r['Harga Jual']) || 0) : 
+            (parseFloat(r['Harga Beli']) || 0);
+        
+        return sum + value;
+    }, 0);
+
+    document.getElementById('kpiTotal').textContent = total.toLocaleString('id-ID');
+    document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
     document.getElementById('kpiDivisions').textContent = divisions;
-    document.getElementById('kpiValue').textContent     = formatCurrency(totalVal);
-    document.getElementById('kpiActivePct').textContent = total>0?((active/total)*100).toFixed(1)+'% dari total':'0%';
-    const hasFilters=['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].some(id=>document.getElementById(id).value);
-    document.getElementById('kpiTotalSub').textContent  = hasFilters?'Hasil filter':'Semua aset';
-    document.getElementById('kpiValueSub').textContent  = hasFilters?'Nilai hasil filter':'Harga beli total';
+    document.getElementById('kpiValue').textContent = formatCurrency(totalVal);
+    document.getElementById('kpiTerjual').textContent = terjual.toLocaleString('id-ID');
+    
+    document.getElementById('kpiActivePct').textContent = total > 0 ? ((active / total) * 100).toFixed(1) + '% dari total' : '0%';
+    document.getElementById('kpiTerjualPct').textContent = d.length > 0 ? ((terjual / d.length) * 100).toFixed(1) + '% dari total' : '0%';
+    
+    const hasFilters = ['dashSearch', 'dashFilterStatus', 'dashFilterLocation', 'dashFilterDivision', 'dashFilterType', 'dashFilterHolding'].some(id => document.getElementById(id).value);
+    
+    // ✅ Update subtitle to reflect what's being counted
+    const filterStatus = document.getElementById('dashFilterStatus').value;
+    if (filterStatus && filterStatus.toLowerCase().includes('terjual')) {
+        document.getElementById('kpiTotalSub').textContent = 'Aset terjual (tidak dihitung)';
+        document.getElementById('kpiValueSub').textContent = 'Total harga jual';
+    } else if (hasFilters) {
+        document.getElementById('kpiTotalSub').textContent = 'Hasil filter (excl. Terjual)';
+        document.getElementById('kpiValueSub').textContent = 'Nilai hasil filter';
+    } else {
+        document.getElementById('kpiTotalSub').textContent = 'Semua aset aktif';
+        document.getElementById('kpiValueSub').textContent = 'Harga beli total';
+    }
 }
 
 // ═══════════════════════════════════════════════════════
