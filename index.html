@@ -604,15 +604,30 @@ document.addEventListener('keydown', e => {
 function showPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    
     const pg = document.getElementById('page-'+name);
     if(pg) pg.classList.add('active');
+    
     const ni = document.querySelector(`[data-page="${name}"]`);
     if(ni) ni.classList.add('active');
+    
     const meta = PAGE_META[name]||{};
     document.getElementById('pageTitle').textContent    = meta.title||name;
     document.getElementById('pageSubtitle').textContent = meta.sub||'';
-    if(name==='analytics' && allData.length) renderAnalyticsCharts();
-    if(name==='assets'    && allData.length) renderCategoryTree();
+    
+    // ✅ Render charts ONLY for the active page
+    if(name === 'dashboard' && allData.length) {
+        renderAllCharts();
+    } else if(name === 'analytics' && allData.length) {
+        renderAnalyticsCharts();
+    } else if(name === 'assets' && allData.length) {
+        renderCategoryTree();
+    }
+    
+    // ✅ Cleanup dashboard charts when leaving the page
+    if(name !== 'dashboard') {
+        destroyDashboardCharts();
+    }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -636,9 +651,15 @@ async function loadData() {
         document.getElementById('navLastUpdated').textContent = d.toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
         populateAllFilters();
         populateYearFilter();
-        updateDashboard();
+            updateDashboard();
+    
+    // ✅ Only render charts if user is actually on the dashboard
+    const activePage = document.querySelector('.page.active');
+    if (activePage && activePage.id === 'page-dashboard') {
         renderAllCharts();
-        renderInvTable();
+    }
+    
+    renderInvTable();
         showState('content');
         showPage('dashboard');
     } catch(e) {
@@ -716,6 +737,18 @@ function getTypeIcon(t){
     if(tl.includes('ups'))      return'<i class="fas fa-battery-full" style="color:#f59e0b;font-size:13px;"></i>';
     if(tl.includes('headphone'))return'<i class="fas fa-headphones"   style="color:#ec4899;font-size:13px;"></i>';
     return'<i class="fas fa-box" style="color:#94a3b8;font-size:13px;"></i>';
+}
+    // ══════════════════════════════════════════════════════
+//  DESTROY DASHBOARD CHARTS (prevents leakage on other pages)
+// ═══════════════════════════════════════════════════════
+function destroyDashboardCharts() {
+    const chartKeys = ['cat', 'loc', 'type', 'status', 'cond', 'merk', 'dashAge', 'monthlyAcq'];
+    chartKeys.forEach(key => {
+        if (charts[key]) {
+            charts[key].destroy();
+            charts[key] = null;
+        }
+    });
 }
 
 // ═══════════════════════════════════════════════════════
