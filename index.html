@@ -602,41 +602,39 @@ document.addEventListener('keydown', e => {
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    // 1. Explicitly hide ALL pages by ID
-    const pageIds = ['page-dashboard', 'page-inventory', 'page-analytics', 'page-reports', 'page-assets'];
-    pageIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.style.display = 'none'; // Force hide
-            el.classList.remove('active');
-        }
+    // 1. FORCE HIDE all pages using inline styles
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => {
+        p.style.display = 'none'; // Force hide
+        p.classList.remove('active');
     });
 
-    // 2. Explicitly show the TARGET page by ID
-    const targetId = 'page-' + name;
-    const target = document.getElementById(targetId);
-    if (target) {
-        target.style.display = 'block'; // Force show
-        target.classList.add('active');
+    // 2. Deactivate all nav items
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    // 3. FORCE SHOW the target page using inline styles
+    const pg = document.getElementById('page-' + name);
+    if (pg) {
+        pg.style.display = 'block'; // Force show
+        pg.classList.add('active');
     }
 
-    // 3. Update Navigation
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    // 4. Activate the clicked nav item
     const ni = document.querySelector(`[data-page="${name}"]`);
-    if(ni) ni.classList.add('active');
+    if (ni) ni.classList.add('active');
 
-    // 4. Update Header Title
-    const meta = PAGE_META[name]||{};
-    document.getElementById('pageTitle').textContent    = meta.title||name;
-    document.getElementById('pageSubtitle').textContent = meta.sub||'';
+    // 5. Update Page Title
+    const meta = PAGE_META[name] || {};
+    document.getElementById('pageTitle').textContent = meta.title || name;
+    document.getElementById('pageSubtitle').textContent = meta.sub || '';
 
-    // 5. Render Content for the specific page
-    if(name === 'dashboard' && allData.length) renderAllCharts();
-    else if(name === 'analytics' && allData.length) renderAnalyticsCharts();
-    else if(name === 'assets' && allData.length) renderCategoryTree();
+    // 6. Render Content for the specific page
+    if (name === 'dashboard' && allData.length) renderAllCharts();
+    else if (name === 'analytics' && allData.length) renderAnalyticsCharts();
+    else if (name === 'assets' && allData.length) renderCategoryTree();
 
-    // 6. Cleanup Dashboard Charts if leaving dashboard
-    if(name !== 'dashboard') destroyDashboardCharts();
+    // 7. Cleanup Dashboard Charts if leaving dashboard
+    if (name !== 'dashboard') destroyDashboardCharts();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -677,35 +675,29 @@ async function loadData() {
 }
 function retryLoad(){retryCount=0;loadData();}
 function showState(s) {
-    document.getElementById('loadingState').style.display = s==='loading'?'flex':'none';
-    document.getElementById('errorState').style.display   = s==='error'?'block':'none';
-    
-    const pageIds = ['page-dashboard', 'page-inventory', 'page-analytics', 'page-reports', 'page-assets'];
-    
-    if(s==='content'){
-        // Force hide all pages
-        pageIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.style.display = 'none';
-                el.classList.remove('active');
-            }
+    document.getElementById('loadingState').style.display = s === 'loading' ? 'flex' : 'none';
+    document.getElementById('errorState').style.display = s === 'error' ? 'block' : 'none';
+
+    const pages = document.querySelectorAll('.page');
+
+    if (s === 'content') {
+        // Force hide all pages first
+        pages.forEach(p => {
+            p.style.display = 'none';
+            p.classList.remove('active');
         });
         
         // Force show dashboard
         const dash = document.getElementById('page-dashboard');
-        if(dash) {
+        if (dash) {
             dash.style.display = 'block';
             dash.classList.add('active');
         }
     } else {
         // Hide all pages on loading/error
-        pageIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.style.display = 'none';
-                el.classList.remove('active');
-            }
+        pages.forEach(p => {
+            p.style.display = 'none';
+            p.classList.remove('active');
         });
     }
 }
