@@ -602,37 +602,36 @@ document.addEventListener('keydown', e => {
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    // ✅ Force-hide ALL pages with explicit style
+    // 1. FORCE HIDE all pages
     document.querySelectorAll('.page').forEach(p => {
         p.classList.remove('active');
-        p.style.display = 'none';
+        p.style.display = 'none'; // Explicit inline style override
     });
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     
-    // ✅ Show target page with explicit style
+    // 2. FORCE SHOW target page
     const pg = document.getElementById('page-'+name);
     if(pg) {
         pg.classList.add('active');
-        pg.style.display = 'block';
+        pg.style.display = 'block'; // Explicit inline style override
     }
     
+    // 3. Update Nav
+    const ni = document.querySelector(`[data-page="${name}"]`);
+    if(ni) ni.classList.add('active');
+    
+    // 4. Update Header
     const meta = PAGE_META[name]||{};
     document.getElementById('pageTitle').textContent    = meta.title||name;
     document.getElementById('pageSubtitle').textContent = meta.sub||'';
     
-    // ✅ Render charts ONLY for the active page
-    if(name === 'dashboard' && allData.length) {
-        renderAllCharts();
-    } else if(name === 'analytics' && allData.length) {
-        renderAnalyticsCharts();
-    } else if(name === 'assets' && allData.length) {
-        renderCategoryTree();
-    }
+    // 5. Render Content
+    if(name === 'dashboard' && allData.length) renderAllCharts();
+    else if(name === 'analytics' && allData.length) renderAnalyticsCharts();
+    else if(name === 'assets' && allData.length) renderCategoryTree();
     
-    // ✅ Cleanup dashboard charts when leaving the page
-    if(name !== 'dashboard') {
-        destroyDashboardCharts();
-    }
+    // 6. Cleanup
+    if(name !== 'dashboard') destroyDashboardCharts();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -683,18 +682,19 @@ function showState(s) {
     document.getElementById('errorState').style.display   = s==='error'?'block':'none';
     
     if(s==='content'){
-        // ✅ Force-hide ALL pages properly
+        // Force hide all pages first
         document.querySelectorAll('.page').forEach(p => {
+            p.style.display = 'none';
             p.classList.remove('active');
-            p.style.display = 'none'; // Explicit hide
         });
-        // Show dashboard by default when content loads
+        // Force show dashboard
         const dash = document.getElementById('page-dashboard');
         if(dash) {
-            dash.classList.add('active');
             dash.style.display = 'block';
+            dash.classList.add('active');
         }
     } else {
+        // Hide all pages on error/loading
         document.querySelectorAll('.page').forEach(p => {
             p.style.display = 'none';
             p.classList.remove('active');
