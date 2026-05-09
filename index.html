@@ -602,17 +602,41 @@ document.addEventListener('keydown', e => {
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // 1. Explicitly hide ALL pages by ID
+    const pageIds = ['page-dashboard', 'page-inventory', 'page-analytics', 'page-reports', 'page-assets'];
+    pageIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = 'none'; // Force hide
+            el.classList.remove('active');
+        }
+    });
+
+    // 2. Explicitly show the TARGET page by ID
+    const targetId = 'page-' + name;
+    const target = document.getElementById(targetId);
+    if (target) {
+        target.style.display = 'block'; // Force show
+        target.classList.add('active');
+    }
+
+    // 3. Update Navigation
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const pg = document.getElementById('page-'+name);
-    if(pg) pg.classList.add('active');
     const ni = document.querySelector(`[data-page="${name}"]`);
     if(ni) ni.classList.add('active');
+
+    // 4. Update Header Title
     const meta = PAGE_META[name]||{};
     document.getElementById('pageTitle').textContent    = meta.title||name;
     document.getElementById('pageSubtitle').textContent = meta.sub||'';
-    if(name==='analytics' && allData.length) renderAnalyticsCharts();
-    if(name==='assets'    && allData.length) renderCategoryTree();
+
+    // 5. Render Content for the specific page
+    if(name === 'dashboard' && allData.length) renderAllCharts();
+    else if(name === 'analytics' && allData.length) renderAnalyticsCharts();
+    else if(name === 'assets' && allData.length) renderCategoryTree();
+
+    // 6. Cleanup Dashboard Charts if leaving dashboard
+    if(name !== 'dashboard') destroyDashboardCharts();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -655,11 +679,34 @@ function retryLoad(){retryCount=0;loadData();}
 function showState(s) {
     document.getElementById('loadingState').style.display = s==='loading'?'flex':'none';
     document.getElementById('errorState').style.display   = s==='error'?'block':'none';
+    
+    const pageIds = ['page-dashboard', 'page-inventory', 'page-analytics', 'page-reports', 'page-assets'];
+    
     if(s==='content'){
-        document.querySelectorAll('.page').forEach(p=>{p.style.display='';p.classList.remove('active');});
-        document.getElementById('page-dashboard').classList.add('active');
+        // Force hide all pages
+        pageIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'none';
+                el.classList.remove('active');
+            }
+        });
+        
+        // Force show dashboard
+        const dash = document.getElementById('page-dashboard');
+        if(dash) {
+            dash.style.display = 'block';
+            dash.classList.add('active');
+        }
     } else {
-        document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+        // Hide all pages on loading/error
+        pageIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'none';
+                el.classList.remove('active');
+            }
+        });
     }
 }
 
