@@ -41,7 +41,7 @@
         /* ── CARDS ── */
         .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .card:hover { border-color: rgba(59,130,246,0.25); }
-        .kpi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; margin-bottom: 20px; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 20px; }
         .kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; transition: all 0.25s; }
         .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); }
         .kpi-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; }
@@ -169,8 +169,6 @@
             .nav-item { justify-content: center; padding: 10px; margin: 2px 6px; }
             .main-content { margin-left: 64px; }
             .chart-grid-3 { grid-template-columns: repeat(2,1fr); }
-            .kpi-grid { grid-template-columns: repeat(3,1fr); }
-            
         }
         @media (max-width: 768px) {
             .kpi-grid { grid-template-columns: repeat(2,1fr); }
@@ -307,25 +305,10 @@
                         </div>
                     </div>
                     <div class="kpi-card" style="border-left:4px solid #f59e0b;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div>
-            <div class="kpi-label">Total Nilai</div>
-            <div class="kpi-value" style="font-size:20px;" id="kpiValue">Rp0</div>
-            <div class="kpi-sub" id="kpiValueSub">Harga beli total</div>
-        </div>
-        <div class="kpi-icon-wrap" style="background:#fef3c7;"><i class="fas fa-money-bill-wave" style="color:#f59e0b;"></i></div>
-    </div>
-</div>
-                    <div class="kpi-card" style="border-left:4px solid #8b5cf6;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div>
-            <div class="kpi-label">Terjual</div>
-            <div class="kpi-value" id="kpiTerjual">0</div>
-            <div class="kpi-sub" id="kpiTerjualPct">0% dari total</div>
-        </div>
-        <div class="kpi-icon-wrap" style="background:#ede9fe;"><i class="fas fa-handshake" style="color:#8b5cf6;"></i></div>
-    </div>
-</div>    
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div><div class="kpi-label">Total Nilai</div><div class="kpi-value" style="font-size:20px;" id="kpiValue">Rp0</div><div class="kpi-sub" id="kpiValueSub">Harga beli total</div></div>
+                            <div class="kpi-icon-wrap" style="background:#fef3c7;"><i class="fas fa-money-bill-wave" style="color:#f59e0b;"></i></div>
+                        </div>
                     </div>
                 </div>
 
@@ -602,39 +585,17 @@ document.addEventListener('keydown', e => {
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    // 1. FORCE HIDE all pages using inline styles
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p => {
-        p.style.display = 'none'; // Force hide
-        p.classList.remove('active');
-    });
-
-    // 2. Deactivate all nav items
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-    // 3. FORCE SHOW the target page using inline styles
-    const pg = document.getElementById('page-' + name);
-    if (pg) {
-        pg.style.display = 'block'; // Force show
-        pg.classList.add('active');
-    }
-
-    // 4. Activate the clicked nav item
+    const pg = document.getElementById('page-'+name);
+    if(pg) pg.classList.add('active');
     const ni = document.querySelector(`[data-page="${name}"]`);
-    if (ni) ni.classList.add('active');
-
-    // 5. Update Page Title
-    const meta = PAGE_META[name] || {};
-    document.getElementById('pageTitle').textContent = meta.title || name;
-    document.getElementById('pageSubtitle').textContent = meta.sub || '';
-
-    // 6. Render Content for the specific page
-    if (name === 'dashboard' && allData.length) renderAllCharts();
-    else if (name === 'analytics' && allData.length) renderAnalyticsCharts();
-    else if (name === 'assets' && allData.length) renderCategoryTree();
-
-    // 7. Cleanup Dashboard Charts if leaving dashboard
-    if (name !== 'dashboard') destroyDashboardCharts();
+    if(ni) ni.classList.add('active');
+    const meta = PAGE_META[name]||{};
+    document.getElementById('pageTitle').textContent    = meta.title||name;
+    document.getElementById('pageSubtitle').textContent = meta.sub||'';
+    if(name==='analytics' && allData.length) renderAnalyticsCharts();
+    if(name==='assets'    && allData.length) renderCategoryTree();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -675,30 +636,13 @@ async function loadData() {
 }
 function retryLoad(){retryCount=0;loadData();}
 function showState(s) {
-    document.getElementById('loadingState').style.display = s === 'loading' ? 'flex' : 'none';
-    document.getElementById('errorState').style.display = s === 'error' ? 'block' : 'none';
-
-    const pages = document.querySelectorAll('.page');
-
-    if (s === 'content') {
-        // Force hide all pages first
-        pages.forEach(p => {
-            p.style.display = 'none';
-            p.classList.remove('active');
-        });
-        
-        // Force show dashboard
-        const dash = document.getElementById('page-dashboard');
-        if (dash) {
-            dash.style.display = 'block';
-            dash.classList.add('active');
-        }
+    document.getElementById('loadingState').style.display = s==='loading'?'flex':'none';
+    document.getElementById('errorState').style.display   = s==='error'?'block':'none';
+    if(s==='content'){
+        document.querySelectorAll('.page').forEach(p=>{p.style.display='';p.classList.remove('active');});
+        document.getElementById('page-dashboard').classList.add('active');
     } else {
-        // Hide all pages on loading/error
-        pages.forEach(p => {
-            p.style.display = 'none';
-            p.classList.remove('active');
-        });
+        document.querySelectorAll('.page').forEach(p=>p.style.display='none');
     }
 }
 
@@ -809,57 +753,20 @@ function resetDashboardFilters() {
 // ═══════════════════════════════════════════════════════
 //  DASHBOARD KPIs
 // ═══════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════
-//  DASHBOARD KPIs
-// ═══════════════════════════════════════════════════════
 function updateDashboard(data) {
-    const d = data || dashboardFiltered;
-    
-    // Count statuses
-    const terjual = d.filter(r => (r['Status Aset'] || '').toLowerCase().includes('terjual')).length;
-    
-    // Total Aset EXCLUDES "Terjual"
-    const total = d.filter(r => !(r['Status Aset'] || '').toLowerCase().includes('terjual')).length;
-    
-    const active = d.filter(r => (r['Status Aset'] || '').toLowerCase().includes('terpakai')).length;
-    const divisions = new Set(d.map(r => r['Divisi Karyawan']).filter(Boolean)).size;
-    
-    // ✅ FIXED: Total Nilai - use Harga Jual for sold assets, Harga Beli for others
-    const totalVal = d.reduce((sum, r) => {
-        const status = (r['Status Aset'] || '').toLowerCase();
-        const isTerjual = status.includes('terjual');
-        
-        // Use Harga Jual for sold assets, Harga Beli for others
-        const value = isTerjual ? 
-            (parseFloat(r['Harga Jual']) || 0) : 
-            (parseFloat(r['Harga Beli']) || 0);
-        
-        return sum + value;
-    }, 0);
-
-    document.getElementById('kpiTotal').textContent = total.toLocaleString('id-ID');
-    document.getElementById('kpiActive').textContent = active.toLocaleString('id-ID');
+    const d = data||dashboardFiltered;
+    const total    = d.length;
+    const active   = d.filter(r=>(r['Status Aset']||'').toLowerCase().includes('terpakai')).length;
+    const divisions= new Set(d.map(r=>r['Divisi Karyawan']).filter(Boolean)).size;
+    const totalVal = d.reduce((s,r)=>s+(parseFloat(r['Harga Beli'])||0),0);
+    document.getElementById('kpiTotal').textContent     = total.toLocaleString('id-ID');
+    document.getElementById('kpiActive').textContent    = active.toLocaleString('id-ID');
     document.getElementById('kpiDivisions').textContent = divisions;
-    document.getElementById('kpiValue').textContent = formatCurrency(totalVal);
-    document.getElementById('kpiTerjual').textContent = terjual.toLocaleString('id-ID');
-    
-    document.getElementById('kpiActivePct').textContent = total > 0 ? ((active / total) * 100).toFixed(1) + '% dari total' : '0%';
-    document.getElementById('kpiTerjualPct').textContent = d.length > 0 ? ((terjual / d.length) * 100).toFixed(1) + '% dari total' : '0%';
-    
-    const hasFilters = ['dashSearch', 'dashFilterStatus', 'dashFilterLocation', 'dashFilterDivision', 'dashFilterType', 'dashFilterHolding'].some(id => document.getElementById(id).value);
-    
-    // ✅ Update subtitle to reflect what's being counted
-    const filterStatus = document.getElementById('dashFilterStatus').value;
-    if (filterStatus && filterStatus.toLowerCase().includes('terjual')) {
-        document.getElementById('kpiTotalSub').textContent = 'Aset terjual (tidak dihitung)';
-        document.getElementById('kpiValueSub').textContent = 'Total harga jual';
-    } else if (hasFilters) {
-        document.getElementById('kpiTotalSub').textContent = 'Hasil filter (excl. Terjual)';
-        document.getElementById('kpiValueSub').textContent = 'Nilai hasil filter';
-    } else {
-        document.getElementById('kpiTotalSub').textContent = 'Semua aset aktif';
-        document.getElementById('kpiValueSub').textContent = 'Harga beli total';
-    }
+    document.getElementById('kpiValue').textContent     = formatCurrency(totalVal);
+    document.getElementById('kpiActivePct').textContent = total>0?((active/total)*100).toFixed(1)+'% dari total':'0%';
+    const hasFilters=['dashSearch','dashFilterStatus','dashFilterLocation','dashFilterDivision','dashFilterType','dashFilterHolding'].some(id=>document.getElementById(id).value);
+    document.getElementById('kpiTotalSub').textContent  = hasFilters?'Hasil filter':'Semua aset';
+    document.getElementById('kpiValueSub').textContent  = hasFilters?'Nilai hasil filter':'Harga beli total';
 }
 
 // ═══════════════════════════════════════════════════════
