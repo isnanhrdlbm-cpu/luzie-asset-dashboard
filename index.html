@@ -35,8 +35,8 @@
         .top-bar-sub   { font-size: 12px; color: #94a3b8; margin-top: 1px; }
         .top-bar-actions { display: flex; align-items: center; gap: 8px; }
         .page-body { padding: 24px 28px; flex: 1; }
-        .page { display: none; }
-        .page.active { display: block; }
+        .page { display: none !important; }
+        .page.active { display: block !important; }
 
         /* ── CARDS ── */
         .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
@@ -602,14 +602,19 @@ document.addEventListener('keydown', e => {
 //  PAGE ROUTING
 // ═══════════════════════════════════════════════════════
 function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // ✅ Force-hide ALL pages with explicit style
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     
+    // ✅ Show target page with explicit style
     const pg = document.getElementById('page-'+name);
-    if(pg) pg.classList.add('active');
-    
-    const ni = document.querySelector(`[data-page="${name}"]`);
-    if(ni) ni.classList.add('active');
+    if(pg) {
+        pg.classList.add('active');
+        pg.style.display = 'block';
+    }
     
     const meta = PAGE_META[name]||{};
     document.getElementById('pageTitle').textContent    = meta.title||name;
@@ -676,14 +681,26 @@ function retryLoad(){retryCount=0;loadData();}
 function showState(s) {
     document.getElementById('loadingState').style.display = s==='loading'?'flex':'none';
     document.getElementById('errorState').style.display   = s==='error'?'block':'none';
+    
     if(s==='content'){
-        document.querySelectorAll('.page').forEach(p=>{p.style.display='';p.classList.remove('active');});
-        document.getElementById('page-dashboard').classList.add('active');
+        // ✅ Force-hide ALL pages properly
+        document.querySelectorAll('.page').forEach(p => {
+            p.classList.remove('active');
+            p.style.display = 'none'; // Explicit hide
+        });
+        // Show dashboard by default when content loads
+        const dash = document.getElementById('page-dashboard');
+        if(dash) {
+            dash.classList.add('active');
+            dash.style.display = 'block';
+        }
     } else {
-        document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+        document.querySelectorAll('.page').forEach(p => {
+            p.style.display = 'none';
+            p.classList.remove('active');
+        });
     }
 }
-
 // ═══════════════════════════════════════════════════════
 //  SETTINGS
 // ═══════════════════════════════════════════════════════
@@ -1183,6 +1200,17 @@ function renderAssetTable(data){
     });
     if(data.length>100){const tr=document.createElement('tr');tr.innerHTML=`<td colspan="7" style="text-align:center;color:#94a3b8;font-size:12px;padding:12px;">Menampilkan 100 dari ${data.length} aset. Gunakan halaman Inventory untuk melihat semua.</td>`;tbody.appendChild(tr);}
 }
+    // Debug: Check which pages are visible
+function debugPages() {
+    console.log('=== Page Visibility Debug ===');
+    document.querySelectorAll('.page').forEach(p => {
+        const id = p.id;
+        const active = p.classList.contains('active');
+        const display = window.getComputedStyle(p).display;
+        console.log(`${id}: active=${active}, display=${display}`);
+    });
+}
+// Run in console: debugPages()
 </script>
 </body>
 </html>
