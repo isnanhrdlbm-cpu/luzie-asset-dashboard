@@ -702,6 +702,23 @@ function getTypeIcon(t){
     return'<i class="fas fa-box" style="color:#94a3b8;font-size:13px;"></i>';
 }
 
+// ── Robust Inventory Number Resolver ───────────────────
+// Tries multiple key variations since Google Apps Script key naming can vary
+function getInventoryNo(row) {
+    if(!row) return '-';
+    // Exact matches in order of likelihood
+    const exactKeys = ['NO Inventory','NOInventory','No Inventory','NoInventory','NO_Inventory','No_Inventory','NOInventory','no inventory','NO INVENTORY'];
+    for(const k of exactKeys){ if(row[k]!==undefined&&row[k]!==null&&row[k]!=='') return String(row[k]); }
+    // Fuzzy: any key containing 'inventory' (case-insensitive) but not 'no' as a word
+    const keys = Object.keys(row);
+    const invKey = keys.find(k => /inventory/i.test(k) && !/^no$/i.test(k.trim()));
+    if(invKey && row[invKey]!==undefined&&row[invKey]!==null&&row[invKey]!=='') return String(row[invKey]);
+    // Last resort: any key that starts with 'no' and contains 'inv'
+    const fallback = keys.find(k => /^no/i.test(k) && /inv/i.test(k));
+    if(fallback && row[fallback]!==undefined&&row[fallback]!==null&&row[fallback]!=='') return String(row[fallback]);
+    return '-';
+}
+
 // ═══════════════════════════════════════════════════════
 //  YEAR FILTER FOR MONTHLY ACQUISITION
 // ═══════════════════════════════════════════════════════
@@ -833,7 +850,7 @@ function renderInvTable(){
         tr.style.animationDelay=(idx*0.025)+'s';
         const emp=row['Nama Karyawan']||'-';const pal=getPalette(emp);
         const holding=(row['Holding']!==undefined&&row['Holding']!==null&&row['Holding']!=='') ? String(row['Holding']) : '-';
-        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${row['No']||''}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;">${getTypeIcon(row['Tipe Aset'])} ${row['Tipe Aset']||'-'}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td><div style="display:flex;align-items:center;gap:7px;"><div class="emp-avatar" style="background:${pal.bg};color:${pal.c};">${getInitials(emp)}</div><div><div style="font-weight:500;font-size:12px;">${emp}</div><div style="font-size:11px;color:#94a3b8;">${row['Divisi Karyawan']||'-'}</div></div></div></td><td><span class="holding-badge">${holding}</span></td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td style="text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">${formatCurrency(row['Harga Beli'])}</td><td><button onclick="showDetail(${start+idx},'inv')" style="width:28px;height:28px;border-radius:6px;background:#f1f5f9;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;color:#3b82f6;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#f1f5f9'"><i class="fas fa-eye"></i></button></td>`;
+        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${row['No']||''}</td><td><span class="inv-pill">${getInventoryNo(row)}</span></td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;">${getTypeIcon(row['Tipe Aset'])} ${row['Tipe Aset']||'-'}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td><div style="display:flex;align-items:center;gap:7px;"><div class="emp-avatar" style="background:${pal.bg};color:${pal.c};">${getInitials(emp)}</div><div><div style="font-weight:500;font-size:12px;">${emp}</div><div style="font-size:11px;color:#94a3b8;">${row['Divisi Karyawan']||'-'}</div></div></div></td><td><span class="holding-badge">${holding}</span></td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td style="text-align:right;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;">${formatCurrency(row['Harga Beli'])}</td><td><button onclick="showDetail(${start+idx},'inv')" style="width:28px;height:28px;border-radius:6px;background:#f1f5f9;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;color:#3b82f6;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#f1f5f9'"><i class="fas fa-eye"></i></button></td>`;
         tbody.appendChild(tr);
     });
     const tp=Math.ceil(invFiltered.length/invRows)||1;
@@ -853,7 +870,7 @@ function invChangeRows(){invRows=parseInt(document.getElementById('invRowsPerPag
 function showDetail(idx,source){
     const data=source==='inv'?invFiltered[idx]:(source==='dash'?dashboardFiltered[idx]:allData[idx]);
     if(!data)return;
-    const fields=[['NO Inventory','No. Inventory'],['Tipe Aset','Tipe'],['Merk','Merk'],['Model Tipe Aset','Model'],['Seri/Spesifikasi','Spesifikasi'],['IMEI','IMEI'],['Kategori Aset','Kategori'],['Lokasi Aset','Lokasi'],['Nama Karyawan','Karyawan'],['Divisi Karyawan','Divisi'],['Lini Bisnis','Lini Bisnis'],['Holding','Holding'],['Tanggal Pembelian Aset','Tgl Pembelian'],['Harga Beli','Harga Beli',formatCurrency],['Prakiraan Penyusutan (dalam bulan)','Penyusutan'],['Harga Jual','Harga Jual',formatCurrency],['Status Aset','Status'],['Kondisi Aset','Kondisi'],['Garansi Aset (satuan bulan)','Garansi (bln)'],['Tanggal Peminjaman Aset','Tgl Peminjaman'],['Tanggal Pengembalian an Aset','Tgl Pengembalian'],['Tanggal Penjualan Aset','Tgl Penjualan']];
+    const fields=[['NO Inventory','No. Inventory',getInventoryNo],['Tipe Aset','Tipe'],['Merk','Merk'],['Model Tipe Aset','Model'],['Seri/Spesifikasi','Spesifikasi'],['IMEI','IMEI'],['Kategori Aset','Kategori'],['Lokasi Aset','Lokasi'],['Nama Karyawan','Karyawan'],['Divisi Karyawan','Divisi'],['Lini Bisnis','Lini Bisnis'],['Holding','Holding'],['Tanggal Pembelian Aset','Tgl Pembelian'],['Harga Beli','Harga Beli',formatCurrency],['Prakiraan Penyusutan (dalam bulan)','Penyusutan'],['Harga Jual','Harga Jual',formatCurrency],['Status Aset','Status'],['Kondisi Aset','Kondisi'],['Garansi Aset (satuan bulan)','Garansi (bln)'],['Tanggal Peminjaman Aset','Tgl Peminjaman'],['Tanggal Pengembalian an Aset','Tgl Pengembalian'],['Tanggal Penjualan Aset','Tgl Penjualan']];
     const cont=document.getElementById('detailContent');cont.innerHTML='';
     fields.forEach(([key,label,fmt])=>{
         const v=data[key];if(v===''||v===null||v===undefined)return;
@@ -1063,7 +1080,7 @@ function showRusakTable(){
     rusak.forEach((row,i)=>{
         const tr=document.createElement('tr');tr.className='row-rusak fade-in';
         const holding=(row['Holding']!==undefined&&row['Holding']!==null&&row['Holding']!=='') ? String(row['Holding']) : '-';
-        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${i+1}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td style="font-size:12px;">${row['Tipe Aset']||'-'}</td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;">${row['Lokasi Aset']||'-'}</td><td style="font-weight:500;font-size:12px;">${row['Nama Karyawan']||'-'}</td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td><span class="holding-badge">${holding}</span></td>`;
+        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${i+1}</td><td><span class="inv-pill">${getInventoryNo(row)}</span></td><td style="font-size:12px;">${row['Tipe Aset']||'-'}</td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;">${row['Lokasi Aset']||'-'}</td><td style="font-weight:500;font-size:12px;">${row['Nama Karyawan']||'-'}</td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td><td><span class="holding-badge">${holding}</span></td>`;
         tbody.appendChild(tr);
     });
     document.getElementById('rusakSection').style.display='block';
@@ -1079,7 +1096,7 @@ function printSummary(){
     win.document.write(`<h1>Luzie Group — Ringkasan Aset</h1><p class="sub">Dicetak: ${new Date().toLocaleString('id-ID')}</p>`);
     win.document.write(`<div class="kpi"><div class="kpi-box"><div class="lbl">Total Aset</div><div class="val">${allData.length.toLocaleString('id-ID')}</div></div><div class="kpi-box"><div class="lbl">Terpakai</div><div class="val" style="color:#059669">${active.toLocaleString('id-ID')}</div></div><div class="kpi-box"><div class="lbl">Rusak</div><div class="val" style="color:#dc2626">${rusak.toLocaleString('id-ID')}</div></div><div class="kpi-box"><div class="lbl">Total Nilai</div><div class="val" style="font-size:16px">${formatCurrency(totalVal)}</div></div></div>`);
     win.document.write(`<table><thead><tr><th>#</th><th>Inventory</th><th>Tipe</th><th>Merk/Model</th><th>Karyawan</th><th>Lokasi</th><th>Status</th><th>Kondisi</th><th>Harga Beli</th></tr></thead><tbody>`);
-    allData.slice(0,200).forEach((r,i)=>{win.document.write(`<tr><td>${i+1}</td><td>${r['NO Inventory']||''}</td><td>${r['Tipe Aset']||''}</td><td>${r['Merk']||''} ${r['Model Tipe Aset']||''}</td><td>${r['Nama Karyawan']||'-'}</td><td>${r['Lokasi Aset']||''}</td><td>${r['Status Aset']||''}</td><td>${r['Kondisi Aset']||''}</td><td>${formatCurrency(r['Harga Beli'])}</td></tr>`);});
+    allData.slice(0,200).forEach((r,i)=>{win.document.write(`<tr><td>${i+1}</td><td>${getInventoryNo(r)}</td><td>${r['Tipe Aset']||''}</td><td>${r['Merk']||''} ${r['Model Tipe Aset']||''}</td><td>${r['Nama Karyawan']||'-'}</td><td>${r['Lokasi Aset']||''}</td><td>${r['Status Aset']||''}</td><td>${r['Kondisi Aset']||''}</td><td>${formatCurrency(r['Harga Beli'])}</td></tr>`);});
     win.document.write(`</tbody></table></body></html>`);win.document.close();setTimeout(()=>win.print(),500);
 }
 
@@ -1117,7 +1134,7 @@ function renderAssetTable(data){
     data.slice(0,100).forEach((row,i)=>{
         const tr=document.createElement('tr');tr.className=`fade-in ${getRowClass(row['Status Aset'])}`;tr.style.animationDelay=(i*0.02)+'s';
         const emp=row['Nama Karyawan']||'-';
-        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${i+1}</td><td><span class="inv-pill">${row['NO Inventory']||'-'}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;font-weight:500;">${emp}</td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td>`;
+        tr.innerHTML=`<td style="color:#94a3b8;font-size:12px;">${i+1}</td><td><span class="inv-pill">${getInventoryNo(row)}</span></td><td><div style="font-weight:500;font-size:13px;">${row['Merk']||'-'}</div><div style="font-size:11px;color:#94a3b8;">${row['Model Tipe Aset']||''}</div></td><td style="font-size:12px;font-weight:500;">${emp}</td><td style="font-size:12px;color:#475569;">${row['Lokasi Aset']||'-'}</td><td>${renderStatusBadge(row['Status Aset'])}</td><td>${renderKondisi(row['Kondisi Aset'])}</td>`;
         tbody.appendChild(tr);
     });
     if(data.length>100){const tr=document.createElement('tr');tr.innerHTML=`<td colspan="7" style="text-align:center;color:#94a3b8;font-size:12px;padding:12px;">Menampilkan 100 dari ${data.length} aset. Gunakan halaman Inventory untuk melihat semua.</td>`;tbody.appendChild(tr);}
